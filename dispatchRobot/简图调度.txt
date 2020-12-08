@@ -98,9 +98,23 @@ Resource          公共方法.txt
 
 获取”待执行“路单更多菜单
     [Arguments]    ${menu_css}
-    打开简图调度
+    #打开简图调度
     Right Click Element    xpath=//div[@id='road_order_detail_grid2_417768025']//tr[@data-index="0"]
     #获取第一条待执行的路单
     sleep    2
     Right Click Element    css=${menu_css}
     sleep    1
+
+查询待执行排班时间
+    [Arguments]    @{bustidLst}
+    @{plantimeList}    create list    #创建plantimeLst列表
+    FOR    ${bustid}    IN    @{bustidLst}
+        ${bustidXPATH_2}    Catenate    SEPARATOR=    xpath=//div[@id='DownStationList']/div[@id='    ${bustid}    ']/div[@class='init-plantime alpha-bg']
+        切换简图domain_frame
+        Wait Until Element Is Enabled    &{frame}[sec_frame]
+        Select Frame    &{frame}[sec_frame]
+        ${plantime}    get text    ${bustidXPATH_2}    #尝试获取简图上该车辆当前排班计划
+        unselect frame
+        Append to list    ${plantimeList}    ${plantime}    #将三台车的排班时间装入到LST当中，用于后续的结果验证
+    END
+    [Return]    @{plantimeList}

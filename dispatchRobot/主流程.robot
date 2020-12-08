@@ -90,6 +90,51 @@ Resource          通知报表.txt
     log    ${diff}[0]
     should be equal as Numbers    ${diff}[0]    ${plan_diff}    #验证车辆进站后拿到的排班时间按修改后的间隔
 
+4、对调车位和车辆插队
+    [Documentation]    调试车辆插队和车辆对调功能
+    ...
+    ...    1、两台车辆车依次进总站获取排班时间，
+    ...    2、在简图下方的待执行路单右击-车辆对调/插队
+    ...    3、确认执行车辆对调和车辆插队前后时间对比
+    ...
+    ...    期望结果：车辆对调和插队后，排班时间正确交换
+    [Setup]    登陆
+    打开简图调度
+    切换简图domain_frame
+    @{bustidLst}    create List    &{bus_3}[bustid]    &{bus_4}[bustid]
+    车辆手动进站    &{bus_4}[bustid]
+    sleep    1
+    车辆手动进站    &{bus_3}[bustid]
+    sleep    2
+    #获取A,B待执行排班时间
+    Wait Until Element Is Enabled    &{frame}[sec_frame]
+    Select Frame    &{frame}[sec_frame]
+    unselect frame
+    @{plantimeList_1}    查询待执行排班时间    @{bustidLst}
+    #对调车位
+    切换简图domain_frame
+    获取”待执行“路单更多菜单    &{ImplementtingRecord_menuDict}[exchangeCar]    #获取“对调车位”菜单
+    click element    xpath=//li[@id='menu_arr1_exchangeCar']/ul/li/a    #对调车位
+    sleep    1
+    #获取A,B待执行排班时间
+    Wait Until Element Is Enabled    &{frame}[sec_frame]
+    Select Frame    &{frame}[sec_frame]
+    unselect frame
+    @{plantimeList_2}    查询待执行排班时间    @{bustidLst}
+    #车辆插队
+    切换简图domain_frame
+    获取”待执行“路单更多菜单    &{ImplementtingRecord_menuDict}[insertCar]    #获取“车辆插队”菜单
+    click element    xpath=//li[@id='menu_arr1_insertCar']/ul/li/a    #车辆插队
+    sleep    1
+    #获取A,B待执行排班时间
+    Wait Until Element Is Enabled    &{frame}[sec_frame]
+    Select Frame    &{frame}[sec_frame]
+    unselect frame
+    @{plantimeList_3}    查询待执行排班时间    @{bustidLst}
+    #断言
+    should be equal    @{plantimeList_1}[0]    @{plantimeList_2}[1]    #对调车位后，排班时间对调
+    lists should be equal    @{plantimeList_1}    @{plantimeList_3}    #插队后，排班时间与最初时间相当，也可以用上面的方法来判断
+
 4、司机刷卡获取排班时间通知
     [Documentation]    司机刷卡获取排班通知
     ...
@@ -148,6 +193,12 @@ Resource          通知报表.txt
     Should Not Contain    ${title}    巴士在线
     input text    css=#upfirsttimeID>input[type='text']    6:00
 
-test2
-    [Documentation]    调试车辆插队功能
-    log    &{dropdown_menuDict}[mapGPS]
+test
+    [Setup]    登陆
+    打开简图调度
+    切换简图domain_frame
+    Wait Until Element Is Enabled    &{frame}[sec_frame]    #切到37路100的简图模拟图frame
+    Select Frame    &{frame}[sec_frame]
+    unselect \ frame
+    Wait Until Element Is Enabled    &{frame}[sec_frame]    #切到37路100的简图模拟图frame
+    Select Frame    &{frame}[sec_frame]
