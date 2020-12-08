@@ -1,19 +1,20 @@
 # robotDispath
 [ImplementtingRecord_menuDict]
-  xchangeCar对调车位,
-  insertCar车辆插队,
-  finishRoadPlan完成路单,
-  replaceCar替换车辆,
-  replaceDriver替换司机,
-  changePlantime更改计划时间,
-  supplementaryDriver补录司机,
-  addPlan增加计划,
-  abandonPlan计划烂班,
-  deletePlan删除计划,
-  deletePlan删除计划,
-  addMemo修改备注,
-  trackplayback轨迹回放
-	
+
+	  xchangeCar对调车位,
+	  insertCar车辆插队,
+	  finishRoadPlan完成路单,
+	  replaceCar替换车辆,
+	  replaceDriver替换司机,
+	  changePlantime更改计划时间,
+	  supplementaryDriver补录司机,
+	  addPlan增加计划,
+	  abandonPlan计划烂班,
+	  deletePlan删除计划,
+	  deletePlan删除计划,
+	  addMemo修改备注,
+	  trackplayback轨迹回放
+		
 
 [dropdown_menuDict]
 
