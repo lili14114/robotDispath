@@ -1,5 +1,6 @@
 # robotDispath
 [menuDict]
+
 	operative_monitor=xpath=//a[@href='#menuMark181']   #运营监控
 	diagram_disapth=css=li[data-mark='menuMark214']   #简图调度
 
