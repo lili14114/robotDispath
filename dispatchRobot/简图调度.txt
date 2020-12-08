@@ -12,26 +12,26 @@ Resource          公共方法.txt
     sleep    1    #
     click element    &{menuDict}[diagram_disapth]    #【简图调度】
     sleep    3
-    click element    &{setting}[roadXpath_diagram]    #37路100
+    click element    ${roadXpath_diagram}    #37路100
     sleep    5
 
 切换简图domain_frame
     #切换到简图调度frame
-    Wait Until Element Is Enabled    &{frame}[domain_frame]    #切换到37路100的主frame
-    Select Frame    &{frame}[domain_frame]    #切换到37路100的主frame
+    Wait Until Element Is Enabled    ${iframe_tab}    #切换到37路100的主frame
+    Select Frame    ${iframe_tab}    #切换到37路100的主frame
     sleep    2
 
 获取简图车辆更多菜单
     [Arguments]    ${bustid}    ${dropDownPath}
     #前提需处于domain_frame
     ${bustidXPATH}    Catenate    SEPARATOR=    css=div[id='    ${bustid}    ']>div[class='bus-body']
-    Wait Until Element Is Enabled    &{frame}[sec_frame]    #切到37路100的简图模拟图frame
-    Select Frame    &{frame}[sec_frame]
+    Wait Until Element Is Enabled    ${iframe_line}    #切到37路100的简图模拟图frame
+    Select Frame    ${iframe_line}
     sleep    1
     Right Click Element    ${bustidXPATH}    #车辆bustid
     sleep    2
     unselect Frame
-    Select Frame    &{frame}[domain_frame]    #对车辆要执行的操作
+    Select Frame    ${iframe_tab}    #切回主frame
     sleep    1
     click element    ${dropDownPath}
     sleep    1
@@ -67,8 +67,8 @@ Resource          公共方法.txt
         获取简图车辆更多菜单    ${bustid}    &{dropdown_menuDict}[goToSite]
         click element    xpath=//button[@id='save']    #对车辆手动“进站”保存
         sleep    3
-        Wait Until Element Is Enabled    &{frame}[sec_frame]
-        Select Frame    &{frame}[sec_frame]
+        Wait Until Element Is Enabled    ${iframe_line}
+        Select Frame    ${iframe_line}
         ${plantime}    get text    ${bustidXPATH_2}    #尝试获取简图上该车辆当前排班计划
         unselect frame
         Append to list    ${plantimeLst}    ${plantime}    #将三台车的排班时间装入到LST当中，用于后续的结果验证
@@ -76,7 +76,7 @@ Resource          公共方法.txt
     log many    @{plantimeLst}
     List Should Not Contain Duplicates    ${plantimeLst}    #判断列表中是否存在重复数据，如果出现重复数据，则判断为False.注意此方法在引用变量时，要使用$前缀
     #车辆停运再恢复运营，恢复测试初状态
-    @{hostcodeLst}    create List    &{bus_1}[hostcode]    &{bus_2}[hostcode]    &{bus_3}[hostcode]
+    @{hostcodeLst}    create List    ${bus_1}[hostcode]    ${bus_2}[hostcode]    ${bus_3}[hostcode]
     车辆停运再恢复运营    @{hostcodeLst}
 
 车辆手动进站
@@ -100,8 +100,8 @@ Resource          公共方法.txt
     FOR    ${bustid}    IN    @{bustidLst}
         ${bustidXPATH_2}    Catenate    SEPARATOR=    xpath=//div[@id='DownStationList']/div[@id='    ${bustid}    ']/div[@class='init-plantime alpha-bg']
         切换简图domain_frame
-        Wait Until Element Is Enabled    &{frame}[sec_frame]
-        Select Frame    &{frame}[sec_frame]
+        Wait Until Element Is Enabled    ${iframe_line}
+        Select Frame    ${iframe_line}
         ${plantime}    get text    ${bustidXPATH_2}    #尝试获取简图上该车辆当前排班计划
         unselect frame
         Append to list    ${plantimeList}    ${plantime}    #将三台车的排班时间装入到LST当中，用于后续的结果验证

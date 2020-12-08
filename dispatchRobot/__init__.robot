@@ -4,3 +4,4 @@ Library           Screenshot
 Library           Collections
 Library           CustomLibrary
 Library           RequestsLibrary
+Variables         setting.py

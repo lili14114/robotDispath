@@ -7,8 +7,8 @@ Resource          简图调度.txt
 Library           RequestsLibrary
 Library           CustomLibrary
 Resource          通知报表.txt
-Variables         setting.py    '8047'
+Variables         setting.py    haikouTest
 
 *** Test Cases ***
 test
-    log    ${DeviceLst}
+    log    ${ip}
