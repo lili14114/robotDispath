@@ -1,4 +1,20 @@
 # robotDispath
+[ImplementtingRecord_menuDict]
+  xchangeCar对调车位,
+  insertCar车辆插队,
+  finishRoadPlan完成路单,
+  replaceCar替换车辆,
+  replaceDriver替换司机,
+  changePlantime更改计划时间,
+  supplementaryDriver补录司机,
+  addPlan增加计划,
+  abandonPlan计划烂班,
+  deletePlan删除计划,
+  deletePlan删除计划,
+  addMemo修改备注,
+  trackplayback轨迹回放
+	
+
 [dropdown_menuDict]
 
 	mapGPS=xpath=//a[contains(text(),"定位") and @tabindex='-1']  #定位
@@ -18,5 +34,5 @@
 	goToSite= xpath=//a[contains(text(),"进站") and @tabindex='-1']#进站
 	outSite=xpath=//a[contains(text(),"出站") and @tabindex='-1']#出站 
 	driver=xpath=//a[contains(text(),"司机") and @tabindex='-1']#司机 ，取最后一个
-[]
+
 
