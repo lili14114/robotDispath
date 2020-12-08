@@ -5,10 +5,6 @@ Library           RequestsLibrary
 Library           CustomLibrary
 
 *** Variables ***
-${ip}             http://10.200.9.183:8074
-${username}       enler
-${password}       888888
-${8047_37road1}    id=mtLocationRunDiagramTree_3_span
 &{bus_1}          internalno=robot    bustid=201126142457482    hostcode=robot    subid=200612134458980    roadid=417768025    belongto=100003    # 用于批量进站获取排班
 &{bus_2}          internalno=robot2    bustid=201128093425842    hostcode=robot2    subid=200612134458980    roadid=417768025    belongto=100003    # 用于批量进站获取排班
 &{bus_3}          internalno=robot3    bustid=201128093440756    hostcode=robot3    subid=200612134458980    roadid=417768025    belongto=100003    # 用于批量进站获取排班
@@ -17,17 +13,19 @@ ${8047_37road1}    id=mtLocationRunDiagramTree_3_span
 &{ImplementtingRecord_menuDict}    exchangeCar=#menu_arr1_exchangeCar>a    insertCar=#menu_arr1_insertCar>a    finishRoadPlan=#menu_arr1_finishRoadPlan>a    replaceCar=#menu_arr1_replaceCar>a    replaceDriver=#menu_arr1_replaceDriver>a    changePlantime=#menu_arr1_changePlantime>a    supplementaryDriver=#menu_arr1_supplementaryDriver>a    addPlan=#menu_arr1_addPlan>a    abandonPlan=#menu_arr1_abandonPlan>a    deletePlan=#menu_arr1_deletePlan>a    addMemo=#menu_arr1_addMemo>a    trackplayback=#menu_arr1_trackplayback>a    # exchangeCar对调车位,insertCar车辆插队,finishRoadPlan完成路单,replaceCar替换车辆,replaceDriver替换司机,changePlantime更改计划时间,supplementaryDriver补录司机,addPlan增加计划,abandonPlan计划烂班,deletePlan删除计划,deletePlan删除计划,addMemo修改备注,trackplayback轨迹回放
 &{dropdown_menuDict}    mapGPS=xpath=//a[contains(text(),"定位") and @tabindex='-1'] \    roadGPS=xpath=//a[contains(text(),"线路") and @tabindex='-1']    GPS_history=xpath=//a[contains(text(),"轨迹") and @tabindex='-1']    video=xpath=//a[contains(text(),"视频") and @tabindex='-1']    IPconnect=xpath=//a[contains(text(),"IP通话") and @tabindex='-1']    alarm=xpath=//a[contains(text(),"报警") and @tabindex='-1']    busReport=xpath=//a[contains(text(),"路单") and @tabindex='-1']    notify=xpath=//a[contains(text(),"通知") and @tabindex='-1']    hand_assigh=xpath=//a[contains(text(),"代发") and @tabindex='-1']    short_dispath=xpath=//a[contains(text(),"临时调度") and @tabindex='-1']    annular_dispath=xpath=//a[contains(text(),"环形调度") and @tabindex='-1']    adjust_plantime=xpath=//a[contains(text(),"计划调整") and @tabindex='-1']    cancle_plantime=xpath=//a[contains(text(),"取消计划") and @tabindex='-1']    stop_plantime=xpath=//a[contains(text(),"停用排班") and @tabindex='-1']    goToSite= xpath=//a[contains(text(),"进站") and @tabindex='-1']    outSite=xpath=//a[contains(text(),"出站") and @tabindex='-1']    driver=xpath=//a[contains(text(),"司机") and @tabindex='-1']
 ...               checkWork=xpath=//a[contains(text(),"考勤") and @tabindex='-1']    # 简图车辆右击更多菜单
+&{setting}        ip=http://10.200.9.183:8074    username=enler    password=888888    roadXpath_diagram=id=mtLocationRunDiagramTree_6_span    # roadXpath_diagram#简图树形菜单线路元素地址，例如：简图树形菜单37路100
+&{menuDict}       operative_monitor=xpath=//a[@href='#menuMark181']    diagram_disapth=css=li[data-mark='menuMark214']    # operative_monitor#运营监控，diagram_disapth #简图调度
 
 *** Keywords ***
 登陆
     初始化基本资料
     webservice请求
-    ${login_ip}    Catenate    SEPARATOR=    ${ip}    /login.koala
+    ${login_ip}    Catenate    SEPARATOR=    &{setting}[ip]    /login.koala
     log    ${login_ip}
     Open Browser    ${login_ip}    Chrome
     sleep    1
-    input text    id=j_username    ${username}
-    input text    id=j_password    ${password}
+    input text    id=j_username    &{setting}[username]
+    input text    id=j_password    &{setting}[password]
     input text    id=jCaptchaCode    111111
     click element    id=loginBtn
     sleep    1
@@ -63,7 +61,7 @@ webservice请求
     ${caronline}    Get Caronline Json    &{bus_1}[hostcode]
     ${caronlineType}    evaluate    type($caronline)
     log    ${caronlineType}
-    create session    api    ${ip}    ${headers}
+    create session    api    &{setting}[ip]    ${headers}
     ${data}    post request    api    /webservice/rest/caronline    data=${caronline}
     ${result}    To Json    ${data.content}
     should contain    ${result}[error_text]    上报成功

@@ -8,11 +8,11 @@ Resource          公共方法.txt
 *** Keywords ***
 打开简图调度
     select window    ${window}
-    click element    xpath=//a[@href='#menuMark181']    #【运营监控】
+    click element    &{menuDict}[operative_monitor]    #【运营监控】
     sleep    1    #
-    click element    css=li[data-mark='menuMark214']    #【简图调度】
+    click element    &{menuDict}[diagram_disapth]    #【简图调度】
     sleep    3
-    click element    id=mtLocationRunDiagramTree_6_span    #37路100
+    click element    &{setting}[roadXpath_diagram]    #37路100
     sleep    5
 
 切换简图domain_frame
@@ -77,18 +77,7 @@ Resource          公共方法.txt
     List Should Not Contain Duplicates    ${plantimeLst}    #判断列表中是否存在重复数据，如果出现重复数据，则判断为False.注意此方法在引用变量时，要使用$前缀
     #车辆停运再恢复运营，恢复测试初状态
     @{hostcodeLst}    create List    &{bus_1}[hostcode]    &{bus_2}[hostcode]    &{bus_3}[hostcode]
-    FOR    ${hostcode}    IN    @{hostcodeLst}
-        ${dispathJson}    Get Dispath Json    ${hostcode}    6
-        ${data}    post request    api    /webservice/rest/dispatch    data=${dispathJson}
-        ${result}    To Json    ${data.content}
-        should contain    ${result}[error_text]    上报成功
-        sleep    3
-        ${dispathJson}    Get Dispath Json    ${hostcode}    106
-        ${data2}    post request    api    /webservice/rest/dispatch    data=${dispathJson}
-        ${result}    To Json    ${data2.content}
-        should contain    ${result}[error_text]    上报成功
-        sleep    3
-    END
+    车辆停运再恢复运营    @{hostcodeLst}
 
 车辆手动进站
     [Arguments]    ${bustid}
@@ -118,3 +107,18 @@ Resource          公共方法.txt
         Append to list    ${plantimeList}    ${plantime}    #将三台车的排班时间装入到LST当中，用于后续的结果验证
     END
     [Return]    @{plantimeList}
+
+车辆停运再恢复运营
+    [Arguments]    @{hostcodeLst}
+    FOR    ${hostcode}    IN    @{hostcodeLst}
+        ${dispathJson}    Get Dispath Json    ${hostcode}    6
+        ${data}    post request    api    /webservice/rest/dispatch    data=${dispathJson}
+        ${result}    To Json    ${data.content}
+        should contain    ${result}[error_text]    上报成功
+        sleep    3
+        ${dispathJson}    Get Dispath Json    ${hostcode}    106
+        ${data2}    post request    api    /webservice/rest/dispatch    data=${dispathJson}
+        ${result}    To Json    ${data2.content}
+        should contain    ${result}[error_text]    上报成功
+        sleep    3
+    END

@@ -20,77 +20,7 @@ Resource          通知报表.txt
     @{bustidLst}    create List    &{bus_1}[bustid]    &{bus_2}[bustid]    &{bus_3}[bustid]
     三台车手动进站获取排班时间    @{bustidLst}
 
-2、申请非运营指令同意后排班在简图和字轨表和待执行记录是否会取消
-    [Documentation]    申请非运营指令同意后排班在简图和字轨表和待执行记录是否会取消
-    ...
-    ...    1、主机申请非运营指令
-    ...    2、确认字轨表和待执行记录是否会取消（验证字轨表和待执行记录的数量是否会减少）
-    ...
-    ...    期望结果：
-    ...    数量会减少
-    @{bustidLst}    create List    &{bus_1}[bustid]    &{bus_2}[bustid]    &{bus_3}[bustid]
-    切换简图domain_frame
-    FOR    ${bustid}    IN    @{bustidLst}
-        车辆手动进站    ${bustid}
-    END
-    sleep    5
-    ${BusoperatrecordCount}    get element count    xpath=//td[contains(text(),"待执行")]    #返回元素的个数，即简图下方待执行路单个数
-    获取简图调度字轨表中的排班时间    #获取到字轨表中排班时间数量${plantimeCount}
-    #车辆申请停运指令（前提系统已启用自动同意）
-    ${dispathJson}    Get Dispath Json    &{bus_1}[hostcode]    6
-    ${data}    post request    api    /webservice/rest/dispatch    data=${dispathJson}
-    ${result}    To Json    ${data.content}
-    should contain    ${result}[error_text]    上报成功
-    #重新统计简图待执行路单数量
-    sleep    6
-    ${BusoperatrecordCount_new}    get element count    xpath=//td[contains(text(),"待执行")]
-    sleep    1
-    #重新获取字轨表中的排班时间数量
-    click element    xpath=//div[contains(text(),'排班间隔')]    #简图上方“排班间隔”
-    sleep    1
-    ${plantimeCount_new}    get element count    xpath=//label[@style='color:#4c4c4c;']    #返回元素的个数，即字轨表中有多少个排班时间
-    click element    xpath=//button[contains(text(),"返回")]    #关闭字轨表页面
-    #测试完毕后，将车辆恢复到运营状态
-    ${dispathJson}    Get Dispath Json    &{bus_1}[hostcode]    106
-    ${data}    post request    api    /webservice/rest/dispatch    data=${dispathJson}
-    ${result}    To Json    ${data.content}
-    should contain    ${result}[error_text]    上报成功
-    #期望结果判断
-    ${busoperatrecord_result}    Evaluate    ${BusoperatrecordCount}>${BusoperatrecordCount_new}    #比较路单待执行路单是否有减少，如果是则返回True
-    ${plantime_result}    Evaluate    ${plantimeCount}>${plantimeCount_new}    #比较排班表中排班时间是否有减少，如果是则返回True
-    ${result_1}    convert to string    ${busoperatrecord_result}    #将bool值 转换为string类型
-    ${result_2}    convert to string    ${plantime_result}    #将bool值 转换为string类型
-    Should Be Equal    ${result_1}    True
-    Should Be Equal    ${result_2}    True
-
-3、计划调整正确更改排班时间
-    [Documentation]    1.robot4车进站获取到排班时间
-    ...    2.进入简图调度-右击-计划调整 ->robot4
-    ...    3.车次设置为3，发车间隔为6
-    ...    4. 后面的三台车分批次进入
-    ...    5.确认三台车是否成功获取排班，且排班间隔为间隔6
-    ...
-    ...    期望结果：正确获取排班且排班间隔为6
-    #打开简图调度
-    #切换简图domain_frame
-    车辆手动进站    &{bus_4}[bustid]
-    ${plan_diff}    set variable    6
-    获取简图车辆更多菜单    &{bus_4}[bustid]    &{dropdown_menuDict}[adjust_plantime]
-    ${plantime}    Get Mytool Times    %H:%M    #生成当前系统时间
-    input text    xpath=//input[@id='adjusttimeID']    ${plantime}    #输入当前系统时间
-    click element    xpath=//input[@id='toexecbustimeID']    #勾选是否按车次调整间隔
-    input text    css=#execcountID    3    #输入车次
-    input text    xpath=//input[@id='timeintervalID']    ${plan_diff}    #输入发车间隔
-    click element    xpath=//button[@id='save']    #计划调整保存
-    #执行至少三台手动进站
-    @{bustidLst}    create List    &{bus_1}[bustid]    &{bus_2}[bustid]    &{bus_3}[bustid]
-    unselect frame
-    三台车手动进站获取排班时间    @{bustidLst}
-    ${diff}    get_time_difference    ${plantimeLst}
-    log    ${diff}[0]
-    should be equal as Numbers    ${diff}[0]    ${plan_diff}    #验证车辆进站后拿到的排班时间按修改后的间隔
-
-4、对调车位和车辆插队
+2、对调车位和车辆插队
     [Documentation]    调试车辆插队和车辆对调功能
     ...
     ...    1、两台车辆车依次进总站获取排班时间，
@@ -98,8 +28,7 @@ Resource          通知报表.txt
     ...    3、确认执行车辆对调和车辆插队前后时间对比
     ...
     ...    期望结果：车辆对调和插队后，排班时间正确交换
-    [Setup]    登陆
-    打开简图调度
+    #打开简图调度
     切换简图domain_frame
     @{bustidLst}    create List    &{bus_3}[bustid]    &{bus_4}[bustid]
     车辆手动进站    &{bus_4}[bustid]
@@ -131,11 +60,83 @@ Resource          通知报表.txt
     Select Frame    &{frame}[sec_frame]
     unselect frame
     @{plantimeList_3}    查询待执行排班时间    @{bustidLst}
+    #车辆停运再恢复运营
+    @{hostcodeLst}    create List    &{bus_3}[hostcode]    &{bus_4}[hostcode]
+    车辆停运再恢复运营    @{hostcodeLst}
     #断言
     should be equal    @{plantimeList_1}[0]    @{plantimeList_2}[1]    #对调车位后，排班时间对调
     lists should be equal    @{plantimeList_1}    @{plantimeList_3}    #插队后，排班时间与最初时间相当，也可以用上面的方法来判断
 
-4、司机刷卡获取排班时间通知
+3、申请非运营指令同意后排班在简图和字轨表和待执行记录是否会取消
+    [Documentation]    申请非运营指令同意后排班在简图和字轨表和待执行记录是否会取消
+    ...
+    ...    1、主机申请非运营指令
+    ...    2、确认字轨表和待执行记录是否会取消（验证字轨表和待执行记录的数量是否会减少）
+    ...
+    ...    期望结果：
+    ...    路单数量会减少。
+    ...    ${BusoperatrecordCount} >${BusoperatrecordCount_new}
+    ...    ${plantimeCount}>${plantimeCount_new} $获取简图调度字轨表中的时间
+    @{bustidLst}    create List    &{bus_1}[bustid]    &{bus_2}[bustid]    &{bus_3}[bustid]
+    切换简图domain_frame
+    FOR    ${bustid}    IN    @{bustidLst}
+        车辆手动进站    ${bustid}
+    END
+    sleep    5
+    ${BusoperatrecordCount}    get element count    xpath=//td[contains(text(),"待执行")]    #返回元素的个数，即简图下方待执行路单个数
+    获取简图调度字轨表中的排班时间    #获取到字轨表中排班时间数量${plantimeCount}
+    #车辆申请停运指令（前提系统已启用自动同意）
+    ${dispathJson}    Get Dispath Json    &{bus_1}[hostcode]    6
+    ${data}    post request    api    /webservice/rest/dispatch    data=${dispathJson}
+    ${result}    To Json    ${data.content}
+    should contain    ${result}[error_text]    上报成功
+    #重新统计简图待执行路单数量
+    sleep    6
+    ${BusoperatrecordCount_new}    get element count    xpath=//td[contains(text(),"待执行")]
+    sleep    1
+    #重新获取字轨表中的排班时间数量
+    click element    xpath=//div[contains(text(),'排班间隔')]    #简图上方“排班间隔”
+    sleep    1
+    ${plantimeCount_new}    get element count    xpath=//label[@style='color:#4c4c4c;']    #返回元素的个数，即字轨表中有多少个排班时间
+    click element    xpath=//button[contains(text(),"返回")]    #关闭字轨表页面
+    #测试完毕后，将车辆恢复到运营状态
+    ${dispathJson}    Get Dispath Json    &{bus_1}[hostcode]    106
+    ${data}    post request    api    /webservice/rest/dispatch    data=${dispathJson}
+    ${result}    To Json    ${data.content}
+    should contain    ${result}[error_text]    上报成功
+    #期望结果判断
+    Should Be True    ${BusoperatrecordCount}>${BusoperatrecordCount_new}
+    Should Be True    ${plantimeCount}>${plantimeCount_new}
+
+4、计划调整正确更改排班时间
+    [Documentation]    1.robot4车进站获取到排班时间
+    ...    2.进入简图调度-右击-计划调整 ->robot4
+    ...    3.车次设置为3，发车间隔为6
+    ...    4. 后面的三台车分批次进入
+    ...    5.确认三台车是否成功获取排班，且排班间隔为间隔6
+    ...
+    ...    期望结果：正确获取排班且排班间隔为6. 即${diff}[0]=[6.0,6.0]
+    #打开简图调度
+    #切换简图domain_frame
+    车辆手动进站    &{bus_4}[bustid]
+    ${plan_diff}    set variable    6
+    #切换简图domain_frame
+    获取简图车辆更多菜单    &{bus_4}[bustid]    &{dropdown_menuDict}[adjust_plantime]
+    ${plantime}    Get Mytool Times    %H:%M    #生成当前系统时间
+    input text    xpath=//input[@id='adjusttimeID']    ${plantime}    #输入当前系统时间
+    click element    xpath=//input[@id='toexecbustimeID']    #勾选是否按车次调整间隔
+    input text    css=#execcountID    3    #输入车次
+    input text    xpath=//input[@id='timeintervalID']    ${plan_diff}    #输入发车间隔
+    click element    xpath=//button[@id='save']    #计划调整保存
+    #执行至少三台手动进站
+    @{bustidLst}    create List    &{bus_1}[bustid]    &{bus_2}[bustid]    &{bus_3}[bustid]
+    unselect frame
+    三台车手动进站获取排班时间    @{bustidLst}
+    ${diff}    get_time_difference    ${plantimeLst}
+    log    ${diff}[0]
+    should be equal as Numbers    ${diff}[0]    ${plan_diff}    #验证车辆进站后拿到的排班时间按修改后的间隔
+
+5、司机刷卡获取排班时间通知
     [Documentation]    司机刷卡获取排班通知
     ...
     ...    测试步骤：
@@ -164,7 +165,7 @@ Resource          通知报表.txt
     ${content}    get text    xpath=//*[@class='table-responsive']/table/tbody/tr/td/div[2]/div[2]/table/tbody/tr    #通知报表中通知内容中含有“已完成“或”系统暂无此卡信息“
     Should Contain Any    ${content}    已完成    系统暂无此卡信息
 
-5、获取的排班时间能否下发到主机
+6、获取的排班时间能否下发到主机
     [Documentation]    1、车辆上传GPS进总站，获取到排班时间
     ...    2、进入通知报表，查看是否有下发排班通知
     ...
@@ -194,11 +195,8 @@ Resource          通知报表.txt
     input text    css=#upfirsttimeID>input[type='text']    6:00
 
 test
-    [Setup]    登陆
     打开简图调度
-    切换简图domain_frame
-    Wait Until Element Is Enabled    &{frame}[sec_frame]    #切到37路100的简图模拟图frame
-    Select Frame    &{frame}[sec_frame]
-    unselect \ frame
-    Wait Until Element Is Enabled    &{frame}[sec_frame]    #切到37路100的简图模拟图frame
-    Select Frame    &{frame}[sec_frame]
+    Wait Until Element Is Enabled    &{frame}[domain_frame]
+    Select Frame    &{frame}[domain_frame]
+    Current Frame Should Contain    运行简图监控
+    Register Keyword To Run On Failure    切换简图domain_frame
