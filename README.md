@@ -1,11 +1,5 @@
 # robotDispath
-[setting]
-	ip=http://10.200.9.183:8074
-	username=enler
-	password=888888
-	roadXpath_diagram=id=mtLocationRunDiagramTree_6_span   #简图树形菜单线路元素地址，例如：简图树形菜单37路100
-
-	[menuDict]
+[menuDict]
 	operative_monitor=xpath=//a[@href='#menuMark181']   #运营监控
 	diagram_disapth=css=li[data-mark='menuMark214']   #简图调度
 
