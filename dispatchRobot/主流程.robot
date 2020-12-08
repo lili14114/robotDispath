@@ -193,10 +193,3 @@ Resource          通知报表.txt
     click element    id=subidID
     Should Not Contain    ${title}    巴士在线
     input text    css=#upfirsttimeID>input[type='text']    6:00
-
-test
-    打开简图调度
-    Wait Until Element Is Enabled    &{frame}[domain_frame]
-    Select Frame    &{frame}[domain_frame]
-    Current Frame Should Contain    运行简图监控
-    Register Keyword To Run On Failure    切换简图domain_frame
