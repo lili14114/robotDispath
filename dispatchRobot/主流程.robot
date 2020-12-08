@@ -180,20 +180,3 @@ Variables         setting.py    haikouTest
     click element    xpath=//button[@id='notice_search']    #查询
     sleep    3
     click element    xpath=//tr[@data-index='0']    #通知报表有排班时间通知
-
-线路信息编辑格式判断
-    [Documentation]    1、不填写任何内容进行保存
-    ...    2、分别填写某几项必填项，进行保存
-    登陆
-    打开线路信息页面
-    线路信息新增对话框
-    click element    css=#save    #不填写任何内容进行保存
-    input text    id=roadnameID    robotframeworkTest    #填写线路信息
-    click element    css=#save    #保存
-    Should Not Contain    ${title}    巴士在线
-    click element    id=subidID
-    Should Not Contain    ${title}    巴士在线
-    input text    css=#upfirsttimeID>input[type='text']    6:00
-
-test
-    log    ${ip}
