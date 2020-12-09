@@ -131,15 +131,21 @@ Resource          公共方法.txt
 车辆停运再恢复运营
     [Arguments]    @{hostcodeLst}
     FOR    ${hostcode}    IN    @{hostcodeLst}
+        ${caronline}    Get Caronline Json    ${hostcode}
         ${dispathJson}    Get Dispath Json    ${hostcode}    6
-        ${data}    post request    api    /webservice/rest/dispatch    data=${dispathJson}
-        ${result}    To Json    ${data.content}
-        should contain    ${result}[error_text]    上报成功
+    #车辆上线
+    #    ${data}    post request    api    /webservice/rest/caronline    data=${caronline}
+    #    ${result}    To Json    ${data.content}
+    #    should contain    ${result}[error_text]    上报成功
+    #车辆上传指令
+        ${data2}    post request    api    /webservice/rest/dispatch    data=${dispathJson}
+        ${result2}    To Json    ${data2.content}
+        should contain    ${result2}[error_text]    上报成功
         sleep    3
         ${dispathJson}    Get Dispath Json    ${hostcode}    106
-        ${data2}    post request    api    /webservice/rest/dispatch    data=${dispathJson}
-        ${result}    To Json    ${data2.content}
-        should contain    ${result}[error_text]    上报成功
+        ${data3}    post request    api    /webservice/rest/dispatch    data=${dispathJson}
+        ${result3}    To Json    ${data3.content}
+        should contain    ${result3}[error_text]    上报成功
         sleep    3
     END
 

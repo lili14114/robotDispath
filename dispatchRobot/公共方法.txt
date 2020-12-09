@@ -53,8 +53,6 @@ webservice请求
     set to dictionary    ${headers}    Content-Type=application/json;charset=UTF-8
     #定义入参
     ${caronline}    Get Caronline Json    ${bus_1}[hostcode]
-    ${caronlineType}    evaluate    type($caronline)
-    log    ${caronlineType}
     create session    api    ${ip}    ${headers}
     ${data}    post request    api    /webservice/rest/caronline    data=${caronline}
     ${result}    To Json    ${data.content}

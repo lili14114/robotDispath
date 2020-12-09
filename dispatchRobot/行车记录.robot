@@ -7,11 +7,11 @@ Resource          简图调度.txt
 Library           RequestsLibrary
 Library           CustomLibrary
 Resource          通知报表.txt
-Variables         setting.py    haikouTest
+Variables         setting.py    186_8089
 Resource          车辆路单.txt
 
 *** Test Cases ***
-车辆手动进出站，验证路单状态
+1、车辆手动进出站，验证路单状态
     [Documentation]    手动进出站，验证行车记录状态变更是否正常
     ...
     ...    1、车辆进总站
@@ -59,13 +59,25 @@ Resource          车辆路单.txt
     #关闭路单页面
     click element    xpath=//button[contains(text(),"返回")]    #关闭页面
 
-test2
-    #打开简图调度
-    #切换简图domain_frame
-    @{recordLst}    get webelements    xpath=//table[@class='table table-responsive table-bordered table-hover table-striped' and @style='width: 2130px;']/tbody/tr    #查询简图下方所有的路单
+2、简图-车辆-路单补录
+    [Setup]    登陆
+    打开简图调度
+    切换简图domain_frame
+    获取简图车辆更多菜单index    ${bus_1}[bustid]    &{dropdown_menuDict}[busReport]    -1    #进入简图-车辆-路单页面
+    ${departureTime}    Get Mytool Times    hourdelta
+    click element    xpath=//span[contains(text(),"运营补录")]    #点击“运营补录”按钮
+    sleep    1
+    click element    xpath=//div[@id='drivernameID']/button[@data-toggle='dropdown']    #点击司机名称选择按钮
+    sleep    1
+    click element    xpath=//div[@class='selectEmpInfoGrid']/div/table/tbody/tr/td/div[@class='grid-body']/div[@class='grid-table-body']/table/tbody/tr/td    #勾选第一个司机
+    click element    id=selectEmpInfoGridSave    #保存勾选司机
+    input text    xpath=//div[@id='departureTimeID']/input    ${departureTime}    #输入开始时间
+    input text    id=mileageID    8.666    #输入载客公里
+    input text    id=gpsmileageID    6.8    #输入GPS公里
+    input text    id=remarkidID    robot Test    #输入路单备注
+    input text    xpath=//div[@id='changeshiftstimeid']/input    12:00    #输入交接班时间
+    click element    id=save    #保存路单编辑
 
 test
-    ${testLst}    create list    运行中,日班    运行中
-    ${valueLst}    create list    运行中
-    ${result}    should Contain multiValue    ${testLst}    ${valueLst}
-    log    ${result}
+    ${mytime}    Get Mytool Times    hourdelta
+    log    ${mytime}
