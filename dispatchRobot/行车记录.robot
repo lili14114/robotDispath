@@ -32,13 +32,14 @@ Resource          车辆路单.txt
     @{varLst}    create list    ${bus_5}[bustid]    Nodefault
     ${true}    Convert To Boolean    True    #转换成bool值
     车辆手动进站    @{varLst}
-    sleep    1
+    sleep    2
     #车辆出左总站
     获取简图车辆更多菜单    @{varLst}[0]    &{dropdown_menuDict}[outSite]    #手动出总站
-    sleep    1
+    sleep    2
     click element    xpath=//button[@id='save']    #对车辆手动“进站”保存    #此时frame停留在domain_frame中
+    sleep    2
     #验证车辆生成运行中路单
-    @{targetLst}    create list    ${bus_5}[internalNo]    已完成
+    @{targetLst}    create list    ${bus_5}[internalNo]    运行中
     @{recordLst}    ${flag}    获取简图下方路单明细并验证结果    @{targetLst}
     Should Be Equal    ${flag}    ${true}    #验证简图下方是否包含此运行中路单
     ${BusrecordStr}    ${BusrecordResultLst}    获取简图_车辆_路单明细    ${bus_5}[bustid]
@@ -50,6 +51,9 @@ Resource          车辆路单.txt
     车辆手动进站    @{varLst2}
     sleep    2
     #验证车辆生成已完成路单
+    @{targetLst}    create list    ${bus_5}[internalNo]    已完成
+    @{recordLst}    ${flag}    获取简图下方路单明细并验证结果    @{targetLst}
+    Should Be Equal    ${flag}    ${true}    #验证简图下方是否包含此运行中路单
     ${BusrecordStr}    ${BusrecordResultLst}    获取简图_车辆_路单明细    ${bus_5}[bustid]
     Should Contain    ${BusrecordStr}    已完成
     #关闭路单页面
