@@ -258,24 +258,44 @@ class MyTools(object):
             resultLst.append(diff / 60)
 
         return resultLst
+    def str_To_list(self,string,sep=' '):
+        '''
+        将字符串转换成列表形式，默认通过空格符进行分割
+        :param key:string,sep
+        :return: resultLst
+         Examples str_To_list code.
+        | `strTolist` | string   |  # return resultLst |
+        | `strTolist` | string | ','  |  # 以逗号进行分割，eturn resultLst |
+        '''
+        recordLst=string.split(sep)
+        recordLst = list(filter(None, recordLst))
+        return recordLst
+    def should_Contain_multiValue(self,stringLst,targetLst):
+        '''
+        确认多个值是否存在此列表中的某个值中。例如：查询出所有路单记录，验证某台车的路单状态是否存在路单记录中
+
+       :param key:string,sep
+       :return: bool
+        Examples get_time_difference code.
+       | `should_Contain_multiValue` |  ['运行中，robot1,日班|运营'，‘运行中’]|  ['运行中，robot1'] |  # return True |
+         | `should_Contain_multiValue` |  ['运行中，robot1,日班|运营'，‘运行中’]|  ['运行中，robot2'] |  # return False |
+       '''
+
+        flag=True
+        for string in stringLst:
+            for target in targetLst:
+                if target not in string:
+                    flag = False
+            if flag==True:break
+
+        return flag
 
 
 
 if __name__ == '__main__':
-   # mytool=MyTools()
-   # print(mytool.get_concrete_times('%H:%M'))
+    mytool=MyTools()
+    stringLst = ['已完成 有效 robot5 10:49 10:57 晚8分钟 10:59 早2分钟 2 10:57 0.00 四中新校区', '运行中']
+    valueLst = ['robot5','已完成']
 
-   t1='11:20'
-   t2='11:05'
-   t3='11:17'
-   timeLst=[t1, t2, t3]
-   resultLst=[]
-   for i in range(len(timeLst)):
-       timeLst[i] = datetime.datetime.strptime(timeLst[i], '%H:%M')
-   timeLst=sorted(timeLst,reverse=False)
-   print(timeLst)
-   for i in range(0,len(timeLst)-1):
-        diff=int((timeLst[i+1]-timeLst[i]).seconds)
-        resultLst.append(int(diff/60))
+    print(mytool.should_Contain_multiValue(stringLst,valueLst))
 
-   print(resultLst)
