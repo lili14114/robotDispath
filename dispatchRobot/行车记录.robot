@@ -8,6 +8,7 @@ Library           RequestsLibrary
 Library           CustomLibrary
 Resource          通知报表.txt
 Variables         setting.py    haikouTest
+Resource          车辆路单.txt
 
 *** Test Cases ***
 车辆手动进出站，验证路单状态
@@ -28,24 +29,37 @@ Variables         setting.py    haikouTest
     打开简图调度
     切换简图domain_frame
     #车辆进左总站
-    @{varLst}    create list    ${bus_1}[bustid]    Nodefault
+    @{varLst}    create list    ${bus_5}[bustid]    Nodefault
     车辆手动进站    @{varLst}
     #车辆出左总站
     获取简图车辆更多菜单    @{varLst}[0]    &{dropdown_menuDict}[outSite]    #手动出总站
     sleep    1
     click element    xpath=//button[@id='save']    #对车辆手动“进站”保存    #此时frame停留在domain_frame中
+    #验证车辆生成运行中路单
+    @{targetLst}    create list    ${bus_5}[internalNo]    已完成
+    @{recordLst}    ${flag}    获取简图下方路单明细并验证结果    @{targetLst}
+    Should Be Equal    ${flag}    True    #验证简图下方是否包含此运行中路单
+    ${BusrecordStr}    ${BusrecordResultLst}    获取简图_车辆_路单明细    ${bus_5}[bustid]
+    Should Contain    ${BusrecordStr}    运行中    #验证简图-车辆-路单是否包含此运行中路单
+    #关闭路单页面
+    click element    xpath=//button[contains(text(),"返回")]    #关闭页面
     #车辆进右总站，结束路单
-    @{varLst2}    create list    ${bus_1}[bustid]    default
+    @{varLst2}    create list    ${bus_5}[bustid]    default
     车辆手动进站    @{varLst2}
     sleep    2
+    #验证车辆生成已完成路单
+    ${BusrecordStr}    ${BusrecordResultLst}    获取简图_车辆_路单明细    ${bus_5}[bustid]
+    Should Contain    ${BusrecordStr}    已完成
+    #关闭路单页面
+    click element    xpath=//button[contains(text(),"返回")]    #关闭页面
 
 test2
-    [Setup]    登陆
-    打开简图调度
-    切换简图domain_frame
-    获取简图车辆更多菜单    ${bus_1}[bustid]    &{dropdown_menuDict}[outSite]
-    click element    xpath=//div[@id='phrase_templateID']/button[@class='btn btn-default dropdown-toggle']    #点击选择总站小三角按钮
-    ${elements}    Get WebElements    xpath=//ul[@role='menu']/li[@class='selected']/a    #直接手动进站，对车辆手动“进站”保存    #此时frame停留在domain_frame中
-    click element    ${elements}[1]    #点击第二个站点
-    sleep    1
-    click element    xpath=//button[@id='save']    #对车辆手动“进站”保存    #此时frame停留在domain_frame中
+    #打开简图调度
+    #切换简图domain_frame
+    @{recordLst}    get webelements    xpath=//table[@class='table table-responsive table-bordered table-hover table-striped' and @style='width: 2130px;']/tbody/tr    #查询简图下方所有的路单
+
+test
+    ${testLst}    create list    运行中,日班    运行中
+    ${valueLst}    create list    运行中
+    ${result}    should Contain multiValue    ${testLst}    ${valueLst}
+    log    ${result}

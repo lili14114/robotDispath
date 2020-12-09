@@ -36,6 +36,23 @@ Resource          公共方法.txt
     click element    ${dropDownPath}
     sleep    1
 
+获取简图车辆更多菜单index
+    [Arguments]    ${bustid}    ${dropDownPath}    ${index}
+    #打开简图调度
+    #切换简图domain_frame
+    ${bustidXPATH}    Catenate    SEPARATOR=    css=div[id='    ${bustid}    ']>div[class='bus-body']
+    Wait Until Element Is Enabled    ${iframe_line}    #切到37路100的简图模拟图frame
+    Select Frame    ${iframe_line}
+    sleep    1
+    Right Click Element    ${bustidXPATH}    #车辆bustid
+    sleep    2
+    unselect Frame
+    Select Frame    ${iframe_tab}    #切回主frame
+    sleep    1
+    ${elements}    Get WebElements    ${dropDownPath}    #获取简图-车辆-路单按钮&{dropdown_menuDict}[busReport]
+    click element    ${elements}[${index}]    #选择点击简图上的路单(index=-1)
+    sleep    1
+
 获取简图调度字轨表中的排班时间
     [Documentation]    \#前提打开简图调度
     ...
@@ -85,8 +102,8 @@ Resource          公共方法.txt
     #@{varLst}    create list    ${bustid}    ${FLAG}
     获取简图车辆更多菜单    @{varLst}[0]    &{dropdown_menuDict}[goToSite]
     ${flag}    set variable    @{varLst}[1]
-    run keyword if    '${flag}'=='default'    click element    xpath=//button[@id='save']    #直接手动进站，对车辆手动“进站”保存    #此时frame停留在domain_frame中
-    ...    ELSE    进左总站
+    run keyword if    '${flag}'=='default'    click element    xpath=//button[@id='save']
+    ...    ELSE    进左总站    #直接手动进站，对车辆手动“进站”保存    #此时frame停留在domain_frame中
 
 获取”待执行“路单更多菜单
     [Arguments]    ${menu_css}
@@ -97,7 +114,7 @@ Resource          公共方法.txt
     Right Click Element    css=${menu_css}
     sleep    1
 
-查询待执行排班时间
+查询简图监控车辆图标旁待执行排班时间
     [Arguments]    @{bustidLst}
     @{plantimeList}    create list    #创建plantimeLst列表
     FOR    ${bustid}    IN    @{bustidLst}

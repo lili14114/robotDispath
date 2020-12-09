@@ -40,7 +40,7 @@ Variables         setting.py    haikouTest
     Wait Until Element Is Enabled    ${iframe_line}
     Select Frame    ${iframe_line}
     unselect frame
-    @{plantimeList_1}    查询待执行排班时间    @{bustidLst}
+    @{plantimeList_1}    查询简图监控车辆图标旁待执行排班时间    @{bustidLst}
     #对调车位
     切换简图domain_frame
     获取”待执行“路单更多菜单    &{ImplementtingRecord_menuDict}[exchangeCar]    #获取“对调车位”菜单
@@ -50,7 +50,7 @@ Variables         setting.py    haikouTest
     Wait Until Element Is Enabled    ${iframe_line}
     Select Frame    ${iframe_line}
     unselect frame
-    @{plantimeList_2}    查询待执行排班时间    @{bustidLst}
+    @{plantimeList_2}    查询简图监控车辆图标旁待执行排班时间    @{bustidLst}
     #车辆插队
     切换简图domain_frame
     获取”待执行“路单更多菜单    &{ImplementtingRecord_menuDict}[insertCar]    #获取“车辆插队”菜单
@@ -60,7 +60,7 @@ Variables         setting.py    haikouTest
     Wait Until Element Is Enabled    ${iframe_line}
     Select Frame    ${iframe_line}
     unselect frame
-    @{plantimeList_3}    查询待执行排班时间    @{bustidLst}
+    @{plantimeList_3}    查询简图监控车辆图标旁待执行排班时间    @{bustidLst}
     #车辆停运再恢复运营
     @{hostcodeLst}    create List    ${bus_3}[hostcode]    ${bus_4}[hostcode]
     车辆停运再恢复运营    @{hostcodeLst}
