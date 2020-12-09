@@ -272,6 +272,7 @@ class MyTools(object):
         return recordLst
     def should_Contain_multiValue(self,stringLst,targetLst):
         '''
+        增加报表目标值检测功能
         确认多个值是否存在此列表中的某个值中。例如：查询出所有路单记录，验证某台车的路单状态是否存在路单记录中
 
        :param key:string,sep
@@ -282,20 +283,21 @@ class MyTools(object):
        '''
 
         flag=True
-        for string in stringLst:
+        length=len(stringLst)
+        for i in range(length):
             for target in targetLst:
-                if target not in string:
+                if target  not in stringLst[i]:
                     flag = False
-            if flag==True:break
-
+            if flag == True:break   # 第一层循环结束后，判断flag_2的值是否为True，如果为True,则直接说明该列表的值都存在此字符串中
+            if i!=length-1:flag=True #如果不是最后一次循环则要重置flag初始值
         return flag
 
 
 
 if __name__ == '__main__':
     mytool=MyTools()
-    stringLst = ['已完成 有效 robot5 10:49 10:57 晚8分钟 10:59 早2分钟 2 10:57 0.00 四中新校区', '运行中']
-    valueLst = ['robot5','已完成']
+    stringLst = ['3 待执行 robot5 14:52 15:02 四中新校区 霞山总站 0 0 上行 运营路单 日班|营运' ,'2 已完成 有效 robot5 10:49 10:57 晚8分钟 10:59 早2分钟 2 10:57 0.00 四中新校区 霞山总站 23.47 0.00 上行 2 1.00 运营路单 enler 日班|营运 有效 系统 2020-12-09 10:57:21',' 1 已完成 有效']
+    targetLst = ['robot5','已完成']
+    print(mytool.should_Contain_multiValue(stringLst,targetLst))
 
-    print(mytool.should_Contain_multiValue(stringLst,valueLst))
 
