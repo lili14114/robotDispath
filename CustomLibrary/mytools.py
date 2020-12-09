@@ -39,6 +39,7 @@ class MyTools(object):
           | `get_Mytool_times` | %Y-%m-%d %H:%M:%S | # return  2020-12-01 11:35:06 当前系统时间|
           | `get_Mytool_times` | timedelta | # return  2020-12-01 11:35:06 当前系统时间前一个小时|
           | `get_Mytool_times` | timedelta | 2| # return  2020-12-01 11:35:06 当前系统时间前两个小时|
+          | `get_Mytool_times` | hourdelta | # return  11:35 当前系统时间前一个小时
 
         """
         if '%Y-%m-%d %H:%M:%S' in flag:
@@ -49,7 +50,10 @@ class MyTools(object):
             t = datetime.datetime.now()
             # 默认获取1小时前
             result = (t - datetime.timedelta(hours=hours)).strftime("%Y-%m-%d %H:%M:%S")
-
+        elif 'hourdelta' in flag:
+            #默认获取1小时前
+            t = datetime.datetime.now()
+            result = (t - datetime.timedelta(hours=hours)).strftime("%H:%M")
         return result
     def get_caronline_json(self,hostcode):
         '''
