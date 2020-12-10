@@ -78,12 +78,19 @@ test
     打开简图调度
     切换简图domain_frame
     进入简图-行车记录
+    sleep    5
     ${departureTime}    Get Mytool Times    hourdelta
     click element    xpath=//span[contains(text(),"运营补录")]    #点击“运营补录”按钮
     #选择车辆
-    click element    xpath=//div[@id='bustidID']/button[@data-toggle='dropdown']     #点击车辆编号选择按钮
+    sleep    2
+    click element    xpath=//div[@id='bustidID']/button[@data-toggle='dropdown']    #点击车辆编号选择按钮
+    sleep    3
+    input text    xpath=//input[@data-role='searchValue'][-1]    robot2
+    click element    xpath=//button[@data-role='searchBtn'][-1]    #点击查询按钮
     sleep    1
-    sleep    1
+    click element    xpath=//div[@class='selectBusInfoGrid']/div/table/tbody/tr/td/div[@class='grid-body']/div[@class='grid-table-body']/table/tbody/tr/td    #勾选第一个车辆
+    click element    id=selectBusInfoGridSave    #保存路单编辑
+    #选择司机
     click element    xpath=//div[@id='drivernameID']/button[@data-toggle='dropdown']    #点击司机名称选择按钮
     sleep    1
     click element    xpath=//div[@class='selectEmpInfoGrid']/div/table/tbody/tr/td/div[@class='grid-body']/div[@class='grid-table-body']/table/tbody/tr/td    #勾选第一个司机
