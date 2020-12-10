@@ -292,6 +292,8 @@ class MyTools(object):
 
         flag=True
         length=len(stringLst)
+        if length==0:
+            return False
         for i in range(length):
             for target in targetLst:
                 if target  not in stringLst[i]:
@@ -308,8 +310,9 @@ class MyTools(object):
 if __name__ == '__main__':
     mytool=MyTools()
     stringLst = ['3 待执行 robot5 14:52 15:02 四中新校区 霞山总站 0 0 上行 运营路单 日班|营运' ,'2 已完成 有效 robot5 10:49 10:57 晚8分钟 10:59 早2分钟 2 10:57 0.00 四中新校区 霞山总站 23.47 0.00 上行 2 1.00 运营路单 enler 日班|营运 有效 系统 2020-12-09 10:57:21',' 1 已完成 有效']
+    stringLst=[]
     print(len(stringLst))
     targetLst = ['robot5','已完成']
-    print(mytool.should_Contain_multiValue(stringLst,targetLst,3))
+    print(mytool.should_Contain_multiValue(stringLst,targetLst))
 
 
