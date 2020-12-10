@@ -87,14 +87,15 @@ Resource          车辆路单.txt
      @{targetL}    create list    ${bus_1}[internalNo]    ${departuretime}    robot Test    6.80    已完成
     ${flag2}    获取简图下方路单明细并验证结果    ${bus_1}[bustid]     @{targetLst}
     #验证简图-行车记录主副表
-    @{targetLst2}     create list    ${bus_1}[internalNo]
+    ${main_targetLst}     create list    ${bus_1}[internalNo]    未知司机
     click element    xpath=//div[contains(text(),'行车记录')]    #点击简图-行车记录
-    ${flag3}    行车记录_主副表_路单明细并验证结果    ${bus_1}[internalNo]    ${targetLst2}     ${targetLst}
+    ${flag3}    行车记录_主副表_路单明细并验证结果    ${bus_1}[internalNo]    ${main_targetLst}     ${targetLst}
     #验证行车记录菜单主副表
-    click element    &{menuDict}[operative_monitor]    #【运营监控】
-    sleep    1    #
-    click element    &{menuDict}[busrecordPage]    #【行车记录】
-    ${flag4}    行车记录_主副表_路单明细并验证结果    ${bus_1}[internalNo]    ${targetLst2}     ${targetLst}
+    #click element    &{menuDict}[operative_monitor]    #【运营监控】
+    sleep    3    #
+    unselect frame
+    click element    xpath=//li[@data-mark='menuMark228']    #【行车记录】
+    ${flag4}    行车记录_主副表_路单明细并验证结果    ${bus_1}[internalNo]    ${main_targetLst}     ${targetLst}
     #批量验证结果
     ${true}    Convert To Boolean    True    #转换成bool值
     @{flagLst}    create list    ${flag1}    ${flag2}    ${flag3}    ${flag4}
@@ -103,8 +104,7 @@ Resource          车辆路单.txt
     END
 
 test
-    [Setup]    登陆
-    #验证简图-行车记录主副表
+    #验证行车记录菜单主副表
     @{vice_targetLst}    create list    ${bus_1}[internalNo]    10:23:00    robot Test    6.80    已完成
     @{main_targetLst}     create list    ${bus_1}[internalNo]
     click element    &{menuDict}[operative_monitor]    #【运营监控】
