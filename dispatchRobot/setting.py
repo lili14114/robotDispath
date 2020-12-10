@@ -9,7 +9,7 @@
 运行代码 : Ctrl + Shift + F10
 """
 def getVariables(env='haikouTest'):
-    if env=='haikouTest':
+    if env=='183_8074':
         DICT__variables={
             'ip':"http://10.200.9.183:8074",
             'username':"enler",
