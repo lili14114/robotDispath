@@ -73,14 +73,3 @@ webservice请求
     log many    @{targetLst}    #打印目标值结果
     ${flag}    should Contain multiValue    ${recordLst}    ${targetLst}
     [Return]    ${flag}    # 验证结果
-
-行车记录主表验证结果
-    [Arguments]    ${elementsXpath}    @{targetLst}
-    [Documentation]    行车记录主表，按定位元素查出来后最后一条是无数据的，如果elments全部遍历，将报element is not attached to the page document
-    @{recordLst}    create list
-    ${record}    get text    ${elementsXpath}    #查询出所有的结果
-    Append to list    ${recordLst}    ${record}    #将第一条路单结果装入列表中
-    log many    @{recordLst}    #输出所有的明细结果
-    log many    @{targetLst}    #打印目标值结果
-    ${flag}    should Contain multiValue    ${recordLst}    ${targetLst}
-    [Return]    ${flag}

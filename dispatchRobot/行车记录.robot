@@ -7,8 +7,8 @@ Resource          简图调度.txt
 Library           RequestsLibrary
 Library           CustomLibrary
 Resource          通知报表.txt
-Variables         setting.py    haikouTest
 Resource          车辆路单.txt
+Variables         setting.py    183_8074
 
 *** Test Cases ***
 1、车辆手动进出站，验证路单状态
@@ -60,12 +60,29 @@ Resource          车辆路单.txt
     click element    xpath=//button[contains(text(),"返回")]    #关闭页面
 
 2、简图-车辆-路单补录
+    #打开简图调度
+    #切换简图domain_frame
+    获取简图车辆更多菜单index    ${bus_1}[bustid]    &{dropdown_menuDict}[busReport]    -1    #进入简图-车辆-路单页面
+    ${departureTime}    运营路单补录
+    所有行车记录页面验证结果    ${departureTime}    ${bus_1}
+
+3、简图-行车记录-路单补录
+    打开简图调度
+    切换简图domain_frame
+    进入简图-行车记录
+    ${departureTime}    运营路单补录
+    所有行车记录页面验证结果    ${departureTime}    ${bus_1}
+
+test
     [Setup]    登陆
     打开简图调度
     切换简图domain_frame
-    获取简图车辆更多菜单index    ${bus_1}[bustid]    &{dropdown_menuDict}[busReport]    -1    #进入简图-车辆-路单页面
+    进入简图-行车记录
     ${departureTime}    Get Mytool Times    hourdelta
     click element    xpath=//span[contains(text(),"运营补录")]    #点击“运营补录”按钮
+    #选择车辆
+    click element    xpath=//div[@id='bustidID']/button[@data-toggle='dropdown']     #点击车辆编号选择按钮
+    sleep    1
     sleep    1
     click element    xpath=//div[@id='drivernameID']/button[@data-toggle='dropdown']    #点击司机名称选择按钮
     sleep    1
@@ -78,37 +95,3 @@ Resource          车辆路单.txt
     input text    xpath=//div[@id='changeshiftstimeid']/input    12:00    #输入交接班时间
     click element    id=save    #保存路单编辑
     sleep    2
-    #行车记录验证
-    ${departuretime}    Catenate    SEPARATOR=    ${departureTime}    :00
-     @{targetLst}    create list    ${bus_1}[internalNo]    ${departuretime}    robot Test    6.80    已完成
-    #验证简图-车辆-路单
-    ${flag1}    获取简图_车辆_路单明细并验证结果    ${bus_1}[bustid]     @{targetLst}
-    #简图下方路单
-     @{targetL}    create list    ${bus_1}[internalNo]    ${departuretime}    robot Test    6.80    已完成
-    ${flag2}    获取简图下方路单明细并验证结果    ${bus_1}[bustid]     @{targetLst}
-    #验证简图-行车记录主副表
-    ${main_targetLst}     create list    ${bus_1}[internalNo]    未知司机
-    click element    xpath=//div[contains(text(),'行车记录')]    #点击简图-行车记录
-    ${flag3}    行车记录_主副表_路单明细并验证结果    ${bus_1}[internalNo]    ${main_targetLst}     ${targetLst}
-    #验证行车记录菜单主副表
-    #click element    &{menuDict}[operative_monitor]    #【运营监控】
-    sleep    3    #
-    unselect frame
-    click element    xpath=//li[@data-mark='menuMark228']    #【行车记录】
-    ${flag4}    行车记录_主副表_路单明细并验证结果    ${bus_1}[internalNo]    ${main_targetLst}     ${targetLst}
-    #批量验证结果
-    ${true}    Convert To Boolean    True    #转换成bool值
-    @{flagLst}    create list    ${flag1}    ${flag2}    ${flag3}    ${flag4}
-    FOR    ${flag}    IN    @{flagLst}
-    Should Be Equal    ${flag}    ${true}    #验证简图下方是否包含此运行中路单
-    END
-
-test
-    #验证行车记录菜单主副表
-    @{vice_targetLst}    create list    ${bus_1}[internalNo]    10:23:00    robot Test    6.80    已完成
-    @{main_targetLst}     create list    ${bus_1}[internalNo]
-    click element    &{menuDict}[operative_monitor]    #【运营监控】
-    sleep    1    #
-    click element    &{menuDict}[busrecordPage]    #【行车记录】
-    sleep    3
-    ${main_flag}    ${vice_flag}    行车记录_主副表_路单明细并验证结果    ${bus_1}[internalNo]    ${main_targetLst}     ${vice_targetLst}

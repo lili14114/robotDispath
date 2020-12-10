@@ -7,7 +7,7 @@ Resource          简图调度.txt
 Library           RequestsLibrary
 Library           CustomLibrary
 Resource          通知报表.txt
-Variables         setting.py    haikouTest
+Variables         setting.py    186_8089
 
 *** Test Cases ***
 1、三台车手动进站获取排班

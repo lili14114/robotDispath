@@ -27,7 +27,7 @@ Resource          简图调度.txt
     #打开简图调度
     #切换简图domain_frame
     ${elementsXpath}    Catenate    SEPARATOR=    css=#road_order_detail_grid1_    ${roadid}    >div>table>tbody>tr>td>div[class="grid-body"]>div[class="grid-table-body"]>table>tbody>tr
-    #${elementsXpath}    set variable    css=#road_order_detail_grid1_417768025>div>table>tbody>tr>td>div[class="grid-body"]>div[class="grid-table-body"]>table>tbody>tr     #车辆路单明细页面
+    #${elementsXpath}    set variable    css=#road_order_detail_grid1_417768025>div>table>tbody>tr>td>div[class="grid-body"]>div[class="grid-table-body"]>table>tbody>tr    #车辆路单明细页面
     ${flag}    获取报表明细结果并验证    ${elementsXpath}    @{targetLst}    #验证结果
     [Return]    ${flag}
 
@@ -43,12 +43,82 @@ Resource          简图调度.txt
     input text    id=internalNo    ${internalNo}
     click element    xpath=//div[@id='busBtnClass']/button[@class='busSaveBtn']    #查询
     click element    xpath=//span[contains(text(),'更多查询')]    #点击行车记录主表更多查询，退回检索
-    sleep    1
+    sleep    3
     #验证结果
-    ${elementsXpath}    set variable    xpath=//div[@class='DhBusoperatrecordt_list']/div/div[@class="rideInfo"]/div/table/tbody/tr/td/div[2]/div[@class='grid-table-body']/table/tbody/tr    #行车记录主表数据
+    ${elementsXpath}    set variable    xpath=//div[@class='rideInfo main_grid']/div/table/tbody/tr/td/div[@class='grid-body']/div[@class='grid-table-body']/table/tbody/tr    #行车记录主表数据
     ${main_flag}    行车记录主表验证结果    ${elementsXpath}    @{main_targetLst}    #验证结果
     #行车记录副表结果验证
     Double Click Element    ${elementsXpath}    #双击主表第一条结果，查询副表结果
+    sleep    3
     ${elementsXpath2}    set variable    xpath=//div[@class='rideInfo secondaryTable']/div/table/tbody/tr/td/div[@class='grid-body']/div[@class='grid-table-body']/table/tbody/tr
     ${vice_flag}    获取报表明细结果并验证    ${elementsXpath2}    @{vice_targetLst}    #验证结果
     [Return]    ${main_flag}    ${vice_flag}    # main_flag主表验证结果，vice_flag副表验证结果
+
+进入简图-车辆-路单页面
+    #打开简图调度
+    #切换简图domain_frame
+    获取简图车辆更多菜单index    ${bus_1}[bustid]    &{dropdown_menuDict}[busReport]    -1    #进入简图-车辆-路单页面
+
+进入简图-行车记录
+    #打开简图调度
+    #切换简图domain_frame    #车辆路单明细页面
+    click element    xpath=//div[contains(text(),'行车记录')]    #点击简图-行车记录
+
+进入行车记录菜单页面
+    #click element    &{menuDict}[operative_monitor]    #【运营监控】
+    click element    xpath=//li[@data-mark='menuMark228']    #【行车记录】
+
+行车记录主表验证结果
+    [Arguments]    ${elementsXpath}    @{targetLst}
+    [Documentation]    行车记录主表，按定位元素查出来后最后一条是无数据的，如果elments全部遍历，将报element is not attached to the page document
+    @{recordLst}    create list
+    ${record}    get text    ${elementsXpath}    #查询出所有的结果
+    Append to list    ${recordLst}    ${record}    #将第一条路单结果装入列表中
+    log many    @{recordLst}    #输出所有的明细结果
+    log many    @{targetLst}    #打印目标值结果
+    ${flag}    should Contain multiValue    ${recordLst}    ${targetLst}
+    [Return]    ${flag}
+
+运营路单补录
+    ${departureTime}    Get Mytool Times    hourdelta
+    click element    xpath=//span[contains(text(),"运营补录")]    #点击“运营补录”按钮
+    sleep    1
+    click element    xpath=//div[@id='drivernameID']/button[@data-toggle='dropdown']    #点击司机名称选择按钮
+    sleep    1
+    click element    xpath=//div[@class='selectEmpInfoGrid']/div/table/tbody/tr/td/div[@class='grid-body']/div[@class='grid-table-body']/table/tbody/tr/td    #勾选第一个司机
+    click element    id=selectEmpInfoGridSave    #保存勾选司机
+    input text    xpath=//div[@id='departureTimeID']/input    ${departureTime}    #输入开始时间
+    input text    id=mileageID    8.666    #输入载客公里
+    input text    id=gpsmileageID    6.8    #输入GPS公里
+    input text    id=remarkidID    robot Test    #输入路单备注
+    input text    xpath=//div[@id='changeshiftstimeid']/input    12:00    #输入交接班时间
+    click element    id=save    #保存路单编辑
+    sleep    2
+    [Return]    ${departureTime}
+
+所有行车记录页面验证结果
+    [Arguments]    ${departureTime}    ${bus}
+    #行车记录验证
+    ${departuretime_new}    Catenate    SEPARATOR=    ${departureTime}    :00
+    @{targetLst}    create list    ${bus}[internalNo]    ${departuretime_new}    robot Test    6.80    已完成
+    #验证简图-车辆-路单
+    ${flag1}    获取简图_车辆_路单明细并验证结果    ${bus}[bustid]    @{targetLst}
+    #简图下方路单
+    @{targetL}    create list    ${bus}[internalNo]    ${departuretime}    robot Test    6.80    已完成
+    ${flag2}    获取简图下方路单明细并验证结果    ${bus}[bustid]    @{targetL}
+    #验证简图-行车记录主副表
+    ${main_targetLst}    create list    ${bus}[internalNo]    未知司机
+    click element    xpath=//div[contains(text(),'行车记录')]    #点击简图-行车记录
+    ${main_flag}    ${vice_flag}    行车记录_主副表_路单明细并验证结果    ${bus}[internalNo]    ${main_targetLst}    ${targetLst}
+    #验证行车记录菜单主副表
+    #click element    &{menuDict}[operative_monitor]    #【运营监控】
+    sleep    3    #
+    unselect frame
+    click element    xpath=//li[@data-mark='menuMark228']    #【行车记录】
+    ${main_flag2}    ${vice_flag2}    行车记录_主副表_路单明细并验证结果    ${bus}[internalNo]    ${main_targetLst}    ${targetLst}
+    #批量验证结果
+    ${true}    Convert To Boolean    True    #转换成bool值
+    @{flagLst}    create list    ${flag1}    ${flag2}    ${main_flag}    ${vice_flag}    ${main_flag2}    ${vice_flag2}
+    FOR    ${flag}    IN    @{flagLst}
+        Should Be Equal    ${flag}    ${true}    #验证简图下方是否包含此运行中路单
+    END
