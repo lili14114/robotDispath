@@ -274,16 +274,20 @@ class MyTools(object):
         recordLst=string.split(sep)
         recordLst = list(filter(None, recordLst))
         return recordLst
-    def should_Contain_multiValue(self,stringLst,targetLst):
+    def should_Contain_multiValue(self,stringLst,targetLst,count=None):
         '''
         增加报表目标值检测功能
         确认多个值是否存在此列表中的某个值中。例如：查询出所有路单记录，验证某台车的路单状态是否存在路单记录中
 
-       :param key:string,sep
+       :param :
+           stringLst--> 查询报表的结果，接收列表格式
+           targetLst --> 目标值验证，接收列表格式
+           count -->查询结果的数量，默认不验证。如果count！=None时，则需要验证查询出来报表明细数量。
        :return: bool
         Examples get_time_difference code.
-       | `should_Contain_multiValue` |  ['运行中，robot1,日班|运营'，‘运行中’]|  ['运行中，robot1'] |  # return True |
+       | `should_Contain_multiValue` |  ['运行中，robot1,日班|运营'，‘运行中’]|  ['运行中，robot1' |  # return True |
          | `should_Contain_multiValue` |  ['运行中，robot1,日班|运营'，‘运行中’]|  ['运行中，robot2'] |  # return False |
+          | `should_Contain_multiValue` |  ['运行中，robot1,日班|运营'，‘运行中’]|  ['运行中，robot2'] |9 |  # return False |
        '''
 
         flag=True
@@ -294,6 +298,9 @@ class MyTools(object):
                     flag = False
             if flag == True:break   # 第一层循环结束后，判断flag_2的值是否为True，如果为True,则直接说明该列表的值都存在此字符串中
             if i!=length-1:flag=True #如果不是最后一次循环则要重置flag初始值
+        if count!=None:
+            if count!=length:
+                flag=False
         return flag
 
 
@@ -301,7 +308,8 @@ class MyTools(object):
 if __name__ == '__main__':
     mytool=MyTools()
     stringLst = ['3 待执行 robot5 14:52 15:02 四中新校区 霞山总站 0 0 上行 运营路单 日班|营运' ,'2 已完成 有效 robot5 10:49 10:57 晚8分钟 10:59 早2分钟 2 10:57 0.00 四中新校区 霞山总站 23.47 0.00 上行 2 1.00 运营路单 enler 日班|营运 有效 系统 2020-12-09 10:57:21',' 1 已完成 有效']
+    print(len(stringLst))
     targetLst = ['robot5','已完成']
-    print(mytool.should_Contain_multiValue(stringLst,targetLst))
+    print(mytool.should_Contain_multiValue(stringLst,targetLst,3))
 
 
