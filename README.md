@@ -3,6 +3,7 @@
 
 	operative_monitor=xpath=//a[@href='#menuMark181']   #运营监控
 	diagram_disapth=css=li[data-mark='menuMark214']   #简图调度
+	busrecordPage=css=li[data-mark='menuMark228']  #行车记录
 
 [ImplementtingRecord_menuDict]
 
@@ -40,5 +41,10 @@
 	goToSite= xpath=//a[contains(text(),"进站") and @tabindex='-1']#进站
 	outSite=xpath=//a[contains(text(),"出站") and @tabindex='-1']#出站 
 	driver=xpath=//a[contains(text(),"司机") and @tabindex='-1']#司机 ，取最后一个
+	
+[report_XpathDict]
+	roadRecord_1=css=#road_order_detail_grid1_417768025>div>table>tbody>tr>td>div[class="grid-body"]>div[class="grid-table-body"]>table>tbody>tr  #简图调度下方路单
+	roadRecord_2=xpath=//div[@class='grid-table-body' and @style='width: 1170px; height: 320px; position: relative;']/table/tbody/tr    #简图-车辆-路单
+	
 
 

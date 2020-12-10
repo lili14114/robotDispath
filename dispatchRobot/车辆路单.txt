@@ -8,14 +8,15 @@ Variables         setting.py
 Resource          简图调度.txt
 
 *** Keywords ***
-获取简图_车辆_路单明细
-    [Arguments]    ${bustid}
-    获取简图车辆更多菜单index    ${bustid}    &{dropdown_menuDict}[busReport]    -1
+获取简图_车辆_路单明细并验证结果
+    [Arguments]    ${bustid}    @{targetLst}
+    #获取简图车辆更多菜单index    ${bustid}    &{dropdown_menuDict}[busReport]    -1
     sleep    1
-    ${BusrecordStr}    get text    xpath=//div[@class='grid-table-body' and @style='width: 1170px; height: 320px; position: relative;']/table/tbody/tr    #获取行车记录明细内容。注意表单的元素位置应在tr结束，否则无法获取td中的内容.如果有多条明细时，默认输出第一条。输出格式为str类型
-    ${BusrecordResultLst}    strTolist    ${BusrecordStr}    #将路单结果转换成List格式用于分析
-    log    ${BusrecordResultLst}
-    [Return]    ${BusrecordStr}    ${BusrecordResultLst}
+    ${elementsXpath}    set variable    xpath=//div[@class='grid-table-body' and @style='width: 1170px; height: 320px; position: relative;']/table/tbody/tr    #车辆路单明细页面
+    ${flag}    获取报表明细结果并验证    ${elementsXpath}    @{targetLst}    #验证结果
+    #关闭路单页面
+    click element    xpath=//button[contains(text(),"返回")]    #关闭页面
+    [Return]    ${flag}
 
 获取简图下方路单明细并验证结果
     [Arguments]    @{targetLst}
@@ -25,15 +26,29 @@ Resource          简图调度.txt
     ...    @{flag}返回bool值，如果查询出一的所有路单包含目标清单内容，则返回True，否则返回False
     #打开简图调度
     #切换简图domain_frame
-    @{recordLst}    create list
-    ${XPathCount}    get element count    css=#road_order_detail_grid1_417768025>div>table>tbody>tr>td>div[class="grid-body"]>div[class="grid-table-body"]>table>tbody>tr
-    @{recordsXPath}    get webelements    css=#road_order_detail_grid1_417768025>div>table>tbody>tr>td>div[class="grid-body"]>div[class="grid-table-body"]>table>tbody>tr    #查询简图下方所有的路单
-    log    ${XPathCount}
-    FOR    ${recordXPath}    IN    @{recordsXPath}
-    ${record}    get text    ${recordXPath}
-    Append to list    ${recordLst}    ${record}    #将所有的路单结果装入列表中
-    END
-    log many    @{recordLst}
-    log many    @{targetLst}
-    ${flag}    should Contain multiValue    ${recordLst}    ${targetLst}
-    [Return]    @{recordLst}    ${flag}
+    ${elementsXpath}    Catenate    SEPARATOR=    css=#road_order_detail_grid1_    ${roadid}    >div>table>tbody>tr>td>div[class="grid-body"]>div[class="grid-table-body"]>table>tbody>tr
+    #${elementsXpath}    set variable    css=#road_order_detail_grid1_417768025>div>table>tbody>tr>td>div[class="grid-body"]>div[class="grid-table-body"]>table>tbody>tr     #车辆路单明细页面
+    ${flag}    获取报表明细结果并验证    ${elementsXpath}    @{targetLst}    #验证结果
+    [Return]    ${flag}
+
+行车记录_主副表_路单明细并验证结果
+    [Arguments]    ${internalNo}    ${main_targetLst}    ${vice_targetLst}    # main_targetLst主表目标值，vice_targetLst副表目标值
+    [Documentation]    本方法适应于简图-行车记录
+    ...    运营监控-行车记录菜单
+    #打开简图调度
+    #切换简图domain_frame
+    #click element    xpath=//div[contains(text(),'行车记录')]    #点击简图-行车记录
+    sleep    1
+    click element    xpath=//span[contains(text(),'更多查询')]    #点击行车记录主表更多查询
+    input text    id=internalNo    ${internalNo}
+    click element    xpath=//div[@id='busBtnClass']/button[@class='busSaveBtn']    #查询
+    click element    xpath=//span[contains(text(),'更多查询')]    #点击行车记录主表更多查询，退回检索
+    sleep    1
+    #验证结果
+    ${elementsXpath}    set variable    xpath=//div[@class='DhBusoperatrecordt_list']/div/div[@class="rideInfo"]/div/table/tbody/tr/td/div[2]/div[@class='grid-table-body']/table/tbody/tr    #行车记录主表数据
+    ${main_flag}    行车记录主表验证结果    ${elementsXpath}    @{main_targetLst}    #验证结果
+    #行车记录副表结果验证
+    Double Click Element    ${elementsXpath}    #双击主表第一条结果，查询副表结果
+    ${elementsXpath2}    set variable    xpath=//div[@class='rideInfo secondaryTable']/div/table/tbody/tr/td/div[@class='grid-body']/div[@class='grid-table-body']/table/tbody/tr
+    ${vice_flag}    获取报表明细结果并验证    ${elementsXpath2}    @{vice_targetLst}    #验证结果
+    [Return]    ${main_flag}    ${vice_flag}    # main_flag主表验证结果，vice_flag副表验证结果
