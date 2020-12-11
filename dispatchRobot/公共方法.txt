@@ -4,11 +4,12 @@ Resource          公共方法.txt
 Library           RequestsLibrary
 Library           CustomLibrary
 Library           Collections
+Resource          简图调度.txt
 
 *** Variables ***
 &{ImplementtingRecord_menuDict}    exchangeCar=#menu_arr1_exchangeCar>a    insertCar=#menu_arr1_insertCar>a    finishRoadPlan=#menu_arr1_finishRoadPlan>a    replaceCar=#menu_arr1_replaceCar>a    replaceDriver=#menu_arr1_replaceDriver>a    changePlantime=#menu_arr1_changePlantime>a    supplementaryDriver=#menu_arr1_supplementaryDriver>a    addPlan=#menu_arr1_addPlan>a    abandonPlan=#menu_arr1_abandonPlan>a    deletePlan=#menu_arr1_deletePlan>a    addMemo=#menu_arr1_addMemo>a    trackplayback=#menu_arr1_trackplayback>a    # exchangeCar对调车位,insertCar车辆插队,finishRoadPlan完成路单,replaceCar替换车辆,replaceDriver替换司机,changePlantime更改计划时间,supplementaryDriver补录司机,addPlan增加计划,abandonPlan计划烂班,deletePlan删除计划,deletePlan删除计划,addMemo修改备注,trackplayback轨迹回放
 &{dropdown_menuDict}    mapGPS=xpath=//a[contains(text(),"定位") and @tabindex='-1'] \    roadGPS=xpath=//a[contains(text(),"线路") and @tabindex='-1']    GPS_history=xpath=//a[contains(text(),"轨迹") and @tabindex='-1']    video=xpath=//a[contains(text(),"视频") and @tabindex='-1']    IPconnect=xpath=//a[contains(text(),"IP通话") and @tabindex='-1']    alarm=xpath=//a[contains(text(),"报警") and @tabindex='-1']    busReport=xpath=//a[contains(text(),"路单") and @tabindex='-1']    notify=xpath=//a[contains(text(),"通知") and @tabindex='-1']    hand_assigh=xpath=//a[contains(text(),"代发") and @tabindex='-1']    short_dispath=xpath=//a[contains(text(),"临时调度") and @tabindex='-1']    annular_dispath=xpath=//a[contains(text(),"环形调度") and @tabindex='-1']    adjust_plantime=xpath=//a[contains(text(),"计划调整") and @tabindex='-1']    cancle_plantime=xpath=//a[contains(text(),"取消计划") and @tabindex='-1']    stop_plantime=xpath=//a[contains(text(),"停用排班") and @tabindex='-1']    goToSite= xpath=//a[contains(text(),"进站") and @tabindex='-1']    outSite=xpath=//a[contains(text(),"出站") and @tabindex='-1']    driver=xpath=//a[contains(text(),"司机") and @tabindex='-1']
-...               checkWork=xpath=//a[contains(text(),"考勤") and @tabindex='-1']    # 简图车辆右击更多菜单
+...               checkWork=xpath=//a[contains(text(),"考勤") and @tabindex='-1']    quick_input=xpath=//a[contains(text(),"快速补录") and @tabindex='-1']    # 简图车辆右击更多菜单
 &{menuDict}       operative_monitor=xpath=//a[@href='#menuMark181']    diagram_disapth=css=li[data-mark='menuMark214']    busrecordPage=css=li[data-mark='menuMark228']    # operative_monitor#运营监控，diagram_disapth #简图调度
 
 *** Keywords ***

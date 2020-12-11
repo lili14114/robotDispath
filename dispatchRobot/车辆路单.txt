@@ -10,7 +10,7 @@ Resource          简图调度.txt
 *** Keywords ***
 获取简图_车辆_路单明细并验证结果
     [Arguments]    ${bustid}    @{targetLst}
-    #获取简图车辆更多菜单index    ${bustid}    &{dropdown_menuDict}[busReport]    -1
+    获取简图车辆更多菜单index    ${bustid}    &{dropdown_menuDict}[busReport]    -1
     sleep    1
     ${elementsXpath}    set variable    xpath=//div[@class='grid-table-body' and @style='width: 1170px; height: 320px; position: relative;']/table/tbody/tr    #车辆路单明细页面
     ${flag}    获取报表明细结果并验证    ${elementsXpath}    @{targetLst}    #验证结果
@@ -79,7 +79,7 @@ Resource          简图调度.txt
     ${flag}    should Contain multiValue    ${recordLst}    ${targetLst}
     [Return]    ${flag}
 
-运营路单补录
+运营路单补录_默认车和线路
     ${departureTime}    Get Mytool Times    hourdelta
     click element    xpath=//span[contains(text(),"运营补录")]    #点击“运营补录”按钮
     sleep    1
@@ -107,7 +107,7 @@ Resource          简图调度.txt
     @{targetL}    create list    ${bus}[internalNo]    ${departuretime}    robot Test    6.80    已完成
     ${flag2}    获取简图下方路单明细并验证结果    ${bus}[bustid]    @{targetL}
     #验证简图-行车记录主副表
-    ${main_targetLst}    create list    ${bus}[internalNo]    未知司机
+    ${main_targetLst}    create list    ${bus}[internalNo]
     click element    xpath=//div[contains(text(),'行车记录')]    #点击简图-行车记录
     ${main_flag}    ${vice_flag}    行车记录_主副表_路单明细并验证结果    ${bus}[internalNo]    ${main_targetLst}    ${targetLst}
     #验证行车记录菜单主副表
@@ -122,3 +122,37 @@ Resource          简图调度.txt
     FOR    ${flag}    IN    @{flagLst}
         Should Be Equal    ${flag}    ${true}    #验证简图下方是否包含此运行中路单
     END
+
+运营路单补录
+    ${departureTime}    Get Mytool Times    hourdelta
+    click element    xpath=//span[contains(text(),"运营补录")]    #点击“运营补录”按钮
+    #选择线路
+    sleep    2
+    click element    xpath=//div[@id='roadidID']/button[@data-toggle='dropdown']    #点击线路编号选择按钮
+    sleep    3
+    click element    xpath=//div[@class='selectRoadInfoGrid']/div/table/tbody/tr/td/div[@class='grid-body']/div[@class='grid-table-body']/table/tbody/tr/td    #勾选第一个线路编号
+    click element    id=selectRoadInfoGridSave    #保存路单编辑
+    #选择车辆
+    sleep    2
+    click element    xpath=//div[@id='bustidID']/button[@data-toggle='dropdown']    #点击车辆编号选择按钮
+    sleep    3
+    ${elements}    get webelements    xpath=//input[@data-role='searchValue']
+    input text    ${elements}[-1]    robot1
+    ${seartch}    get webelements    xpath=//button[@data-role='searchBtn']    #点击查询按钮
+    click element    ${seartch}[-1]
+    sleep    1
+    click element    xpath=//div[@class='selectBusInfoGrid']/div/table/tbody/tr/td/div[@class='grid-body']/div[@class='grid-table-body']/table/tbody/tr/td    #勾选第一个车辆
+    click element    id=selectBusInfoGridSave    #保存路单编辑
+    #选择司机
+    click element    xpath=//div[@id='drivernameID']/button[@data-toggle='dropdown']    #点击司机名称选择按钮
+    sleep    1
+    click element    xpath=//div[@class='selectEmpInfoGrid']/div/table/tbody/tr/td/div[@class='grid-body']/div[@class='grid-table-body']/table/tbody/tr/td    #勾选第一个司机
+    click element    id=selectEmpInfoGridSave    #保存勾选司机
+    input text    xpath=//div[@id='departureTimeID']/input    ${departureTime}    #输入开始时间
+    input text    id=mileageID    8.666    #输入载客公里
+    input text    id=gpsmileageID    6.8    #输入GPS公里
+    input text    id=remarkidID    robot Test    #输入路单备注
+    input text    xpath=//div[@id='changeshiftstimeid']/input    12:00    #输入交接班时间
+    click element    id=save    #保存路单编辑
+    sleep    2
+    [Return]    ${departureTime}

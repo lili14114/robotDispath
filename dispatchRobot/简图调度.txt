@@ -4,6 +4,7 @@ Library           CustomLibrary
 Library           Collections
 Library           RequestsLibrary
 Resource          公共方法.txt
+Variables         setting.py
 
 *** Keywords ***
 打开简图调度
@@ -38,6 +39,12 @@ Resource          公共方法.txt
 
 获取简图车辆更多菜单index
     [Arguments]    ${bustid}    ${dropDownPath}    ${index}
+    [Documentation]    不能直接获取的更多菜单，需要指定获取哪个元素时使用
+    ...    例如：简图车辆更多菜单-“路单”，“司机”
+    ...    busReport=xpath=//a[contains(text(),"路单") and @tabindex='-1']#路单，取最后一个
+    ...    driver=xpath=//a[contains(text(),"司机") and @tabindex='-1']#司机 ，取最后一个
+    ...
+    ...
     #打开简图调度
     #切换简图domain_frame
     ${bustidXPATH}    Catenate    SEPARATOR=    css=div[id='    ${bustid}    ']>div[class='bus-body']
@@ -103,7 +110,7 @@ Resource          公共方法.txt
     获取简图车辆更多菜单    @{varLst}[0]    &{dropdown_menuDict}[goToSite]
     ${flag}    set variable    @{varLst}[1]
     run keyword if    '${flag}'=='default'    click element    xpath=//button[@id='save']
-    ...    ELSE    进左总站    #直接手动进站，对车辆手动“进站”保存    #此时frame停留在domain_frame中
+    ...    ELSE    车辆进左总站    #直接手动进站，对车辆手动“进站”保存    #此时frame停留在domain_frame中
 
 获取”待执行“路单更多菜单
     [Arguments]    ${menu_css}
@@ -134,9 +141,9 @@ Resource          公共方法.txt
         ${caronline}    Get Caronline Json    ${hostcode}
         ${dispathJson}    Get Dispath Json    ${hostcode}    6
     #车辆上线
-    #    ${data}    post request    api    /webservice/rest/caronline    data=${caronline}
-    #    ${result}    To Json    ${data.content}
-    #    should contain    ${result}[error_text]    上报成功
+        #    ${data}    post request    api    /webservice/rest/caronline    data=${caronline}
+        #    ${result}    To Json    ${data.content}
+        #    should contain    ${result}[error_text]    上报成功
     #车辆上传指令
         ${data2}    post request    api    /webservice/rest/dispatch    data=${dispathJson}
         ${result2}    To Json    ${data2.content}
@@ -149,9 +156,19 @@ Resource          公共方法.txt
         sleep    3
     END
 
-进左总站
+车辆进左总站
     click element    xpath=//div[@id='phrase_templateID']/button[@class='btn btn-default dropdown-toggle']
     ${elements}    Get WebElements    xpath=//ul[@role='menu']/li[@class='selected']/a
     click element    ${elements}[1]    #点击第二个站点
     sleep    1
     click element    xpath=//button[@id='save']    #对车辆手动“进站”保存    #此时frame停留在domain_frame中
+
+回到简图调度
+    [Documentation]    已在其他页面需要回到简图调度页面
+    ...    例如：在行车记录页面操作后，要回到简图调度页面
+    unselect frame    #回到简图调度页面
+    click element    &{menuDict}[diagram_disapth]    #【简图调度】
+    sleep    3
+    click element    ${roadXpath_diagram}    #37路100
+    sleep    5
+    切换简图domain_frame

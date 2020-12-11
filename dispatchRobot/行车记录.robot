@@ -63,42 +63,37 @@ Variables         setting.py    183_8074
     #打开简图调度
     #切换简图domain_frame
     获取简图车辆更多菜单index    ${bus_1}[bustid]    &{dropdown_menuDict}[busReport]    -1    #进入简图-车辆-路单页面
-    ${departureTime}    运营路单补录
+    ${departureTime}    运营路单补录_默认车和线路
     所有行车记录页面验证结果    ${departureTime}    ${bus_1}
 
 3、简图-行车记录-路单补录
-    打开简图调度
-    切换简图domain_frame
-    进入简图-行车记录
+    回到简图调度
+    sleep    7
     ${departureTime}    运营路单补录
+    回到简图调度    #回到简图调度页面
     所有行车记录页面验证结果    ${departureTime}    ${bus_1}
 
-test
-    [Setup]    登陆
-    打开简图调度
-    切换简图domain_frame
-    进入简图-行车记录
-    sleep    5
+4、简图-快速补录
+    回到简图调度
+    获取简图车辆更多菜单    ${bus_1}[bustid]    &{dropdown_menuDict}[quick_input]
     ${departureTime}    Get Mytool Times    hourdelta
-    click element    xpath=//span[contains(text(),"运营补录")]    #点击“运营补录”按钮
-    #选择车辆
-    sleep    2
-    click element    xpath=//div[@id='bustidID']/button[@data-toggle='dropdown']    #点击车辆编号选择按钮
-    sleep    3
-    input text    xpath=//input[@data-role='searchValue'][-1]    robot2
-    click element    xpath=//button[@data-role='searchBtn'][-1]    #点击查询按钮
-    sleep    1
-    click element    xpath=//div[@class='selectBusInfoGrid']/div/table/tbody/tr/td/div[@class='grid-body']/div[@class='grid-table-body']/table/tbody/tr/td    #勾选第一个车辆
-    click element    id=selectBusInfoGridSave    #保存路单编辑
+    ${departuretime_new}    Catenate    SEPARATOR=    ${departureTime}    :00
+    #选择发车站点
+    click element    xpath=//div[@id='siteidbID']/button/span
+    click element    xpath=//a[contains(text(),"四中新校区")]
     #选择司机
     click element    xpath=//div[@id='drivernameID']/button[@data-toggle='dropdown']    #点击司机名称选择按钮
     sleep    1
     click element    xpath=//div[@class='selectEmpInfoGrid']/div/table/tbody/tr/td/div[@class='grid-body']/div[@class='grid-table-body']/table/tbody/tr/td    #勾选第一个司机
     click element    id=selectEmpInfoGridSave    #保存勾选司机
-    input text    xpath=//div[@id='departureTimeID']/input    ${departureTime}    #输入开始时间
-    input text    id=mileageID    8.666    #输入载客公里
-    input text    id=gpsmileageID    6.8    #输入GPS公里
-    input text    id=remarkidID    robot Test    #输入路单备注
-    input text    xpath=//div[@id='changeshiftstimeid']/input    12:00    #输入交接班时间
+    input text    id=testSpanId    5    #输入上下行间隔
+    input text    xpath=//input[@onkeyup='InOutTime(this)']    ${departuretime_new}    #输入发车时间
+    input text    id=upMileageID    8.666    #输入上行载客公里
+    input text    id=downmileageID    5.66    #输入下行载客公里
+    input text    id=upgpsmileageID    6.8    #上行GPS公里
+    input text    id=downgpsmileageID    7    #下行GPS公里
+    input text    id=memoID    robotTest    #备注
+    input text    xpath=//input[@data-toggle="itemShow"]    robot edit    #补录和修改原因
     click element    id=save    #保存路单编辑
     sleep    2
+    所有行车记录页面验证结果    ${departureTime}    ${bus_1}
