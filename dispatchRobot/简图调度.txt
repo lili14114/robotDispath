@@ -44,7 +44,6 @@ Variables         setting.py
     ...    busReport=xpath=//a[contains(text(),"路单") and @tabindex='-1']#路单，取最后一个
     ...    driver=xpath=//a[contains(text(),"司机") and @tabindex='-1']#司机 ，取最后一个
     ...
-    ...
     #打开简图调度
     #切换简图domain_frame
     ${bustidXPATH}    Catenate    SEPARATOR=    css=div[id='    ${bustid}    ']>div[class='bus-body']
@@ -55,7 +54,7 @@ Variables         setting.py
     sleep    2
     unselect Frame
     Select Frame    ${iframe_tab}    #切回主frame
-    sleep    1
+    sleep    2
     ${elements}    Get WebElements    ${dropDownPath}    #获取简图-车辆-路单按钮&{dropdown_menuDict}[busReport]
     click element    ${elements}[${index}]    #选择点击简图上的路单(index=-1)
     sleep    1

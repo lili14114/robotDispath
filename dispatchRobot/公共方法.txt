@@ -72,5 +72,5 @@ webservice请求
     END
     log many    @{recordLst}    #输出所有的明细结果
     log many    @{targetLst}    #打印目标值结果
-    ${flag}    should Contain multiValue    ${recordLst}    ${targetLst}
+    ${flag}    should Contain multiValue    ${recordLst}    ${targetLst}    #返回bool值
     [Return]    ${flag}    # 验证结果

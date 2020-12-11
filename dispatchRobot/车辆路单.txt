@@ -11,9 +11,9 @@ Resource          简图调度.txt
 获取简图_车辆_路单明细并验证结果
     [Arguments]    ${bustid}    @{targetLst}
     获取简图车辆更多菜单index    ${bustid}    &{dropdown_menuDict}[busReport]    -1
-    sleep    1
+    sleep    3
     ${elementsXpath}    set variable    xpath=//div[@class='grid-table-body' and @style='width: 1170px; height: 320px; position: relative;']/table/tbody/tr    #车辆路单明细页面
-    ${flag}    获取报表明细结果并验证    ${elementsXpath}    @{targetLst}    #验证结果
+    ${flag}    获取报表明细结果并验证    ${elementsXpath}    @{targetLst}    #返回验证结果bool值
     #关闭路单页面
     click element    xpath=//button[contains(text(),"返回")]    #关闭页面
     [Return]    ${flag}
@@ -104,8 +104,9 @@ Resource          简图调度.txt
     #验证简图-车辆-路单
     ${flag1}    获取简图_车辆_路单明细并验证结果    ${bus}[bustid]    @{targetLst}
     #简图下方路单
-    @{targetL}    create list    ${bus}[internalNo]    ${departureTime}    robot Test    6.80    已完成
-    ${flag2}    获取简图下方路单明细并验证结果    ${bus}[bustid]    @{targetL}
+    sleep    5
+    @{targetL}    create list    ${departureTime}    robot Test    6.80    已完成
+    ${flag2}    获取简图下方路单明细并验证结果    @{targetL}    ${bus}[internalNo]
     #验证简图-行车记录主副表
     ${main_targetLst}    create list    ${bus}[internalNo]
     click element    xpath=//div[contains(text(),'行车记录')]    #点击简图-行车记录
@@ -124,6 +125,7 @@ Resource          简图调度.txt
     END
 
 运营路单补录
+    [Arguments]    ${internalNo}
     ${departureTime}    Get Mytool Times    hourdelta
     click element    xpath=//span[contains(text(),"运营补录")]    #点击“运营补录”按钮
     #选择线路
@@ -137,10 +139,10 @@ Resource          简图调度.txt
     click element    xpath=//div[@id='bustidID']/button[@data-toggle='dropdown']    #点击车辆编号选择按钮
     sleep    3
     ${elements}    get webelements    xpath=//input[@data-role='searchValue']
-    input text    ${elements}[-1]    robot1
+    input text    ${elements}[-1]    ${internalNo}
     ${seartch}    get webelements    xpath=//button[@data-role='searchBtn']    #点击查询按钮
     click element    ${seartch}[-1]
-    sleep    1
+    sleep    3
     click element    xpath=//div[@class='selectBusInfoGrid']/div/table/tbody/tr/td/div[@class='grid-body']/div[@class='grid-table-body']/table/tbody/tr/td    #勾选第一个车辆
     click element    id=selectBusInfoGridSave    #保存路单编辑
     #选择司机
