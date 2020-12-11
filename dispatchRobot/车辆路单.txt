@@ -38,7 +38,7 @@ Resource          简图调度.txt
     #打开简图调度
     #切换简图domain_frame
     #click element    xpath=//div[contains(text(),'行车记录')]    #点击简图-行车记录
-    sleep    1
+    sleep    6
     click element    xpath=//span[contains(text(),'更多查询')]    #点击行车记录主表更多查询
     input text    id=internalNo    ${internalNo}
     click element    xpath=//div[@id='busBtnClass']/button[@class='busSaveBtn']    #查询
@@ -104,7 +104,7 @@ Resource          简图调度.txt
     #验证简图-车辆-路单
     ${flag1}    获取简图_车辆_路单明细并验证结果    ${bus}[bustid]    @{targetLst}
     #简图下方路单
-    @{targetL}    create list    ${bus}[internalNo]    ${departuretime}    robot Test    6.80    已完成
+    @{targetL}    create list    ${bus}[internalNo]    ${departureTime}    robot Test    6.80    已完成
     ${flag2}    获取简图下方路单明细并验证结果    ${bus}[bustid]    @{targetL}
     #验证简图-行车记录主副表
     ${main_targetLst}    create list    ${bus}[internalNo]

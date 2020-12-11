@@ -97,3 +97,12 @@ Variables         setting.py    183_8074
     click element    id=save    #保存路单编辑
     sleep    2
     所有行车记录页面验证结果    ${departureTime}    ${bus_1}
+
+5、行车记录-路单补录
+    [Setup]    登陆
+    click element    &{menuDict}[operative_monitor]    #【运营监控】
+    进入行车记录菜单页面
+    sleep    6
+    ${departureTime}    运营路单补录
+    回到简图调度
+    所有行车记录页面验证结果    ${departureTime}    ${bus_1}
