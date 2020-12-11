@@ -41,6 +41,7 @@
 	goToSite= xpath=//a[contains(text(),"进站") and @tabindex='-1']#进站
 	outSite=xpath=//a[contains(text(),"出站") and @tabindex='-1']#出站 
 	driver=xpath=//a[contains(text(),"司机") and @tabindex='-1']#司机 ，取最后一个
+	quick_input=xpath=//a[contains(text(),"快速补录") and @tabindex='-1']#快速补录
 	
 [report_XpathDict]
 	roadRecord_1=css=#road_order_detail_grid1_417768025>div>table>tbody>tr>td>div[class="grid-body"]>div[class="grid-table-body"]>table>tbody>tr  #简图调度下方路单
