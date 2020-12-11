@@ -14,7 +14,7 @@ def getVariables(env='haikouTest'):
             'ip':"http://10.200.9.183:8074",
             'username':"enler",
             'password':'888888',
-            'roadXpath_diagram':'id=mtLocationRunDiagramTree_6_span',   #简图树形菜单线路元素地址，例如：简图树形菜单37路100
+            'roadXpath_diagram':'id=mtLocationRunDiagramTree_2_span',   #简图树形菜单线路元素地址，例如：简图树形菜单37路100
             'subid':'200612134458980',
             'roadid':'417768025',
             'belongto':'100003',
