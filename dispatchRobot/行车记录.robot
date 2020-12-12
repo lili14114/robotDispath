@@ -121,10 +121,11 @@ Variables         setting.py
     回到简图调度
     所有行车记录页面验证结果    ${departureTime}    ${bus_5}
 
-test
+6、行车记录主表与副表详情数值验证
     [Documentation]    用例结束后，浏览器所处“行车记录菜单”
     ...
     ...    待加上判断司机
+    [Setup]    登陆
     ${t}    get_Mytool_times    datedelta    24
     @{vice_resultLst}    create list
     click element    &{menuDict}[operative_monitor]    #【运营监控】
@@ -140,14 +141,17 @@ test
     sleep    1
     @{vice_xpath}    get webelements    xpath=//div[@class="rideInfo secondaryTable"]/div/table/tbody/tr/td/div[@class="grid-body"]/div[@class="grid-table-body"]/table/tbody/tr
     FOR    ${XPATH}    IN    @{vice_xpath}
-    ${vice_result}    get text    ${XPATH}
-    append to list    ${vice_resultLst}    ${vice_result}
+        ${vice_result}    get text    ${XPATH}
+        append to list    ${vice_resultLst}    ${vice_result}
     END
     log many    ${vice_resultLst}
-    ${flag1}    main_vice_resultValidation     ${main_result}    ${vice_resultLst}    #判断车牌号和车辆编号
+    ${flag1}    main_vice_BusValidation    ${main_result}    ${vice_resultLst}    #判断车牌号和车辆编号
     #判断司机
-    ${True}    Convert To Boolean    True
-    Should Be Equal    ${flag}    ${True}
+    ${flag2}    main_vice_DriverValidation    ${main_result}    ${vice_resultLst}    #司机及趟次聚合是否正确
+    #判断主表趟次聚合值
+    ${flag3}    main_vice_TripNoValidation    ${main_result}    ${vice_resultLst}    #主表趟次聚合是否正确
+    #${True}    Convert To Boolean    True
+    #Should Be Equal    ${flag1}    ${True}
 
 test2
     log    ${ip}
