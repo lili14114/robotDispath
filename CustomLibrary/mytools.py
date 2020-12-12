@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import re
 
 """
 test robotframe customLibary
@@ -31,8 +32,11 @@ class MyTools(object):
 
     def get_Mytool_times(self,flag,hours=1):
         """ 支持将当前系统时间进行特定的转换
+        如果flag=%Y-%m-%d %H:%M:%S,则生成当前系统%H:%M格式，例如：2020-12-01 11:35:06
         如果flag=%H:%M，则生成当前系统%H:%M格式，例如：11:37
         如果flag=timedelta,hours默认值为1，则生成前hours个小时的时间，返回格式为'%Y-%m-%d %H:%M:%S
+        如果flag=datedelta,hours默认值为1，则生成前hours个小时的时间，返回格式为'%Y-%m-%d
+        如果flag=hourdelta，hours默认值为1，则生成前hours个小时的时间，返回格式为%H:%M
 
          Examples get_Mytool_times code.
           | `get_Mytool_times` | %H:%M | # return  11:37|
@@ -40,6 +44,7 @@ class MyTools(object):
           | `get_Mytool_times` | timedelta | # return  2020-12-01 11:35:06 当前系统时间前一个小时|
           | `get_Mytool_times` | timedelta | 2| # return  2020-12-01 11:35:06 当前系统时间前两个小时|
           | `get_Mytool_times` | hourdelta | # return  11:35 当前系统时间前一个小时
+          | `get_Mytool_times` | datedelta | # return  2020-12-01当前系统时间前一个小时
 
         """
         if '%Y-%m-%d %H:%M:%S' in flag:
@@ -50,6 +55,10 @@ class MyTools(object):
             t = datetime.datetime.now()
             # 默认获取1小时前
             result = (t - datetime.timedelta(hours=hours)).strftime("%Y-%m-%d %H:%M:%S")
+        elif 'datedelta' in flag:
+            t = datetime.datetime.now()
+            # 默认获取1小时前
+            result = (t - datetime.timedelta(hours=hours)).strftime("%Y-%m-%d")
         elif 'hourdelta' in flag:
             #默认获取1小时前
             t = datetime.datetime.now()
@@ -304,15 +313,25 @@ class MyTools(object):
             if count!=length:
                 flag=False
         return flag
+    def main_vice_resultValidation(self,goalstr,resultLst):
+        main_result = goalstr.split(' ')
+        flag = True
+        if len(resultLst) == 0:
+            flag = False
+        for j in range(2,4):
+            for i in range(len(resultLst)):
+                if  main_result[j] not in resultLst[i]:
+                    flag = False
+                    break
+        return  flag
 
 
 
 if __name__ == '__main__':
     mytool=MyTools()
-    stringLst = ['3 待执行 robot5 14:52 15:02 四中新校区 霞山总站 0 0 上行 运营路单 日班|营运' ,'2 已完成 有效 robot5 10:49 10:57 晚8分钟 10:59 早2分钟 2 10:57 0.00 四中新校区 霞山总站 23.47 0.00 上行 2 1.00 运营路单 enler 日班|营运 有效 系统 2020-12-09 10:57:21',' 1 已完成 有效']
-    stringLst=[]
-    print(len(stringLst))
-    targetLst = ['robot5','已完成']
-    print(mytool.should_Contain_multiValue(stringLst,targetLst))
+    main_result='37路33 enler f39756 f39756 未知司机(16.0) 16.0 432.00 116.16 -315.84 0.00 0.00 0.00 0.00 0.00 116.16 0.00 118.58'
+    main_result = main_result.split(' ')
+    driver=main_result[4]
 
+    pattern=re.compile(r'(\f)')
 
