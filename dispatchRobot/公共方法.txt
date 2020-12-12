@@ -5,6 +5,7 @@ Library           RequestsLibrary
 Library           CustomLibrary
 Library           Collections
 Resource          简图调度.txt
+Variables         setting.py
 
 *** Variables ***
 &{ImplementtingRecord_menuDict}    exchangeCar=#menu_arr1_exchangeCar>a    insertCar=#menu_arr1_insertCar>a    finishRoadPlan=#menu_arr1_finishRoadPlan>a    replaceCar=#menu_arr1_replaceCar>a    replaceDriver=#menu_arr1_replaceDriver>a    changePlantime=#menu_arr1_changePlantime>a    supplementaryDriver=#menu_arr1_supplementaryDriver>a    addPlan=#menu_arr1_addPlan>a    abandonPlan=#menu_arr1_abandonPlan>a    deletePlan=#menu_arr1_deletePlan>a    addMemo=#menu_arr1_addMemo>a    trackplayback=#menu_arr1_trackplayback>a    # exchangeCar对调车位,insertCar车辆插队,finishRoadPlan完成路单,replaceCar替换车辆,replaceDriver替换司机,changePlantime更改计划时间,supplementaryDriver补录司机,addPlan增加计划,abandonPlan计划烂班,deletePlan删除计划,deletePlan删除计划,addMemo修改备注,trackplayback轨迹回放

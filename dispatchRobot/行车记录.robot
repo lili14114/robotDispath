@@ -8,7 +8,7 @@ Library           RequestsLibrary
 Library           CustomLibrary
 Resource          通知报表.txt
 Resource          车辆路单.txt
-Variables         setting.py    183_8074
+Variables         setting.py
 
 *** Test Cases ***
 1、车辆手动进出站，验证路单状态
@@ -120,3 +120,35 @@ Variables         setting.py    183_8074
     ${departureTime}    运营路单补录    ${bus_5}[internalNo]
     回到简图调度
     所有行车记录页面验证结果    ${departureTime}    ${bus_5}
+
+test
+    [Documentation]    用例结束后，浏览器所处“行车记录菜单”
+    ...
+    ...    待加上判断司机
+    ${t}    get_Mytool_times    datedelta    24
+    @{vice_resultLst}    create list
+    click element    &{menuDict}[operative_monitor]    #【运营监控】
+    click element    xpath=//li[@data-mark='menuMark228']    #【行车记录】
+    sleep    3
+    input text    id=begindateID    ${t}    #检索时间YYYY-MM-DD
+    click element    id=search    #查询
+    sleep    3
+    #获取主表结果
+    ${main_result}    get text    xpath=//table[@class="table table-responsive table-bordered table-hover table-striped"]/tbody/tr    #获取主表第一条数据,str类型
+    #获取副表结果
+    Double Click Element    xpath=//table[@class="table table-responsive table-bordered table-hover table-striped"]/tbody/tr    #双击主表第一条记录
+    sleep    1
+    @{vice_xpath}    get webelements    xpath=//div[@class="rideInfo secondaryTable"]/div/table/tbody/tr/td/div[@class="grid-body"]/div[@class="grid-table-body"]/table/tbody/tr
+    FOR    ${XPATH}    IN    @{vice_xpath}
+    ${vice_result}    get text    ${XPATH}
+    append to list    ${vice_resultLst}    ${vice_result}
+    END
+    log many    ${vice_resultLst}
+    ${flag1}    main_vice_resultValidation     ${main_result}    ${vice_resultLst}    #判断车牌号和车辆编号
+    #判断司机
+    ${True}    Convert To Boolean    True
+    Should Be Equal    ${flag}    ${True}
+
+test2
+    log    ${ip}
+    log    ${bus_1}[internalNo]

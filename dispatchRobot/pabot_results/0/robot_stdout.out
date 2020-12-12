@@ -1,0 +1,26 @@
+==============================================================================
+主流程                                                                        
+==============================================================================
+1、三台车手动进站获取排班 :: 用例结束后，浏览器回到简图调度主frame... | FAIL |
+Element with locator 'xpath=//button[@id='save']' not found.
+------------------------------------------------------------------------------
+2、对调车位和车辆插队 :: 调试车辆插队和车辆对调功能                   | FAIL |
+Element with locator 'id=iframe_tab_BsBusdiagarm-Maplist-200415180706666' not found.
+------------------------------------------------------------------------------
+3、申请非运营指令同意后排班在简图和字轨表和待执行记录是否会取消 ::... | FAIL |
+Element with locator 'id=iframe_tab_BsBusdiagarm-Maplist-200415180706666' not found.
+------------------------------------------------------------------------------
+4、计划调整正确更改排班时间 :: 1.robot4车进站获取到排班时间 2.进入... | FAIL |
+List '@{varLst}' has no item in index 1.
+------------------------------------------------------------------------------
+5、司机刷卡获取排班时间通知 :: 司机刷卡获取排班通知                   | FAIL |
+ProxyError: HTTPConnectionPool(host='10.200.2.236', port=3120): Max retries exceeded with url: http://139.9.1.186:8089/webservice/rest/dispatch (Caused by ProxyError('Cannot connect to proxy.', NewConnectionError('<urllib3.connection.HTTPConnection object at 0x00000271D6452B70>: Failed to establish a new connection: [WinError 10051] 向一个无法连接的网络尝试了一个套接字操作。')))
+------------------------------------------------------------------------------
+6、获取的排班时间能否下发到主机 :: 1、车辆上传GPS进总站，获取到排...  | FAIL |
+Element with locator 'xpath=//a[@href='#menuMark486']' not found.
+------------------------------------------------------------------------------
+主流程                                                                | FAIL |
+6 critical tests, 0 passed, 6 failed
+6 tests total, 0 passed, 6 failed
+==============================================================================
+Output:  D:\Study\robotframework\testProject\dispatchRobot\pabot_results\0\output.xml

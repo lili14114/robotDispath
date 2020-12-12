@@ -7,11 +7,11 @@ Resource          简图调度.txt
 Library           RequestsLibrary
 Library           CustomLibrary
 Resource          通知报表.txt
-Variables         setting.py    186_8089
 
 *** Test Cases ***
 1、三台车手动进站获取排班
-    [Documentation]    测试步骤
+    [Documentation]    用例结束后，浏览器回到简图调度主frame
+    ...    测试步骤
     ...    1.总站已有真实的主机车辆获取排班时间，第一、二、三辆车在简图上方，手动进站
     ...    2.观察真实的主机车辆获取的排班时间且是否符合发车间隔的间隔时间
     ...

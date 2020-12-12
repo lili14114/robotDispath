@@ -8,7 +8,7 @@
 格式化代码 : Ctrl + Alt + L
 运行代码 : Ctrl + Shift + F10
 """
-def getVariables(env='haikouTest'):
+def getVariables(env='183_8074'):
     if env=='183_8074':
         DICT__variables={
             'ip':"http://10.200.9.183:8074",
@@ -80,7 +80,40 @@ def getVariables(env='haikouTest'):
     # globalvars = {'test1': '3456', 'test2': '6'}
     # DICT__variables['globalvars'] = globalvars  # RF中取值用${globalvars['userID']}
     else:
-        DICT__variables={'error':"读取失败"}
+        DICT__variables = {
+            'ip': "www.baidu.com",
+            'username': "huang",
+            'password': '888888',
+            'roadXpath_diagram': 'id=mtLocationRunDiagramTree_2_span',  # 简图树形菜单线路元素地址，例如：简图树形菜单37路100
+            'subid': '191104094314987',
+            'roadid': '200415180706666',
+            'belongto': '100009',
+            'iframe_tab': 'id=iframe_tab_BsBusdiagarm-Maplist-200415180706666',  # 章丘公交测试环境8089，简图101路主frame
+            'iframe_line': 'css=#line_200415180706666',  # 简图101路副frame
+            'bus_1': {
+                'internalNo': 'weiyan',
+                'bustid': '201208150449951',
+                'hostcode': 'robot1'
+            },
+
+            'bus_2': {
+                'internalNo': 'robot2',
+                'hostcode': 'robot2',
+                'bustid': '201208150458447'},
+            'bus_3': {
+                'internalNo': 'robot3',
+                'hostcode': 'robot3',
+                'bustid': '201208150505600'},
+            'bus_4': {
+                'internalNo': 'robot4',
+                'hostcode': 'robot4',
+                'bustid': '201208150513188'},
+            'bus_5': {
+                'internalNo': 'robot5',
+                'hostcode': 'robot5',
+                'bustid': '201208150523825'}
+
+        }
     return DICT__variables
 if __name__ == '__main__':
    print( type(getVariables()))
