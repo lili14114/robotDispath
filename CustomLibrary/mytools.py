@@ -313,25 +313,101 @@ class MyTools(object):
             if count!=length:
                 flag=False
         return flag
-    def main_vice_resultValidation(self,goalstr,resultLst):
-        main_result = goalstr.split(' ')
+    def main_vice_BusValidation(self,main_record,vice_recordLst):
+        '''
+        验证行车记录主表车牌号和车辆编号是否与副表明细数据一一对应。
+       :param :
+       main_record--> 主表的一条数据
+       vice_recordLst --> 副表的全部记录，list列表
+       :return: bool
+        Examples get_time_difference code.
+       | `main_vice_BusValidation` |  ${main_record}|  ${vice_recordLst} |  # return bool |
+       '''
+        main_record = main_record.split(' ')
         flag = True
-        if len(resultLst) == 0:
+        if len(vice_recordLst) == 0:
             flag = False
         for j in range(2,4):
-            for i in range(len(resultLst)):
-                if  main_result[j] not in resultLst[i]:
+            for i in range(len(vice_recordLst)):
+                if  main_record[j] not in vice_recordLst[i]:
                     flag = False
                     break
         return  flag
+    def main_vice_DriverValidation(self,main_record,vice_recordLst):
+        '''
+        验证行车记录主表司机和司机趟次是否与副表明细数据一一对应。
+        :param main_record: 主表的一条数据
+        :param vice_recordLst: 副表的全部记录，list列表
+        :return:  | `main_vice_BusValidation` |  ${main_record}|  ${vice_recordLst} |  # return bool |
+        '''
+
+        '''1、通过正则表达式抽取司机关键信息'''
+        main_record=main_record.split(' ')
+        driver=main_record[4]
+        pattern_driver=r'\(\d+.\d+\)'
+        driverLst=re.split(pattern_driver,driver)
+
+        pattern_tripNo=r'\d+.\d+'
+        reg=re.compile(pattern_tripNo)
+        tripNoLst=re.findall(reg,driver)
+
+        driver_trip_Lst=zip(driverLst,tripNoLst)
+
+        '''2、对副表的处理办法：
+         第一步：将无效趟次数据从列表中去掉，只保留有效的数据。 
+         第二步:针对单个司机和多个司机进行分类处理
+        '''
+        flag = True
+        unKownDriverCount=0  #未知司机的初始数量
+        length = len(vice_recordLst)
+        if length == 0:
+            return False
+        # for i in range(length):
+        #     if '有效' not in vice_recordLst[i]:
+        #         del vice_recordLst[i]
+        #如果司机只有一位，则可以直接等出结果
+        if len(driverLst)==1:
+            driver_trip_Lst[0][1] != len(vice_recordLst)
+            return False
+        else:
+            #多位司机的处理方法
+            for driver, tripNo in driver_trip_Lst:
+                tripNo = float(tripNo)
+                if driver != '未知司机':
+                    '''
+                    1、：按照司机姓名，将相同姓名的司机放至一个列表   
+                    2、：将第二步生成的列表转换一个字符串 
+                    3、：用str.count方法来匹配司机对应的数量的路单数
+                    4、处理完已知司机，将已处理的列表进行删除,即么剩下的就是未知司机的路单数了。
+                    '''
+                    newLst = []
+                    vice_Length=len(vice_recordLst)
+                    for j in range(vice_Length-1,0,-1):
+                        if driver in vice_recordLst[j]:
+                            newLst.append(vice_recordLst[j])
+                            vice_recordLst.pop(j)
+                            # del vice_recordLst[j]
+                else:
+                    unKownDriverCount = int(tripNo)
+            #否则剩下的就是未知司机的单数
+            if unKownDriverCount!=len(vice_recordLst):
+                return False
+        return flag
+
+
 
 
 
 if __name__ == '__main__':
     mytool=MyTools()
-    main_result='37路33 enler f39756 f39756 未知司机(16.0) 16.0 432.00 116.16 -315.84 0.00 0.00 0.00 0.00 0.00 116.16 0.00 118.58'
-    main_result = main_result.split(' ')
-    driver=main_result[4]
+    main_record='37路33 enler f39756 f39756 李四(1.0)未知司机(13.0)张三(2.0) 16.0 432.00 116.16 -315.84 0.00 0.00 0.00 0.00 0.00 116.16 0.00 118.58'
+    vice_recordLst=['f39756\n自动 系统 2020-12-12 运营路单 16 1.00 已完成 有效 上行 02:55:03 四中新校区 霞山总站 2020-12-12 2020-12-12 02:55:03 晚54分钟 03:49:51 54.80 7.90 27.00 日班|营运 2020-12-12 03:50:51 线路完整', 'f39756\n自动 系统 2020-12-12 运营路单 李四 15 1.00 已完成 有效 下行 02:17:36 霞山总站 四中新校区 2020-12-12 2020-12-12 02:17:36 晚34分钟 02:52:18 34.70 6.62 27.00 日班|营运 2020-12-12 02:57:03 线路完整', 'f39756\n自动 系统 2020-12-12 运营路单 14 1.00 已完成 有效 上行 01:15:58 四中新校区 霞山总站 2020-12-12 2020-12-12 01:15:58 晚54分钟 02:10:46 54.80 7.90 27.00 日班|营运 2020-12-12 02:12:37 线路完整', 'f39756\n自动 系统 2020-12-12 运营路单 13 1.00 已完成 有效 下行 00:40:23 霞山总站 四中新校区 2020-12-12 2020-12-12 00:40:23 晚32分钟 01:13:13 32.83 6.62 27.00 日班|营运 2020-12-12 01:17:44 线路完整', 'f39756\n自动 系统 2020-12-11 运营路单 12 1.00 已完成 有效 上行 23:38:45 四中新校区 霞山总站 2020-12-12 2020-12-12 00:23:45 晚9分钟 00:33:33 54.80 7.90 27.00 日班|营运 2020-12-12 00:34:22 线路完整', 'f39756\n自动 系统 2020-12-11 运营路单 11 1.00 已完成 有效 下行 23:01:17 霞山总站 四中新校区 2020-12-11 2020-12-11 23:36:17 准点 23:36:00 34.72 6.62 27.00 日班|营运 2020-12-11 23:36:47 线路完整', 'f39756\n自动 系统 2020-12-11 运营路单 10 1.00 已完成 有效 上行 21:59:39 四中新校区 霞山总站 2020-12-11 2020-12-11 22:44:39 晚9分钟 22:54:27 54.80 7.90 27.00 日班|营运 2020-12-11 22:55:54 线路完整', 'f39756\n自动 系统 2020-12-11 运营路单 9 1.00 已完成 有效 下行 21:24:09 霞山总站 四中新校区 2020-12-11 2020-12-11 21:59:09 早2分钟 21:56:54 32.75 6.62 27.00 日班|营运 2020-12-11 21:58:31 线路完整', 'f39756\n自动 系统 2020-12-11 运营路单 8 1.00 已完成 有效 上行 20:22:26 四中新校区 霞山总站 2020-12-11 2020-12-11 21:07:26 晚9分钟 21:17:14 54.80 7.90 27.00 日班|营运 2020-12-11 21:17:33 线路完整', 'f39756\n自动 系统 2020-12-11 运营路单 7 1.00 已完成 有效 下行 19:44:58 霞山总站 四中新校区 2020-12-11 2020-12-11 20:19:58 准点 20:19:41 34.72 6.62 27.00 日班|营运 2020-12-11 20:20:09 线路完整', 'f39756\n自动 系统 2020-12-11 运营路单 6 1.00 已完成 有效 上行 18:43:20 四中新校区 霞山总站 2020-12-11 2020-12-11 19:28:20 晚9分钟 19:38:08 54.80 7.90 27.00 日班|营运 2020-12-11 19:39:16 线路完整', 'f39756\n自动 系统 2020-12-11 运营路单 5 1.00 已完成 有效 下行 18:07:45 霞山总站 四中新校区 2020-12-11 2020-12-11 18:42:45 早2分钟 18:40:35 32.83 6.62 27.00 日班|营运 2020-12-11 18:41:52 线路完整', 'f39756\n自动 系统 2020-12-11 运营路单 4 1.00 已完成 有效 上行 17:06:07 四中新校区 霞山总站 2020-12-11 2020-12-11 17:51:07 晚7分钟 17:59:02 52.92 7.90 27.00 日班|营运 2020-12-11 18:00:58 线路完整', 'f39756\n自动 系统 2020-12-11 运营路单 3 1.00 已完成 有效 下行 16:28:38 霞山总站 四中新校区 2020-12-11 2020-12-11 17:03:38 准点 17:03:22 34.73 6.62 27.00 日班|营运 2020-12-11 17:03:28 线路完整', 'f39756\n自动 系统 2020-12-11 张三 运营路单 2 1.00 已完成 有效 上行 15:25:00 15:26:24 晚1分钟 四中新校区 霞山总站 2020-12-11 2020-12-11 16:10:00 晚11分钟 16:21:48 55.40 7.90 27.00 日班|营运 2020-12-11 16:22:35 线路完整', 'f39756\n自动 系统 2020-12-11 张三  运营路单 1 1.00 已完成 有效 下行 14:50:00 14:50:49 晚0分钟 霞山总站 四中新校区 2020-12-11 2020-12-11 15:25:00 早1分钟 15:23:39 32.83 6.62 27.00 日班|营运 2020-12-11 15:25:06 线路完整']
+    flag=mytool.main_vice_DriverValidation(main_record,vice_recordLst)
 
-    pattern=re.compile(r'(\f)')
+    print(flag)
+
+
+
+
+
 
