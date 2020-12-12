@@ -125,7 +125,6 @@ Variables         setting.py
     [Documentation]    用例结束后，浏览器所处“行车记录菜单”
     ...
     ...    待加上判断司机
-    [Setup]    登陆
     ${t}    get_Mytool_times    datedelta    24
     @{vice_resultLst}    create list
     click element    &{menuDict}[operative_monitor]    #【运营监控】
@@ -150,8 +149,11 @@ Variables         setting.py
     ${flag2}    main_vice_DriverValidation    ${main_result}    ${vice_resultLst}    #司机及趟次聚合是否正确
     #判断主表趟次聚合值
     ${flag3}    main_vice_TripNoValidation    ${main_result}    ${vice_resultLst}    #主表趟次聚合是否正确
-    #${True}    Convert To Boolean    True
-    #Should Be Equal    ${flag1}    ${True}
+    ${true}    Convert To Boolean    True    #转换成bool值
+    @{flagLst}    create list    ${flag1}    ${flag2}    ${flag3}
+    FOR    ${flag}    IN    @{flagLst}
+        Should Be Equal    ${flag}    ${true}    #验证简图下方是否包含此运行中路单
+    END
 
 test2
     log    ${ip}
