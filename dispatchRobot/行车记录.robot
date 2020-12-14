@@ -156,5 +156,13 @@ Variables         setting.py
     END
 
 test2
-    log    ${ip}
+    Open Browser    ${ip}    phantomjs
     log    ${bus_1}[internalNo]
+    sleep    1
+    input text    id=j_username    ${username}
+    input text    id=j_password    ${password}
+    input text    id=jCaptchaCode    111111
+    click element    id=loginBtn
+    sleep    1
+    ${window}    get window titles
+    log    ${window}

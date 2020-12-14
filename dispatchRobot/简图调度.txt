@@ -43,7 +43,6 @@ Variables         setting.py
     ...    例如：简图车辆更多菜单-“路单”，“司机”
     ...    busReport=xpath=//a[contains(text(),"路单") and @tabindex='-1']#路单，取最后一个
     ...    driver=xpath=//a[contains(text(),"司机") and @tabindex='-1']#司机 ，取最后一个
-    ...
     #打开简图调度
     #切换简图domain_frame
     ${bustidXPATH}    Catenate    SEPARATOR=    css=div[id='    ${bustid}    ']>div[class='bus-body']
@@ -65,18 +64,19 @@ Variables         setting.py
     ...
     ...    获取简图调度字轨表中的排班时间
     #以下步骤需进入简图调度domain_frame中操作，即
-    #Select Frame    &{frame}[domain_frame]
+    #Select Frame    ${iframe_tab}
     click element    xpath=//div[contains(text(),'排班间隔')]    #简图上方“排班间隔”
     sleep    2
     ${plantimeCount}    get element count    xpath=//label[@style='color:#4c4c4c;' or @style='color:#00BA00;']    #返回元素的个数，即字轨表中有多少个排班时间
-    Set Global Variable    ${plantimeCount}
+    #Set Global Variable    ${plantimeCount}
     @{plantimeElements}    get webelements    xpath=//label[@style='color:#4c4c4c;' or @style='color:#00BA00;']    #返回多个元素.@style='color:#4c4c4c;' 代表已过期时间。@style='color:#00BA00;' 代表未来时间
-    Set Global Variable    @{plantimeElements}
+    #Set Global Variable    @{plantimeElements}
     FOR    ${plan}    IN    @{plantimeElements}
         ${time}    get text    ${plan}
         log    ${time}
     END
     click element    xpath=//button[contains(text(),"返回")]    #关闭字轨表页面
+    [Return]    ${plantimeCount}
 
 三台车手动进站获取排班时间
     [Arguments]    @{bustidLst}
@@ -102,15 +102,6 @@ Variables         setting.py
     @{hostcodeLst}    create List    ${bus_1}[hostcode]    ${bus_2}[hostcode]    ${bus_3}[hostcode]
     车辆停运再恢复运营    @{hostcodeLst}
 
-车辆手动进站
-    [Arguments]    @{varLst}
-    #车辆手动进站
-    #@{varLst}    create list    ${bustid}    ${FLAG}
-    获取简图车辆更多菜单    @{varLst}[0]    &{dropdown_menuDict}[goToSite]
-    ${flag}    set variable    @{varLst}[1]
-    run keyword if    '${flag}'=='default'    click element    xpath=//button[@id='save']
-    ...    ELSE    车辆进左总站    #直接手动进站，对车辆手动“进站”保存    #此时frame停留在domain_frame中
-
 获取”待执行“路单更多菜单
     [Arguments]    ${menu_css}
     #打开简图调度
@@ -132,6 +123,8 @@ Variables         setting.py
         unselect frame
         Append to list    ${plantimeList}    ${plantime}    #将三台车的排班时间装入到LST当中，用于后续的结果验证
     END
+    log many    @{plantimeList}
+    log many    @{bustidLst}
     [Return]    @{plantimeList}
 
 车辆停运再恢复运营
@@ -155,10 +148,10 @@ Variables         setting.py
         sleep    3
     END
 
-车辆进左总站
-    click element    xpath=//div[@id='phrase_templateID']/button[@class='btn btn-default dropdown-toggle']
-    ${elements}    Get WebElements    xpath=//ul[@role='menu']/li[@class='selected']/a
-    click element    ${elements}[1]    #点击第二个站点
+车辆手动进站
+    #click element    xpath=//div[@id='phrase_templateID']/button[@class='btn btn-default dropdown-toggle']
+    #${elements}    Get WebElements    xpath=//ul[@role='menu']/li[@class='selected']/a
+    #click element    ${elements}[1]    #点击第二个站点
     sleep    1
     click element    xpath=//button[@id='save']    #对车辆手动“进站”保存    #此时frame停留在domain_frame中
 

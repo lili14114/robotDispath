@@ -22,20 +22,24 @@ Resource          通知报表.txt
     三台车手动进站获取排班时间    @{bustidLst}
 
 2、对调车位和车辆插队
-    [Documentation]    调试车辆插队和车辆对调功能
+    [Documentation]    用例执行完毕后，浏览器处于简图top frame
+    ...    调试车辆插队和车辆对调功能
     ...
     ...    1、两台车辆车依次进总站获取排班时间，
     ...    2、在简图下方的待执行路单右击-车辆对调/插队
     ...    3、确认执行车辆对调和车辆插队前后时间对比
     ...
     ...    期望结果：车辆对调和插队后，排班时间正确交换
+    ...
     #打开简图调度
     切换简图domain_frame
     @{bustidLst}    create List    ${bus_3}[bustid]    ${bus_4}[bustid]
-    车辆手动进站    ${bus_4}[bustid]
+    获取简图车辆更多菜单    ${bus_3}[bustid]    &{dropdown_menuDict}[goToSite]
+    click element    xpath=//button[@id='save']    #对车辆手动“进站”保存
     sleep    1
-    车辆手动进站    ${bus_3}[bustid]
-    sleep    2
+    获取简图车辆更多菜单    ${bus_4}[bustid]    &{dropdown_menuDict}[goToSite]
+    click element    xpath=//button[@id='save']    #对车辆手动“进站”保存
+    sleep    1
     #获取A,B待执行排班时间
     Wait Until Element Is Enabled    ${iframe_line}
     Select Frame    ${iframe_line}
@@ -45,7 +49,7 @@ Resource          通知报表.txt
     切换简图domain_frame
     获取”待执行“路单更多菜单    &{ImplementtingRecord_menuDict}[exchangeCar]    #获取“对调车位”菜单
     click element    xpath=//li[@id='menu_arr1_exchangeCar']/ul/li/a    #对调车位
-    sleep    1
+    sleep    5
     #获取A,B待执行排班时间
     Wait Until Element Is Enabled    ${iframe_line}
     Select Frame    ${iframe_line}
@@ -55,7 +59,7 @@ Resource          通知报表.txt
     切换简图domain_frame
     获取”待执行“路单更多菜单    &{ImplementtingRecord_menuDict}[insertCar]    #获取“车辆插队”菜单
     click element    xpath=//li[@id='menu_arr1_insertCar']/ul/li/a    #车辆插队
-    sleep    1
+    sleep    5
     #获取A,B待执行排班时间
     Wait Until Element Is Enabled    ${iframe_line}
     Select Frame    ${iframe_line}
@@ -65,11 +69,11 @@ Resource          通知报表.txt
     @{hostcodeLst}    create List    ${bus_3}[hostcode]    ${bus_4}[hostcode]
     车辆停运再恢复运营    @{hostcodeLst}
     #断言
-    should be equal    @{plantimeList_1}[0]    @{plantimeList_2}[1]    #对调车位后，排班时间对调
-    lists should be equal    @{plantimeList_1}    @{plantimeList_3}    #插队后，排班时间与最初时间相当，也可以用上面的方法来判断
+    Should Be Equal    @{plantimeList_1}[0]    @{plantimeList_2}[1]    #对调车位后，排班时间对调
 
 3、申请非运营指令同意后排班在简图和字轨表和待执行记录是否会取消
-    [Documentation]    申请非运营指令同意后排班在简图和字轨表和待执行记录是否会取消
+    [Documentation]    用例结束后，浏览器停留在简图主frame
+    ...    申请非运营指令同意后排班在简图和字轨表和待执行记录是否会取消
     ...
     ...    1、主机申请非运营指令
     ...    2、确认字轨表和待执行记录是否会取消（验证字轨表和待执行记录的数量是否会减少）
@@ -78,36 +82,46 @@ Resource          通知报表.txt
     ...    路单数量会减少。
     ...    ${BusoperatrecordCount} >${BusoperatrecordCount_new}
     ...    ${plantimeCount}>${plantimeCount_new} $获取简图调度字轨表中的时间
-    @{bustidLst}    create List    ${bus_1}[bustid]    ${bus_2}[bustid]    ${bus_3}[bustid]
+    #打开简图调度
     切换简图domain_frame
-    FOR    ${bustid}    IN    @{bustidLst}
-        车辆手动进站    ${bustid}
+    @{busitdlst}    create List    ${bus_1}[bustid]    ${bus_2}[bustid]    ${bus_3}[bustid]
+    @{hostcodelst}    create List    ${bus_1}[hostcode]    ${bus_2}[hostcode]    ${bus_3}[hostcode]
+    FOR    ${bustid}    IN    @{busitdlst}
+    获取简图车辆更多菜单    ${bustid}    &{dropdown_menuDict}[goToSite]
+    click element    xpath=//button[@id='save']    #对车辆手动“进站”保存
+    sleep    2
     END
     sleep    5
     ${BusoperatrecordCount}    get element count    xpath=//td[contains(text(),"待执行")]    #返回元素的个数，即简图下方待执行路单个数
-    获取简图调度字轨表中的排班时间    #获取到字轨表中排班时间数量${plantimeCount}
+    ${plantimeCount}    获取简图调度字轨表中的排班时间    #获取到字轨表中排班时间数量${plantimeCount}
     #车辆申请停运指令（前提系统已启用自动同意）
-    ${dispathJson}    Get Dispath Json    ${bus_1}[hostcode]    6
+    FOR    ${hostcode}    IN    @{hostcodelst}
+    ${dispathJson}    Get Dispath Json    ${hostcode}    6
     ${data}    post request    api    /webservice/rest/dispatch    data=${dispathJson}
     ${result}    To Json    ${data.content}
     should contain    ${result}[error_text]    上报成功
-    #重新统计简图待执行路单数量
-    sleep    6
-    ${BusoperatrecordCount_new}    get element count    xpath=//td[contains(text(),"待执行")]
     sleep    1
+    END
+    #重新统计简图待执行路单数量
+    sleep    5
+    Wait Until Element Is Enabled    xpath=//td[contains(text(),"待执行")]
+    ${BusoperatrecordCount_new}    get element count    xpath=//td[contains(text(),"待执行")]
     #重新获取字轨表中的排班时间数量
+    Wait Until Element Is Enabled    xpath=//div[contains(text(),'排班间隔')]
     click element    xpath=//div[contains(text(),'排班间隔')]    #简图上方“排班间隔”
     sleep    1
     ${plantimeCount_new}    get element count    xpath=//label[@style='color:#4c4c4c;']    #返回元素的个数，即字轨表中有多少个排班时间
     click element    xpath=//button[contains(text(),"返回")]    #关闭字轨表页面
     #测试完毕后，将车辆恢复到运营状态
-    ${dispathJson}    Get Dispath Json    ${bus_1}[hostcode]    106
+    FOR    ${hostcode}    IN    @{hostcodelst}
+    ${dispathJson}    Get Dispath Json    ${hostcode}    106
     ${data}    post request    api    /webservice/rest/dispatch    data=${dispathJson}
     ${result}    To Json    ${data.content}
     should contain    ${result}[error_text]    上报成功
+    END
     #期望结果判断
-    Should Be True    ${BusoperatrecordCount}>${BusoperatrecordCount_new}
     Should Be True    ${plantimeCount}>${plantimeCount_new}
+    Should Be True    ${BusoperatrecordCount}>${BusoperatrecordCount_new}
 
 4、计划调整正确更改排班时间
     [Documentation]    1.robot4车进站获取到排班时间
@@ -119,9 +133,10 @@ Resource          通知报表.txt
     ...    期望结果：正确获取排班且排班间隔为6. 即${diff}[0]=[6.0,6.0]
     #打开简图调度
     #切换简图domain_frame
-    车辆手动进站    ${bus_4}[bustid]
+    获取简图车辆更多菜单    ${bus_4}[bustid]    &{dropdown_menuDict}[goToSite]
+    click element    xpath=//button[@id='save']    #对车辆手动“进站”保存
     ${plan_diff}    set variable    6
-    #切换简图domain_frame
+    切换简图domain_frame
     获取简图车辆更多菜单    ${bus_4}[bustid]    &{dropdown_menuDict}[adjust_plantime]
     ${plantime}    Get Mytool Times    %H:%M    #生成当前系统时间
     input text    xpath=//input[@id='adjusttimeID']    ${plantime}    #输入当前系统时间
@@ -160,7 +175,7 @@ Resource          通知报表.txt
     sleep    1
     click element    xpath=//a[contains(text(),"通知公告")]    #选择“通知公告”
     sleep    5
-    click element    xpath=//span[contains(text(),"37路100")]    #【树形菜单选择37路100】
+    click element    xpath=//span[contains(text(),"31路100")]    #【树形菜单选择37路100】
     click element    xpath=//button[@id='notice_search']    #查询
     sleep    10
     ${content}    get text    xpath=//*[@class='table-responsive']/table/tbody/tr/td/div[2]/div[2]/table/tbody/tr    #通知报表中通知内容中含有“已完成“或”系统暂无此卡信息“
@@ -176,7 +191,7 @@ Resource          通知报表.txt
     sleep    1
     click element    xpath=//a[contains(text(),"单发排班")]    #选择“单发排班”
     sleep    6
-    click element    xpath=//span[contains(text(),"37路100")]    #【树形菜单选择37路100】
+    click element    xpath=//span[contains(text(),"31路100")]    #【树形菜单选择37路100】
     click element    xpath=//button[@id='notice_search']    #查询
     sleep    3
     click element    xpath=//tr[@data-index='0']    #通知报表有排班时间通知
