@@ -155,6 +155,3 @@ Variables         setting.py
     FOR    ${flag}    IN    @{flagLst}
         Should Be Equal    ${flag}    ${true}    #验证简图下方是否包含此运行中路单
     END
-
-test2
-    log    ${roadid}
