@@ -77,6 +77,27 @@ wait Rightclick
     Set Focus To Element    ${element locator}
     Wait Until Keyword Succeeds    ${retry times}    5s    Right Click Element    ${element locator}    #尝试点击元素，成功继续，失败5秒后重试，3次失败后本行失败
 
+wait Doubleclick
+    [Arguments]    ${element locator}
+    [Documentation]    果看到某个按钮没有加载出来，或者点击无反应，我们会稍等下再点点看。
+    ...
+    ...    \ \ \ \ \ 默认情况下，自动化脚本如果点击失败，直接就会报错，然后本条自动化直接失败。这个是造成自动化稳定性的罪魁祸首。
+    ...
+    ...    \ \ \ 使用这个关键字，可以在失败的情况下重试。
+    ...
+    ...    \ 使用方法如下：
+    ...
+    ...    Wait Until Keyword Succeeds \ \ \ 3x \ \ \ 5s \ \ \ click element \ \ \ css=#123
+    ...
+    ...    其中，3x代表重试次数，5s代表每次重试间隔时间，后面就是关键字和其参数了，这里是点击ID为123的元素。
+    ...
+    ...    这样，就做到了如果点击ID为123的元素，如果成功，继续往下走；如果失败，隔5秒后重新点击试试。成功了继续，失败了再来，直到三次都失败为止。
+    #这里使用了上面已经建立好的wait element用户自定义关键字
+    wait element    ${element locator}
+    #使用focus可以聚焦元素
+    Set Focus To Element    ${element locator}
+    Wait Until Keyword Succeeds    ${retry times}    5s    Double Click Element    ${element locator}    #尝试点击元素，成功继续，失败5秒后重试，3次失败后本行失败
+
 wait input
     [Arguments]    ${element locator}    ${input text}
     [Documentation]    重试机制

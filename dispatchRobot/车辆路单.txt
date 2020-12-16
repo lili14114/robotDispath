@@ -128,7 +128,7 @@ Resource          简图调度.txt
 运营路单补录
     [Arguments]    ${internalNo}
     ${departureTime}    Get Mytool Times    hourdelta
-    click element    xpath=//span[contains(text(),"运营补录")]    #点击“运营补录”按钮
+    click element    xpath=//span[contains(text(),"行车记录")]    #点击“运营补录”按钮
     #选择线路
     sleep    2
     click element    xpath=//div[@id='roadidID']/button[@data-toggle='dropdown']    #点击线路编号选择按钮

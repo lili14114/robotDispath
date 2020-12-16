@@ -47,7 +47,7 @@
 	roadRecord_1=css=#road_order_detail_grid1_417768025>div>table>tbody>tr>td>div[class='grid-body']>div[class='grid-table-body']>table>tbody>tr  #简图调度下方路单
 	roadRecord_2=xpath=//div[@class='grid-table-body' and @style='width: 1170px; height: 320px; position: relative;']/table/tbody/tr    #简图-车辆-路单
 [TestCase]
-    create bsRecord_bsBusdiagrame_bus #简图-车辆路单-运营路单补录
-	
+    create bsRecord_bsBusdiagrame_bus #简图-车辆-路单-运营路单补录
+	create bsRecord_bsBusdiagrame_quickAdd  #简图-车辆-快速补录
 
 
