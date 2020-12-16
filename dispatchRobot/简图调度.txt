@@ -9,8 +9,11 @@ Variables         setting.py
 *** Keywords ***
 打开简图调度
     select window    ${window}
+    sleep    6
+    Wait Until Element Is Enabled    &{menuDict}[operative_monitor]
     click element    &{menuDict}[operative_monitor]    #【运营监控】
     sleep    1    #
+    Wait Until Element Is Enabled    &{menuDict}[diagram_disapth]
     click element    &{menuDict}[diagram_disapth]    #【简图调度】
     sleep    3
     click element    ${roadXpath_diagram}    #37路100
@@ -21,6 +24,7 @@ Variables         setting.py
     Wait Until Element Is Enabled    ${iframe_tab}    #切换到37路100的主frame
     Select Frame    ${iframe_tab}    #切换到37路100的主frame
     sleep    2
+    wait BsBusdiagrameIframe
 
 获取简图车辆更多菜单
     [Arguments]    ${bustid}    ${dropDownPath}
@@ -34,6 +38,7 @@ Variables         setting.py
     unselect Frame
     Select Frame    ${iframe_tab}    #切回主frame
     sleep    1
+    Wait Until Element Is Enabled    ${dropDownPath}
     click element    ${dropDownPath}
     sleep    1
 
@@ -147,13 +152,6 @@ Variables         setting.py
         should contain    ${result3}[error_text]    上报成功
         sleep    3
     END
-
-车辆手动进站
-    #click element    xpath=//div[@id='phrase_templateID']/button[@class='btn btn-default dropdown-toggle']
-    #${elements}    Get WebElements    xpath=//ul[@role='menu']/li[@class='selected']/a
-    #click element    ${elements}[1]    #点击第二个站点
-    sleep    1
-    click element    xpath=//button[@id='save']    #对车辆手动“进站”保存    #此时frame停留在domain_frame中
 
 回到简图调度
     [Documentation]    已在其他页面需要回到简图调度页面

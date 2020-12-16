@@ -31,12 +31,12 @@ Variables         setting.py
     打开简图调度
     切换简图domain_frame
     #车辆进左总站
-    @{varLst}    create list    ${bus_5}[bustid]    Nodefault
-    ${true}    Convert To Boolean    True    #转换成bool值
-    车辆手动进站    @{varLst}
+    #手动进站
+    获取简图车辆更多菜单    ${bus_5}[bustid]    &{dropdown_menuDict}[goToSite]
+    click element    xpath=//button[@id='save']    #对车辆手动“进站”保存
     sleep    2
     #车辆出左总站
-    获取简图车辆更多菜单    @{varLst}[0]    &{dropdown_menuDict}[outSite]    #手动出总站
+    获取简图车辆更多菜单    ${bus_5}[bustid]    &{dropdown_menuDict}[outSite]    #手动出总站
     sleep    2
     click element    xpath=//button[@id='save']    #对车辆手动“进站”保存    #此时frame停留在domain_frame中
     sleep    2
@@ -47,8 +47,8 @@ Variables         setting.py
     #关闭路单页面
     click element    xpath=//button[contains(text(),"返回")]    #关闭页面
     #车辆进右总站，结束路单
-    @{varLst2}    create list    ${bus_5}[bustid]    default
-    车辆手动进站    @{varLst2}
+    获取简图车辆更多菜单    ${bus_5}[bustid]    &{dropdown_menuDict}[goToSite]
+    click element    xpath=//button[@id='save']    #对车辆手动“进站”保存
     sleep    2
     #验证车辆生成已完成路单
     @{targetLst}    create list    ${bus_5}[internalNo]    已完成
@@ -70,6 +70,7 @@ Variables         setting.py
     获取简图车辆更多菜单index    ${bus_1}[bustid]    &{dropdown_menuDict}[busReport]    -1    #进入简图-车辆-路单页面
     ${departureTime}    运营路单补录_默认车和线路
     #关闭路单页面
+    Wait Until Element Is Enabled    xpath=//button[contains(text(),"返回")]
     click element    xpath=//button[contains(text(),"返回")]    #关闭路单页面
     所有行车记录页面验证结果    ${departureTime}    ${bus_1}
 
@@ -156,13 +157,4 @@ Variables         setting.py
     END
 
 test2
-    Open Browser    ${ip}    phantomjs
-    log    ${bus_1}[internalNo]
-    sleep    1
-    input text    id=j_username    ${username}
-    input text    id=j_password    ${password}
-    input text    id=jCaptchaCode    111111
-    click element    id=loginBtn
-    sleep    1
-    ${window}    get window titles
-    log    ${window}
+    log    ${roadid}

@@ -27,6 +27,7 @@ Resource          简图调度.txt
     #打开简图调度
     #切换简图domain_frame
     ${elementsXpath}    Catenate    SEPARATOR=    css=#road_order_detail_grid1_    ${roadid}    >div>table>tbody>tr>td>div[class="grid-body"]>div[class="grid-table-body"]>table>tbody>tr
+    log    ${elementsXpath}
     #${elementsXpath}    set variable    css=#road_order_detail_grid1_417768025>div>table>tbody>tr>td>div[class="grid-body"]>div[class="grid-table-body"]>table>tbody>tr    #车辆路单明细页面
     ${flag}    获取报表明细结果并验证    ${elementsXpath}    @{targetLst}    #验证结果
     [Return]    ${flag}
