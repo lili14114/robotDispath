@@ -142,3 +142,7 @@ get bsBusdiagrameMenus
     wait BsBusdiagrameViceIframe
     wait Rightclick    ${bustidXPATH}
     wait BsBusdiagrameIframe    #选择简图主frame
+
+DepartTime
+    ${departureTime}    Get Mytool Times    hourdelta
+    [Return]    ${departureTime}
