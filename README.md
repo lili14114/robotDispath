@@ -44,10 +44,20 @@
 	quick_input=xpath=//a[contains(text(),'快速补录') and @tabindex='-1']#快速补录
 	
 [report_XpathDict]
+
+
 	roadRecord_1=css=#road_order_detail_grid1_417768025>div>table>tbody>tr>td>div[class='grid-body']>div[class='grid-table-body']>table>tbody>tr  #简图调度下方路单
 	roadRecord_2=xpath=//div[@class='grid-table-body' and @style='width: 1170px; height: 320px; position: relative;']/table/tbody/tr    #简图-车辆-路单
 [TestCase]
+
+
     create bsRecord_bsBusdiagrame_bus #简图-车辆-路单-运营路单补录
 	create bsRecord_bsBusdiagrame_quickAdd  #简图-车辆-快速补录
-
+	create bsRecord_bsBusdiagrame  #简图-行车记录-运营路单补录
+	create bsRecord  #行车记录菜单-运营补录
+	creat_bsRecord_goTosite #手动进出站生成路单
+	dropMenu_map  #简图-更多菜单-定位、线路监控、轨迹
+	dropMenu_notify #简图-更多菜单-通知
+	dropMenu_hand_assigh  #简图-更多菜单-代发非运营指令和恢复运营指令
+	
 
