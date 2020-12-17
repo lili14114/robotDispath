@@ -20,6 +20,12 @@ def getVariables(env='183_8074'):
             'belongto':'100003',
              'iframe_tab': 'id=iframe_tab_BsBusdiagarm-Maplist-417768025',  #简图37路100的主frame
             'iframe_line':'css=#line_417768025',#简图37路100副frame
+            'myDB':{
+                'host':'10.200.9.183',
+                'port':3306,
+                'user':'root',
+                'password':'jgx7e32cv'
+            },
             'bus_1': {
                 'internalNo': 'robot1',
                 'hostcode': 'robot1',
@@ -52,6 +58,12 @@ def getVariables(env='183_8074'):
             'belongto': '100009',
             'iframe_tab': 'id=iframe_tab_BsBusdiagarm-Maplist-200415180706666',  #章丘公交测试环境8089，简图101路主frame
             'iframe_line':'css=#line_200415180706666',#简图101路副frame
+            'myDB': {
+                'host': '10.200.9.183',
+                'port': 3306,
+                'user': 'root',
+                'password': 'jgx7e32cv'
+            },
             'bus_1': {
                 'internalNo': 'robot1',
                 'bustid': '201208150449951',

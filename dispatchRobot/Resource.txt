@@ -2,7 +2,9 @@
 Library           Selenium2Library
 Library           Collections
 Resource          公共方法.txt
-Library           setting.py
+Library           RequestsLibrary
+Library           DatabaseLibrary
+Variables         setting.py
 
 *** Variables ***
 ${wait time}      20s
@@ -201,3 +203,21 @@ create webservice
     ${data}    post request    api    /webservice/rest/caronline    data=${caronline}
     ${result}    To Json    ${data.content}
     should contain    ${result}[error_text]    上报成功
+
+create_webRequest
+    [Arguments]    ${ip}
+    [Documentation]    创建页面接口测试
+    #定义请求头
+    ${headers}    create dictionary
+    set to dictionary    ${headers}    Content-Type=application/x-www-form-urlencoded;charset=UTF-8
+    set to dictionary    ${headers}    User-Agent=Mozilla/5.0 (Windows NT 6.2; WOW64; Trident/7.0; rv:11.0) like Gecko
+    set to dictionary    ${headers}    Accept=image/gif, image/jpeg, image/pjpeg, application/x-ms-application, application/xaml+xml, application/x-ms-xbap, */*
+    set to dictionary    ${headers}    Accept-Language=zh-CN
+    set to dictionary    ${headers}    Cookie=JSESSIONID=GTKSr+U4WAywpIotzPVNs9Wt
+    #定义入参
+
+connect_mysql
+    [Arguments]    ${database}    ${query}
+    Connect To Database Using Custom Params    pymysql    database='${database}',user='${myDB}[user]',password='${myDB}[password]',host='${myDB}[host]',port=${myDB}[port]
+    @{a}    query    ${query}
+    [Return]    @{a}
