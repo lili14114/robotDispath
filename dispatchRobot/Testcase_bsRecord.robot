@@ -217,7 +217,6 @@ creat_bsRecord_goTosite
     ...    1、待执行路单
     ...    2、运行中路单
     ...    3、已完成路单
-    [Setup]    Wait Until Keyword Succeeds    3x    5s    loginHEC
     ${bustidXPATH}    Catenate    SEPARATOR=    css=div[id='    ${bus_1}[bustid]    ']>div[class='bus-body']
     #第一次进总站
     get bsBusdiagrameMenus_first    ${bustidXPATH}    #点击车辆弹出更多菜单
