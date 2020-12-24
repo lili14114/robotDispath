@@ -314,7 +314,7 @@ verify_bsRcord
         sleep    1
     END
     wait click    id=saveBatch    #点击保存
-    wait no_contains    上行单程时间（分钟）
+    wait until keyword succeeds    10x    5s    wait no_contains    上行单程时间（分钟）
     @{flagLst}    verify_bsRecodPage    ${bus_1}[internalNo]    #验证明细表
     FOR    ${flag}    IN    @{flagLst}
     Should Be Equal    ${flag}    ${true}    #验证简图下方是否包含此运行中路单
