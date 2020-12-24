@@ -279,31 +279,25 @@ verify_bsRcord
     #进入批量运营补录页面
     #选择线路检索对话框内容
     wait click    xpath=//div[@id='roadidAddBatchID']/button/span    #点击线路名称按钮
-    wait element2    xpath=//input[@data-role="searchValue"]
-    ${elementxpaths}    get webelements    xpath=//input[@data-role="searchValue"]
-    input text    ${elementxpaths}[-1]    ${roadname}
-    ${elementxpaths2}    get webelements    xpath=//button[@data-role="searchBtn"]    #检索话框中的查询按钮
-    click element    ${elementxpaths2}[-1]    #检索话框中的查询按钮
+    wait input    xpath=//div[@class="selectRoadInfoGrid"]/div/table/thead/tr/th/div[@class="search"]/div[2]/input    ${roadname}
+    wait click    xpath=//div[@class="selectRoadInfoGrid"]/div/table/thead/tr/th/div[@class="search"]/div[2]/div    #检索话框中的查询按钮
+    sleep    1
     wait click    xpath=//div[@class='selectRoadInfoGrid']/div/table/tbody/tr/td/div[@class='grid-body']/div[@class='grid-table-body']/table/tbody/tr/td
     wait click    id=selectRoadInfoGridSave
     #车辆编号检索对话框
     wait click    xpath=//div[@id='bustidAddBatchID']/button/span    #点击车辆编号按钮
-    wait element2    xpath=//input[@data-role="searchValue"]
-    ${elementxpath3}    get webelements    xpath=//input[@data-role="searchValue"]
-    input text    ${elementxpath3}[-1]    ${bus_1}[internalNo]
-    ${elementxpaths4}    get webelements    xpath=//button[@data-role="searchBtn"]    #检索话框中的查询按钮
-    click element    ${elementxpaths4}[-1]    #检索话框中的查询按钮
+    sleep    3
+    wait input    xpath=//div[@class="selectBusInfoGrid"]/div/table/thead/tr/th/div[@class="search"]/div[2]/input    ${bus_1}[internalNo]
+    wait click    xpath=//div[@class="selectBusInfoGrid"]/div/table/thead/tr/th/div[@class="search"]/div[2]/div    #检索话框中的查询按钮
     wait click    xpath=//div[@class='selectBusInfoGrid']/div/table/tbody/tr/td/div[@class='grid-body']/div[@class='grid-table-body']/table/tbody/tr/td    #选择目标车辆
-    wait click    id=selectBusInfoGridSave
+    wait click    id=selectBusInfoGridSave    #保存
     #司机检索对话框
     wait click    xpath=//div[@id="driveridAddBatchID"]/button[2]    #点击司机名称选择按钮
     wait click    xpath=//div[@class="search"]/div/button[@class="btn btn-default dropdown-toggle"]    #点击选择条件小三角
     wait click    xpath=//a[contains(text(),"员工姓名")]    #选择员工姓名
-    ${elementxpaths6}    get webelements    xpath=//input[@data-role="searchValue"]
-    input text    ${elementxpaths6}[-1]    ${drivername}
-    ${elementxpaths7}    get webelements    xpath=//button[@data-role="searchBtn"]    #检索话框中的查询按钮
-    click element    ${elementxpaths7}[-1]    #检索话框中的查询按钮
-    wait click    xpath=//div[@class='selectEmpInfoGrid']/div/table/tbody/tr/td/div[2]/div[2]/table/tbody/tr/td    #选择司机车辆
+    wait input    xpath=//div[@class="selectEmpInfoGrid"]/div/table/thead/tr/th/div[@class="search"]/div[2]/input    ${drivername}
+    wait click    xpath=//div[@class="selectEmpInfoGrid"]/div/table/thead/tr/th/div[@class="search"]/div[2]/div    #检索话框中的查询按钮
+    wait click    xpath=//div[@class='selectEmpInfoGrid']/div/table/tbody/tr/td/div[2]/div[2]/table/tbody/tr/td    #选择司机
     wait click    id=selectEmpInfoGridSave    #点击保存
     #其他项
     wait input    id=upRoadTimeIDaddBatch    30    #上行单程时间
@@ -314,16 +308,15 @@ verify_bsRcord
     #录入发车时间
     @{rowInputStationTimeBs}    get webelements    xpath=//input[@class='rowInputStationTimeB']
     FOR    ${rowInputStationTimeB}    IN    @{rowInputStationTimeBs}
-    #${random_time}    random time    #生成随机的HH:MM:SS时间
-    click element    ${rowInputStationTimeB}    #点击发车时间
-    click element    xpath=//span[contains(text(),"确定")]    #选择时间
-    sleep    1
+        #${random_time}    random time    #生成随机的HH:MM:SS时间
+        click element    ${rowInputStationTimeB}    #点击发车时间
+        click element    xpath=//span[contains(text(),"确定")]    #选择时间
+        sleep    1
     END
     wait click    id=saveBatch    #点击保存
-    sleep    5
-    Login_indexPage    ${ip}
+    wait no_contains    上行单程时间（分钟）
     @{flagLst}    verify_bsRecodPage    ${bus_1}[internalNo]    #验证明细表
     FOR    ${flag}    IN    @{flagLst}
-    #    Should Be Equal    ${flag}    ${true}    #验证简图下方是否包含此运行中路单
+    Should Be Equal    ${flag}    ${true}    #验证简图下方是否包含此运行中路单
     END
-    [Teardown]    Login_indexPage    ${ip}
+    [Teardown]    delete bsRecord    ${bus_1}[internalNo]

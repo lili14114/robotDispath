@@ -280,6 +280,9 @@ delete bsRecord
     wait click    xpath=//span[contains(text(),"更多查询")]    #点击更多查询
     #查看明细--获取副表
     wait Doubleclick    xpath=//div[@class='rideInfo main_grid']/div/table/tbody/tr/td/div[@class='grid-body']/div[@class='grid-table-body']/table/tbody/tr    #双击主表记录
+    #切换标签页至100
+    wait click    xpath=//div[@class="rideInfo secondaryTable"]/div/table/tfoot/tr/td/div/div/div[@data-role="pageSizeSelect"]/button[@data-toggle="dropdown"]    #点击倒三角
+    wait click    xpath=//div[@class="rideInfo secondaryTable"]/div/table/tfoot/tr/td/div/div/div/ul/li[@data-value="100"]    #选择100
     #测试完毕后，删掉测试数据
     wait click    xpath=//div[@class="rideInfo secondaryTable"]/div/table/tbody/tr/td/div[@class="grid-body"]/div/table/tbody/tr/th    #勾选第全部记录
     wait click    xpath=//div[@class="rideInfo secondaryTable"]/div/table/thead/tr/th/div/button/span[@class="glyphicon glyphicon-remove"]    #点击删除按钮
