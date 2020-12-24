@@ -272,7 +272,20 @@ verify_bsRecodPage
 delete bsRecord
     [Arguments]    ${internalNo}
     [Documentation]    前提条件，页面行车记录菜单主页
+    Login_indexPage    ${ip}
     #查看明细--查询目标车辆
+    wait click    &{menuDict}[operative_monitor]    #【运营监控】
+    wait click    xpath=//li[@data-mark='menuMark228']    #【行车记录】
+    ${total_record}    get text    xpath=//div[@class="rideInfo secondaryTable"]/div/table/tfoot/tr/td/div/div/span[@data-role="total-record"]    #获取当前副表的记录
+    @{counts}    create list    1    2    3    4
+    FOR     ${count}    IN    @{counts}
+    Run KeyWord if     ${total_record}!=0    delete_viceBsRecord    ${internalNo}
+    ...    ELSE IF    log    已成功全部删除成功
+    END
+    [Teardown]    Login_indexPage    ${ip}
+
+delete_viceBsRecord
+    [Arguments]    ${internalNo}
     #查询指定车辆
     wait click    xpath=//span[contains(text(),"更多查询")]    #点击更多查询
     wait input    id=internalNo    ${internalNo}
@@ -289,4 +302,3 @@ delete bsRecord
     wait click    xpath=//button[contains(text(),"确定")]    #点击确认删除按钮
     wait contains    删除成功
     wait contains    没有数据
-    [Teardown]    Login_indexPage    ${ip}

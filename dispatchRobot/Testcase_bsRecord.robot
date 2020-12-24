@@ -303,7 +303,7 @@ verify_bsRcord
     wait input    id=upRoadTimeIDaddBatch    30    #上行单程时间
     wait input    id=downRoadTimeIDaddBatch    35    #下行单程时间
     wait input    id=remarkidIDaddBatch    robot test    #备注
-    wait input    id=addRowsCntID    25    #行数
+    wait input    id=addRowsCntID    5    #行数
     wait click    xpath=//button[contains(text(),"批量生成")]    #批量生成
     #录入发车时间
     @{rowInputStationTimeBs}    get webelements    xpath=//input[@class='rowInputStationTimeB']
@@ -316,6 +316,7 @@ verify_bsRcord
     wait click    id=saveBatch    #点击保存
     wait until keyword succeeds    10x    5s    wait no_contains    上行单程时间（分钟）
     @{flagLst}    verify_bsRecodPage    ${bus_1}[internalNo]    #验证明细表
+    ${true}    convert to boolean    True
     FOR    ${flag}    IN    @{flagLst}
     Should Be Equal    ${flag}    ${true}    #验证简图下方是否包含此运行中路单
     END
