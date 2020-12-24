@@ -277,10 +277,9 @@ delete bsRecord
     wait click    &{menuDict}[operative_monitor]    #【运营监控】
     wait click    xpath=//li[@data-mark='menuMark228']    #【行车记录】
     ${total_record}    get text    xpath=//div[@class="rideInfo secondaryTable"]/div/table/tfoot/tr/td/div/div/span[@data-role="total-record"]    #获取当前副表的记录
-    @{counts}    create list    1    2    3    4
-    FOR     ${count}    IN    @{counts}
+    FOR     ${i}    IN RANGE    4
     Run KeyWord if     ${total_record}!=0    delete_viceBsRecord    ${internalNo}
-    ...    ELSE IF    log    已成功全部删除成功
+    ...    ${total_record}==0    exit for loop
     END
     [Teardown]    Login_indexPage    ${ip}
 
