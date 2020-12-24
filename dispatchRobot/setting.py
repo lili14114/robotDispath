@@ -55,6 +55,8 @@ def getVariables(env='183_8074'):
             'username': "huang",
             'password': '888888',
             'roadXpath_diagram': 'id=mtLocationRunDiagramTree_2_span',  # 简图树形菜单线路元素地址，例如：简图树形菜单37路100
+            'roadname': '101路',
+            'drivername': '周某人',
             'subid': '191104094314987',
             'roadid': '200415180706666',
             'belongto': '100009',

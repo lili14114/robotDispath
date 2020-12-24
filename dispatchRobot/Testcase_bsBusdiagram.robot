@@ -3,6 +3,7 @@ Resource          Resource.txt
 Library           Selenium2Library
 Library           Collections
 Variables         setting.py
+Resource          公共方法.txt
 
 *** Test Cases ***
 dropMenu_map
@@ -52,7 +53,6 @@ dropMenu_notify
 
 dropMenu_hand_assigh
     [Documentation]    简图-手动代发功能
-    [Setup]    Wait Until Keyword Succeeds    3x    5s    loginHEC
     ${bustidXPATH}    Catenate    SEPARATOR=    css=div[id='    ${bus_1}[bustid]    ']>div[class='bus-body']
     get bsBusdiagrameMenus_first    ${bustidXPATH}    #点击车辆弹出更多菜单
     wait element    &{dropdown_menuDict}[hand_assigh]    #等待”代发“"按钮
@@ -114,3 +114,6 @@ dropMenu_hand_assigh
     wait click    xpath=//button[contains(text(),"确定")]    #点击确认删除按钮
     wait contains    没有数据
     [Teardown]    Login_indexPage    ${ip}
+
+test
+    log    ${ip}

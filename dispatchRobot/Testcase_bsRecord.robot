@@ -21,7 +21,6 @@ create bsRecord_bsBusdiagrame_bus
     ...    测试完毕
     ...    删除测试数据
     ...    重新刷新页面，退回首页
-    [Setup]    Wait Until Keyword Succeeds    3x    5s    loginHEC
     ${departureTime}    DepartTime
     ${bustidXPATH}    Catenate    SEPARATOR=    css=div[id='    ${bus_1}[bustid]    ']>div[class='bus-body']
     get bsBusdiagrameMenus_first    ${bustidXPATH}    #点击车辆弹出更多菜单
@@ -271,7 +270,6 @@ verify_bsRcord
     ...    6、对其中一条数据进行删除，验证主副表数据是否一致
     ...    7、再次审核无效，对无效数据进行人工修改保存后
     ...    8、再次验证主副表数据是否一致
-    [Setup]    Wait Until Keyword Succeeds    3x    5s    loginHEC
     #进入行车记录页面
     wait click    &{menuDict}[operative_monitor]    #【运营监控】
     wait click    xpath=//li[@data-mark='menuMark228']    #【行车记录】
@@ -318,6 +316,6 @@ verify_bsRcord
     @{flagLst}    verify_bsRecodPage    ${bus_1}[internalNo]    #验证明细表
     ${true}    convert to boolean    True
     FOR    ${flag}    IN    @{flagLst}
-    Should Be Equal    ${flag}    ${true}    #验证简图下方是否包含此运行中路单
+        Should Be Equal    ${flag}    ${true}    #验证简图下方是否包含此运行中路单
     END
     [Teardown]    delete bsRecord    ${bus_1}[internalNo]
