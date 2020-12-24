@@ -207,7 +207,7 @@ create bsRecord
     wait contains    没有数据
     [Teardown]    Login_indexPage    ${ip}
 
-creat_bsRecord_goTosite
+create_bsRecord_goTosite
     [Documentation]    手动进出站，生成路单
     ...    1、手动进站，拿排班时间，验证是否存在待执行路单
     ...    2、手动出站，确认是否是否存在运行中路单
@@ -259,4 +259,71 @@ creat_bsRecord_goTosite
     ${dispathJson}    Get Dispath Json    ${bus_1}[hostcode]    106
     ${data2}    post request    api    /webservice/rest/dispatch    data=${dispathJson}
     ${result2}    To Json    ${data2.content}
+    [Teardown]    Login_indexPage    ${ip}
+
+verify_bsRcord
+    [Documentation]    批量补录运营路单
+    ...    1、进入行车记录-批量补录运营路单
+    ...    2、补录成功后，验证主副表数据是否一致
+    ...    3、对其中一条数据进行审核为无效
+    ...    4、再次验证主副表数据是否一致
+    ...    5、再次审核为有效，验证主副表数据是否一致
+    ...    6、对其中一条数据进行删除，验证主副表数据是否一致
+    ...    7、再次审核无效，对无效数据进行人工修改保存后
+    ...    8、再次验证主副表数据是否一致
+    [Setup]    Wait Until Keyword Succeeds    3x    5s    loginHEC
+    #进入行车记录页面
+    wait click    &{menuDict}[operative_monitor]    #【运营监控】
+    wait click    xpath=//li[@data-mark='menuMark228']    #【行车记录】
+    wait click    xpath=//span[contains(text(),"批量运营补录")]    #点击“批量运营补录”按钮
+    #进入批量运营补录页面
+    #选择线路检索对话框内容
+    wait click    xpath=//div[@id='roadidAddBatchID']/button/span    #点击线路名称按钮
+    wait element2    xpath=//input[@data-role="searchValue"]
+    ${elementxpaths}    get webelements    xpath=//input[@data-role="searchValue"]
+    input text    ${elementxpaths}[-1]    ${roadname}
+    ${elementxpaths2}    get webelements    xpath=//button[@data-role="searchBtn"]    #检索话框中的查询按钮
+    click element    ${elementxpaths2}[-1]    #检索话框中的查询按钮
+    wait click    xpath=//div[@class='selectRoadInfoGrid']/div/table/tbody/tr/td/div[@class='grid-body']/div[@class='grid-table-body']/table/tbody/tr/td
+    wait click    id=selectRoadInfoGridSave
+    #车辆编号检索对话框
+    wait click    xpath=//div[@id='bustidAddBatchID']/button/span    #点击车辆编号按钮
+    wait element2    xpath=//input[@data-role="searchValue"]
+    ${elementxpath3}    get webelements    xpath=//input[@data-role="searchValue"]
+    input text    ${elementxpath3}[-1]    ${bus_1}[internalNo]
+    ${elementxpaths4}    get webelements    xpath=//button[@data-role="searchBtn"]    #检索话框中的查询按钮
+    click element    ${elementxpaths4}[-1]    #检索话框中的查询按钮
+    wait click    xpath=//div[@class='selectBusInfoGrid']/div/table/tbody/tr/td/div[@class='grid-body']/div[@class='grid-table-body']/table/tbody/tr/td    #选择目标车辆
+    wait click    id=selectBusInfoGridSave
+    #司机检索对话框
+    wait click    xpath=//div[@id="driveridAddBatchID"]/button[2]    #点击司机名称选择按钮
+    wait click    xpath=//div[@class="search"]/div/button[@class="btn btn-default dropdown-toggle"]    #点击选择条件小三角
+    wait click    xpath=//a[contains(text(),"员工姓名")]    #选择员工姓名
+    ${elementxpaths6}    get webelements    xpath=//input[@data-role="searchValue"]
+    input text    ${elementxpaths6}[-1]    ${drivername}
+    ${elementxpaths7}    get webelements    xpath=//button[@data-role="searchBtn"]    #检索话框中的查询按钮
+    click element    ${elementxpaths7}[-1]    #检索话框中的查询按钮
+    wait click    xpath=//div[@class='selectEmpInfoGrid']/div/table/tbody/tr/td/div[2]/div[2]/table/tbody/tr/td    #选择司机车辆
+    wait click    id=selectEmpInfoGridSave    #点击保存
+    #其他项
+    wait input    id=upRoadTimeIDaddBatch    30    #上行单程时间
+    wait input    id=downRoadTimeIDaddBatch    35    #下行单程时间
+    wait input    id=remarkidIDaddBatch    robot test    #备注
+    wait input    id=addRowsCntID    25    #行数
+    wait click    xpath=//button[contains(text(),"批量生成")]    #批量生成
+    #录入发车时间
+    @{rowInputStationTimeBs}    get webelements    xpath=//input[@class='rowInputStationTimeB']
+    FOR    ${rowInputStationTimeB}    IN    @{rowInputStationTimeBs}
+    #${random_time}    random time    #生成随机的HH:MM:SS时间
+    click element    ${rowInputStationTimeB}    #点击发车时间
+    click element    xpath=//span[contains(text(),"确定")]    #选择时间
+    sleep    1
+    END
+    wait click    id=saveBatch    #点击保存
+    sleep    5
+    Login_indexPage    ${ip}
+    @{flagLst}    verify_bsRecodPage    ${bus_1}[internalNo]    #验证明细表
+    FOR    ${flag}    IN    @{flagLst}
+    #    Should Be Equal    ${flag}    ${true}    #验证简图下方是否包含此运行中路单
+    END
     [Teardown]    Login_indexPage    ${ip}

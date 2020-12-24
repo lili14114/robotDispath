@@ -109,7 +109,7 @@ wait input
 
 LoginHEC
     ${login_ip}    Catenate    SEPARATOR=    ${ip}    /login.koala
-    Open Browser    ${login_ip}    Chrome     #Chrome phantomjs
+    Open Browser    ${login_ip}    Chrome    #Chrome phantomjs
     Maximize Browser Window    #最大化浏览器
     #使用chrome无感模式--start
     #${chrome_options}    Evaluate    sys.modules['selenium.webdriver'].ChromeOptions()    sys, selenium.webdriver
@@ -230,3 +230,60 @@ connect_mysql
     Connect To Database Using Custom Params    pymysql    database='${database}',user='${myDB}[user]',password='${myDB}[password]',host='${myDB}[host]',port=${myDB}[port]
     @{a}    query    ${query}
     [Return]    @{a}
+
+wait element2
+    [Arguments]    ${element locator}
+    #这里的文字可以在log中看到，本用户自定义关键字检察元素是否被包含，可用，可见，以下依次判断：
+    Wait Until Page Contains Element    ${element locator}    ${wait time}    #判断页面是否包含元素，唯一要注意的是，如果页面包含多个符合定位条件的元素，此关键字只要其中一个满足条件，即为成功
+    Wait Until Element Is Enabled    ${element locator}    ${wait time}    # 在这里的Enabled是指的元素的Enbale/Disable属性，当元素属性为Disabled时，元素是不可操作的
+    sleep    1
+
+verify_bsRecodPage
+    [Arguments]    ${internalNo}
+    #${t}    get_Mytool_times    datedelta    24
+    @{vice_resultLst}    create list
+    wait click    &{menuDict}[operative_monitor]    #【运营监控】
+    wait click    xpath=//li[@data-mark='menuMark228']    #【行车记录】
+    #查询指定车辆
+    wait click    xpath=//span[contains(text(),"更多查询")]    #点击更多查询
+    wait input    id=internalNo    ${internalNo}
+    wait click    xpath=//div[@id='busBtnClass']/button[2]    #点击查询
+    wait click    xpath=//span[contains(text(),"更多查询")]    #点击更多查询
+    #获取主表结果
+    sleep    3
+    ${main_result}    get text    xpath=//table[@class="table table-responsive table-bordered table-hover table-striped"]/tbody/tr    #获取主表第一条数据,str类型
+    #获取副表结果
+    wait Doubleclick    xpath=//table[@class="table table-responsive table-bordered table-hover table-striped"]/tbody/tr    #双击主表第一条记录
+    @{vice_xpath}    get webelements    xpath=//div[@class="rideInfo secondaryTable"]/div/table/tbody/tr/td/div[@class="grid-body"]/div[@class="grid-table-body"]/table/tbody/tr
+    FOR    ${XPATH}    IN    @{vice_xpath}
+        ${vice_result}    get text    ${XPATH}
+        append to list    ${vice_resultLst}    ${vice_result}
+    END
+    log many    ${vice_resultLst}
+    ${flag1}    main_vice_BusValidation    ${main_result}    ${vice_resultLst}    #判断车牌号和车辆编号
+    #判断司机
+    ${flag2}    main_vice_DriverValidation    ${main_result}    ${vice_resultLst}    #司机及趟次聚合是否正确
+    #判断主表趟次聚合值
+    ${flag3}    main_vice_TripNoValidation    ${main_result}    ${vice_resultLst}    #主表趟次聚合是否正确
+    ${true}    Convert To Boolean    True    #转换成bool值
+    @{flagLst}    create list    ${flag1}    ${flag2}    ${flag3}
+    [Return]    @{flagLst}
+
+delete bsRecord
+    [Arguments]    ${internalNo}
+    [Documentation]    前提条件，页面行车记录菜单主页
+    #查看明细--查询目标车辆
+    #查询指定车辆
+    wait click    xpath=//span[contains(text(),"更多查询")]    #点击更多查询
+    wait input    id=internalNo    ${internalNo}
+    wait click    xpath=//div[@id='busBtnClass']/button[2]    #点击查询
+    wait click    xpath=//span[contains(text(),"更多查询")]    #点击更多查询
+    #查看明细--获取副表
+    wait Doubleclick    xpath=//div[@class='rideInfo main_grid']/div/table/tbody/tr/td/div[@class='grid-body']/div[@class='grid-table-body']/table/tbody/tr    #双击主表记录
+    #测试完毕后，删掉测试数据
+    wait click    xpath=//div[@class="rideInfo secondaryTable"]/div/table/tbody/tr/td/div[@class="grid-body"]/div/table/tbody/tr/th    #勾选第全部记录
+    wait click    xpath=//div[@class="rideInfo secondaryTable"]/div/table/thead/tr/th/div/button/span[@class="glyphicon glyphicon-remove"]    #点击删除按钮
+    wait click    xpath=//button[contains(text(),"确定")]    #点击确认删除按钮
+    wait contains    删除成功
+    wait contains    没有数据
+    [Teardown]    Login_indexPage    ${ip}
