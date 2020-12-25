@@ -21,6 +21,7 @@ create bsRecord_bsBusdiagrame_bus
     ...    测试完毕
     ...    删除测试数据
     ...    重新刷新页面，退回首页
+    [Setup]    Wait Until Keyword Succeeds    3x    5s    loginHEC
     ${departureTime}    DepartTime
     ${bustidXPATH}    Catenate    SEPARATOR=    css=div[id='    ${bus_1}[bustid]    ']>div[class='bus-body']
     get bsBusdiagrameMenus_first    ${bustidXPATH}    #点击车辆弹出更多菜单
@@ -81,7 +82,7 @@ create bsRecord_bsBusdiagrame_quickAdd
     wait input    id=memoID    robot Test    #备注
     wait input    xpath=//input[@data-toggle="itemShow"]    robot edit    #补录和修改原因
     wait click    id=save    #保存路单编辑
-    wait contains    ${departureTime}
+    wait contains    6.8
     #测试完毕后，删掉测试数据 --进入车辆路单页面
     Login_indexPage    ${ip}
     get bsBusdiagrameMenus_first    ${bustidXPATH}    #点击车辆弹出更多菜单
@@ -111,7 +112,7 @@ create bsRecord_bsBusdiagrame
     ...    重新刷新页面，退回首页
     ${departureTime}    DepartTime
     ${bustidXPATH}    Catenate    SEPARATOR=    css=div[id='    ${bus_1}[bustid]    ']>div[class='bus-body']
-    @{busRecordLst}    create list    ${departureTime}    8.67    6.8    robot Test    12:00
+    @{busRecordLst}    create list    ${departureTime}    8.67    6.8    robot Test
     Bs_BusdiagramePage_entry    #进入简图调度页面
     wait click    xpath=//div[contains(text(),"行车记录")]    #进入“行车记录”
     wait click    xpath=//span[contains(text(),"运营补录")]    #点击“运营补录”按钮
@@ -131,7 +132,7 @@ create bsRecord_bsBusdiagrame
     wait input    id=mileageID    @{busRecordLst}[1]    #输入载客公里
     wait input    id=gpsmileageID    @{busRecordLst}[2]    #输入GPS公里
     wait input    id=remarkidID    @{busRecordLst}[3]    #输入路单备注
-    wait input    xpath=//div[@id='changeshiftstimeid']/input    @{busRecordLst}[4]    #输入交接班时间
+    wait input    xpath=//div[@id='changeshiftstimeid']/input    12:00    #输入交接班时间
     wait click    id=save    #保存路单编辑
     #查看明细--查询目标车辆
     wait click    xpath=//span[contains(text(),'更多查询')]    #点击行车记录主表更多查询
@@ -166,7 +167,7 @@ create bsRecord
     ...    重新刷新页面，退回首页
     ${departureTime}    DepartTime
     ${bustidXPATH}    Catenate    SEPARATOR=    css=div[id='    ${bus_1}[bustid]    ']>div[class='bus-body']
-    @{busRecordLst}    create list    ${departureTime}    8.67    6.8    robot Test    12:00
+    @{busRecordLst}    create list    ${departureTime}    8.67    6.8    robot Test
     #进入行车记录页面
     wait click    &{menuDict}[operative_monitor]    #【运营监控】
     wait click    xpath=//li[@data-mark='menuMark228']    #【行车记录】
@@ -187,7 +188,7 @@ create bsRecord
     wait input    id=mileageID    @{busRecordLst}[1]    #输入载客公里
     wait input    id=gpsmileageID    @{busRecordLst}[2]    #输入GPS公里
     wait input    id=remarkidID    @{busRecordLst}[3]    #输入路单备注
-    wait input    xpath=//div[@id='changeshiftstimeid']/input    @{busRecordLst}[4]    #输入交接班时间
+    wait input    xpath=//div[@id='changeshiftstimeid']/input    12:00    #输入交接班时间
     wait click    id=save    #保存路单编辑
     #查看明细--查询目标车辆
     wait click    xpath=//span[contains(text(),'更多查询')]    #点击行车记录主表更多查询
@@ -206,7 +207,7 @@ create bsRecord
     wait contains    没有数据
     [Teardown]    Login_indexPage    ${ip}
 
-create_bsRecord_goTosite
+creat_bsRecord_goTosite
     [Documentation]    手动进出站，生成路单
     ...    1、手动进站，拿排班时间，验证是否存在待执行路单
     ...    2、手动出站，确认是否是否存在运行中路单
@@ -216,6 +217,7 @@ create_bsRecord_goTosite
     ...    1、待执行路单
     ...    2、运行中路单
     ...    3、已完成路单
+    [Setup]    Wait Until Keyword Succeeds    3x    5s    loginHEC
     ${bustidXPATH}    Catenate    SEPARATOR=    css=div[id='    ${bus_1}[bustid]    ']>div[class='bus-body']
     #第一次进总站
     get bsBusdiagrameMenus_first    ${bustidXPATH}    #点击车辆弹出更多菜单
@@ -259,63 +261,3 @@ create_bsRecord_goTosite
     ${data2}    post request    api    /webservice/rest/dispatch    data=${dispathJson}
     ${result2}    To Json    ${data2.content}
     [Teardown]    Login_indexPage    ${ip}
-
-verify_bsRcord
-    [Documentation]    批量补录运营路单
-    ...    1、进入行车记录-批量补录运营路单
-    ...    2、补录成功后，验证主副表数据是否一致
-    ...    3、对其中一条数据进行审核为无效
-    ...    4、再次验证主副表数据是否一致
-    ...    5、再次审核为有效，验证主副表数据是否一致
-    ...    6、对其中一条数据进行删除，验证主副表数据是否一致
-    ...    7、再次审核无效，对无效数据进行人工修改保存后
-    ...    8、再次验证主副表数据是否一致
-    #进入行车记录页面
-    wait click    &{menuDict}[operative_monitor]    #【运营监控】
-    wait click    xpath=//li[@data-mark='menuMark228']    #【行车记录】
-    wait click    xpath=//span[contains(text(),"批量运营补录")]    #点击“批量运营补录”按钮
-    #进入批量运营补录页面
-    #选择线路检索对话框内容
-    wait click    xpath=//div[@id='roadidAddBatchID']/button/span    #点击线路名称按钮
-    wait input    xpath=//div[@class="selectRoadInfoGrid"]/div/table/thead/tr/th/div[@class="search"]/div[2]/input    ${roadname}
-    wait click    xpath=//div[@class="selectRoadInfoGrid"]/div/table/thead/tr/th/div[@class="search"]/div[2]/div    #检索话框中的查询按钮
-    sleep    1
-    wait click    xpath=//div[@class='selectRoadInfoGrid']/div/table/tbody/tr/td/div[@class='grid-body']/div[@class='grid-table-body']/table/tbody/tr/td
-    wait click    id=selectRoadInfoGridSave
-    #车辆编号检索对话框
-    wait click    xpath=//div[@id='bustidAddBatchID']/button/span    #点击车辆编号按钮
-    sleep    3
-    wait input    xpath=//div[@class="selectBusInfoGrid"]/div/table/thead/tr/th/div[@class="search"]/div[2]/input    ${bus_1}[internalNo]
-    wait click    xpath=//div[@class="selectBusInfoGrid"]/div/table/thead/tr/th/div[@class="search"]/div[2]/div    #检索话框中的查询按钮
-    wait click    xpath=//div[@class='selectBusInfoGrid']/div/table/tbody/tr/td/div[@class='grid-body']/div[@class='grid-table-body']/table/tbody/tr/td    #选择目标车辆
-    wait click    id=selectBusInfoGridSave    #保存
-    #司机检索对话框
-    wait click    xpath=//div[@id="driveridAddBatchID"]/button[2]    #点击司机名称选择按钮
-    wait click    xpath=//div[@class="search"]/div/button[@class="btn btn-default dropdown-toggle"]    #点击选择条件小三角
-    wait click    xpath=//a[contains(text(),"员工姓名")]    #选择员工姓名
-    wait input    xpath=//div[@class="selectEmpInfoGrid"]/div/table/thead/tr/th/div[@class="search"]/div[2]/input    ${drivername}
-    wait click    xpath=//div[@class="selectEmpInfoGrid"]/div/table/thead/tr/th/div[@class="search"]/div[2]/div    #检索话框中的查询按钮
-    wait click    xpath=//div[@class='selectEmpInfoGrid']/div/table/tbody/tr/td/div[2]/div[2]/table/tbody/tr/td    #选择司机
-    wait click    id=selectEmpInfoGridSave    #点击保存
-    #其他项
-    wait input    id=upRoadTimeIDaddBatch    30    #上行单程时间
-    wait input    id=downRoadTimeIDaddBatch    35    #下行单程时间
-    wait input    id=remarkidIDaddBatch    robot test    #备注
-    wait input    id=addRowsCntID    5    #行数
-    wait click    xpath=//button[contains(text(),"批量生成")]    #批量生成
-    #录入发车时间
-    @{rowInputStationTimeBs}    get webelements    xpath=//input[@class='rowInputStationTimeB']
-    FOR    ${rowInputStationTimeB}    IN    @{rowInputStationTimeBs}
-        #${random_time}    random time    #生成随机的HH:MM:SS时间
-        click element    ${rowInputStationTimeB}    #点击发车时间
-        click element    xpath=//span[contains(text(),"确定")]    #选择时间
-        sleep    1
-    END
-    wait click    id=saveBatch    #点击保存
-    wait until keyword succeeds    10x    5s    wait no_contains    上行单程时间（分钟）
-    @{flagLst}    verify_bsRecodPage    ${bus_1}[internalNo]    #验证明细表
-    ${true}    convert to boolean    True
-    FOR    ${flag}    IN    @{flagLst}
-        Should Be Equal    ${flag}    ${true}    #验证简图下方是否包含此运行中路单
-    END
-    [Teardown]    delete bsRecord    ${bus_1}[internalNo]
