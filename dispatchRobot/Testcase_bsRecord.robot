@@ -62,6 +62,7 @@ create bsRecord_bsBusdiagrame_quickAdd
     ...    测试完毕
     ...    进入-简图-车辆-路单-删除测试数据
     ...    重新刷新页面，退回首页
+    [Setup]    Wait Until Keyword Succeeds    3x    5s    loginHEC
     ${departureTime}    DepartTime
     ${departuretime_new}    Catenate    SEPARATOR=    ${departureTime}    :00
     ${bustidXPATH}    Catenate    SEPARATOR=    css=div[id='    ${bus_1}[bustid]    ']>div[class='bus-body']
