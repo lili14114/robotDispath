@@ -1,7 +1,7 @@
 *** Settings ***
 Library           Selenium2Library
 Library           Collections
-Resource          公共方法.txt
+Resource          public_func.txt
 Library           RequestsLibrary
 Library           DatabaseLibrary
 Variables         setting.py
