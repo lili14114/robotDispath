@@ -39,9 +39,9 @@ dropMenu_notify
     wait click    xpath=//button[contains(text(),"返回")]
     Login_indexPage    ${ip}    #关闭通知对话框
     #通知报表确认结果
-    wait click    xpath=//a[@href='#menuMark486']    #【统计报表】
-    wait click    xpath=//a[contains(text(),"通知报表")]    #【通知报表】
-    wait click    xpath=//span[contains(text(),"31路100")]    #【树形菜单选择37路100】
+    wait click    ${reportMenu}    #【统计报表】
+    wait click    ${notifyMenu}    #【通知报表】
+    wait click    xpath=//span[contains(text(),"${roadname}")]    #【树形菜单选择37路100】
     ${time}    Get Time
     wait input    id=notice_enddateID    ${time}
     wait click    xpath=//button[@id='notice_search']    #查询

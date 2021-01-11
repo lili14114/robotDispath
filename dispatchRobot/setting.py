@@ -70,6 +70,11 @@ def getVariables(env='kunming'):
             'belongto':'100003',
              'iframe_tab': 'id=iframe_tab_BsBusdiagarm-Maplist-417768025',  #简图37路100的主frame
             'iframe_line':'css=#line_417768025',#简图37路100副frame
+            'operative_monitorMune': 'xpath=//span[contains(text(),"运营监控")]',  # 简图调度母菜单
+            'diagram_disapthMune': 'xpath=//li[@data-title="简图调度"]',  # 简图调度菜单
+
+            'reportMenu': 'xpath=//span[contains(text(),"统计报表")]',
+            'notifyMenu': 'xpath=//li[@data-title="通知报表"]/a',
             'myDB':{
                 'host':'10.200.9.183',
                 'port':3306,
