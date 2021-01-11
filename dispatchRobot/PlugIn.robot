@@ -6,21 +6,26 @@ Variables         setting.py
 
 *** Test Cases ***
 test
-    ${ls}    link_server    ls
-    log    ${ls}
+    ${ls}    link_server    cd /data1/jboss/jboss_haikou/standalone/deployments
+    ${ls1}    link_server    ls
+    log    ${ls1}
+    ${ls}    link_server    md5sum tongda-busonline-web-1.0.0-SNAPSHOT.war
 
 enable_plugIn
     [Documentation]    当插件为禁用时，路单进出站默认为有效
     [Setup]    Wait Until Keyword Succeeds    3x    5s    loginHEC
     #默认手动进出站，路单有效性为”有效
     goToSite    有效
+    Login_indexPage    ${ip}
     #启用“路单默认无效”插件功能
     able_plugIn    启用
+    Login_indexPage    ${ip}
     goToSite    无效
     #再次禁用插件
+    Login_indexPage    ${ip}
     able_plugIn    禁用
+    Login_indexPage    ${ip}
     goToSite    有效
-    [Teardown]    Login_indexPage    ${ip}
 
 disable_plugIn
     [Setup]    Wait Until Keyword Succeeds    3x    5s    loginHEC
