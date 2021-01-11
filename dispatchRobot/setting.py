@@ -116,6 +116,11 @@ def getVariables(env='kunming'):
             'belongto': '100009',
             'iframe_tab': 'id=iframe_tab_BsBusdiagarm-Maplist-200415180706666',  #章丘公交测试环境8089，简图101路主frame
             'iframe_line':'css=#line_200415180706666',#简图101路副frame
+            'operative_monitorMune': 'xpath=//span[contains(text(),"运营监控")]',  # 简图调度母菜单
+            'diagram_disapthMune': 'xpath=//li[@data-title="简图调度"]',  # 简图调度菜单
+
+            'reportMenu': 'xpath=//span[contains(text(),"统计报表")]',
+            'notifyMenu': 'xpath=//li[@data-title="通知报表"]/a',
             'myDB': {
                 'host': '10.200.9.183',
                 'port': 3306,
@@ -160,6 +165,11 @@ def getVariables(env='kunming'):
             'belongto': '100009',
             'iframe_tab': 'id=iframe_tab_BsBusdiagarm-Maplist-200415180706666',  # 章丘公交测试环境8089，简图101路主frame
             'iframe_line': 'css=#line_200415180706666',  # 简图101路副frame
+            'operative_monitorMune': 'xpath=//span[contains(text(),"运营监控")]',  # 简图调度母菜单
+            'diagram_disapthMune': 'xpath=//li[@data-title="简图调度"]',  # 简图调度菜单
+
+            'reportMenu': 'xpath=//span[contains(text(),"统计报表")]',
+            'notifyMenu': 'xpath=//li[@data-title="通知报表"]/a',
             'bus_1': {
                 'internalNo': 'weiyan',
                 'bustid': '201208150449951',
