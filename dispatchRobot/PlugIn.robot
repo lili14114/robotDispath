@@ -5,38 +5,55 @@ Resource          Resource.txt
 Variables         setting.py
 
 *** Test Cases ***
-test
-    ${ls}    link_server    cd /data1/jboss/jboss_haikou/standalone/deployments
-    ${ls1}    link_server    ls
-    log    ${ls1}
-    ${ls}    link_server    md5sum tongda-busonline-web-1.0.0-SNAPSHOT.war
-
-enable_plugIn
-    [Documentation]    当插件为禁用时，路单进出站默认为有效
+plugIn_main
     [Setup]    Wait Until Keyword Succeeds    3x    5s    loginHEC
-    #默认手动进出站，路单有效性为”有效
-    goToSite    有效
-    Login_indexPage    ${ip}
-    #启用“路单默认无效”插件功能
+    ${bustidXPATH}    Catenate    SEPARATOR=    css=div[id='    ${bus_1}[bustid]    ']>div[class='bus-body']
+    ${requestEmploeeJson}    get dispatchEmployee Json    ${bus_1}[hostcode]    ${employeeCardNo}
+    ${request_6}    get dispath json    ${bus_1}[hostcode]    6
+    ${request_106}    get dispath json    ${bus_1}[hostcode]    106
+    #上传停运
+    create webservice    ${ip}
+    ${data1}    post request    api    /webservice/rest/dispatch    data=${request_6}
+    ${result1}    To Json    ${data1.content}
+    should contain    ${result1}[error_text]    上报成功
+    sleep    1
+    #确认简图车辆颜色为停运红色
+    Bs_BusdiagramePage_entry    #进入主frame
+    wait BsBusdiagrameViceIframe    #进入副frame
+    wait element    xpath=//div[contains(text(),"${bus_1}[internalNo]")]
+    ${style}    Get Element Attribute    xpath=//div[contains(text(),"${bus_1}[internalNo]")]    style
+    Wait Until Keyword Succeeds    3X    5S    Should Contain    ${style}    rgb(255, 128, 171)
+    Login_indexPage     ${ip}
+    #激活插件
     able_plugIn    启用
-    Login_indexPage    ${ip}
-    goToSite    无效
-    #再次禁用插件
-    Login_indexPage    ${ip}
+    #司机打卡考勤
+    ${data1}    post request    api    /webservice/rest/dispatch    data=${requestEmploeeJson}
+    ${result1}    To Json    ${data1.content}
+    should contain    ${result1}[error_text]    上报成功
+    sleep    1
+    #确认简图车辆颜色为恢复运营，为蓝色
+    Bs_BusdiagramePage_entry    #进入主frame
+    wait BsBusdiagrameViceIframe    #进入副frame
+    wait element    xpath=//div[contains(text(),"${bus_1}[internalNo]")]
+    ${style}    Get Element Attribute    xpath=//div[contains(text(),"${bus_1}[internalNo]")]    style
+    Wait Until Keyword Succeeds    3X    5S    Should Contain    ${style}    rgb(33, 150, 243)
+    #结束后，车辆再次上传恢复运营指令
+    ${data1}    post request    api    /webservice/rest/dispatch    data=${request_106}
+    Login_indexPage     ${ip}
     able_plugIn    禁用
-    Login_indexPage    ${ip}
-    goToSite    有效
-
-disable_plugIn
-    [Setup]    Wait Until Keyword Succeeds    3x    5s    loginHEC
-    wait click    xpath=//span[contains(text(),"资源管理")]
-    wait click    xpath=//li[@data-title="自定义插件配置"]/a
-    wait input    id=jarnameID    有效性    #检索条件输入功能名称
-    wait input    id=plugVersionID    20201108
-    wait click    id=search    #查询
-    wait element    xpath=//span[@data-role="total-record"]
-    wait click    xpath=//tr[@data-index="0"]/td/div    #勾选插件
-    wait click    xpath=//span[contains(text(),"禁用")]    #启用插件
-    wait click    xpath=//button[@data-role="confirmBtn"]    #确认
-    wait contains    禁用
-    [Teardown]    Login_indexPage    ${ip}
+    #车辆申请包车
+    ${data1}    post request    api    /webservice/rest/dispatch    data=${request_6}
+    #确认简图车辆颜色为停运红色
+    Bs_BusdiagramePage_entry    #进入主frame
+    wait BsBusdiagrameViceIframe    #进入副frame
+    wait element    xpath=//div[contains(text(),"${bus_1}[internalNo]")]
+    ${style}    Get Element Attribute    xpath=//div[contains(text(),"${bus_1}[internalNo]")]    style
+    Wait Until Keyword Succeeds    3X    5S    Should Contain    ${style}    rgb(255, 128, 171)
+    #司机申请考勤
+    ${data1}    post request    api    /webservice/rest/dispatch    data=${requestEmploeeJson}
+    #确认简图车辆颜色为停运红色
+    wait element    xpath=//div[contains(text(),"${bus_1}[internalNo]")]
+    ${style}    Get Element Attribute    xpath=//div[contains(text(),"${bus_1}[internalNo]")]    style
+    Wait Until Keyword Succeeds    3X    5S    Should Contain    ${style}    rgb(255, 128, 171)
+    #车辆恢复运营，测试结束
+    ${data1}    post request    api    /webservice/rest/dispatch    data=${request_106}
