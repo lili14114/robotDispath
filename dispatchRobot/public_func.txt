@@ -88,3 +88,49 @@ able_plugIn
     wait click    xpath=//span[contains(text(),"${arg}")]    #启用插件
     wait click    xpath=//button[@data-role="confirmBtn"]    #确认
     wait contains    ${arg}
+
+goToSite
+    [Arguments]    ${result}
+    ${bustidXPATH}    Catenate    SEPARATOR=    css=div[id='    ${bus_1}[bustid]    ']>div[class='bus-body']
+    #第一次进总站
+    get bsBusdiagrameMenus_first    ${bustidXPATH}    #点击车辆弹出更多菜单
+    wait click    &{dropdown_menuDict}[goToSite]    #点击快速补录按钮
+    wait click    xpath=//button[@id='save']    #对车辆手动“进站”保存
+    sleep    2
+    wait contains    待执行
+    #出总站
+    wait BsBusdiagrameViceIframe    #回到副frame，获取更多弹窗
+    wait Rightclick    ${bustidXPATH}
+    wait BsBusdiagrameIframe    #选择简图主frame
+    wait click    &{dropdown_menuDict}[outSite]    #点击快速补录按钮
+    wait click    xpath=//button[@id='save']    #对车辆手动“进站”保存
+    wait contains    运行中
+    #再次进总站
+    wait BsBusdiagrameViceIframe    #回到副frame，获取更多弹窗
+    wait Rightclick    ${bustidXPATH}
+    wait BsBusdiagrameIframe    #选择简图主frame
+    wait click    &{dropdown_menuDict}[goToSite]    #点击快速补录按钮
+    wait click    xpath=//button[@id='save']    #对车辆手动“进站”保存
+    #测试完毕后，删掉测试数据 --进入车辆路单页面
+    Login_indexPage    ${ip}
+    get bsBusdiagrameMenus_first    ${bustidXPATH}    #点击车辆弹出更多菜单
+    #wait element    &{dropdown_menuDict}[busReport]
+    ${elementxpath}    get webelements    &{dropdown_menuDict}[busReport]
+    wait click    ${elementxpath}[-1]    #点击车辆“路单”，进入路单页面
+    #-删除数据，并返回主页
+    wait contains    已完成
+    wait contains    ${result}
+    wait click    xpath=//div[@class="modal-body"]/div/div[2]/div/table/tbody/tr/td/div[2]/div/table/tbody/tr/th/div    #勾选第全部记录
+    wait click    xpath=//span[contains(text(),"删除")]    #点击删除按钮
+    wait click    xpath=//button[contains(text(),"确定")]    #点击确认删除按钮
+    wait contains    没有数据
+    #车辆位置回到停车场
+    create webservice    ${ip}
+    ${dispathJson}    Get Dispath Json    ${bus_1}[hostcode]    6
+    ${data1}    post request    api    /webservice/rest/dispatch    data=${dispathJson}
+    ${result1}    To Json    ${data1.content}
+    should contain    ${result1}[error_text]    上报成功
+    sleep    3
+    ${dispathJson}    Get Dispath Json    ${bus_1}[hostcode]    106
+    ${data2}    post request    api    /webservice/rest/dispatch    data=${dispathJson}
+    ${result2}    To Json    ${data2.content}
