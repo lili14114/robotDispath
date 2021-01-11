@@ -3,7 +3,7 @@ Library           Selenium2Library
 Library           Collections
 Library           RequestsLibrary
 Library           CustomLibrary
-Resource          公共方法.txt
+Resource          public_func.txt
 Variables         setting.py
 Resource          简图调度.txt
 

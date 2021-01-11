@@ -45,7 +45,7 @@ dropMenu_notify
     ${time}    Get Time
     wait input    id=notice_enddateID    ${time}
     wait click    xpath=//button[@id='notice_search']    #查询
-    Wait Until Keyword Succeeds     3x     5s     wait contains    Notify_robotframework
+    Wait Until Keyword Succeeds    3x    5s    wait contains    Notify_robotframework
     #测试完毕后，进入数据库清除测试数据
     @{result}    connect_mysql    td_busonlinedisp_haikou_20200610    DELETE FROM dh_mdispatchcommand \ where billdate > '2020-12-16 00:00:00' and \ dh_mdispatchcommand.BusTId='201126142457482' \
     [Teardown]    Login_indexPage    ${ip}
