@@ -24,9 +24,9 @@ def getVariables(env='kunming'):
             'iframe_line': 'css=#line_204718869',  # 简图37路0副frame
             'operative_monitorMune':'xpath=//span[contains(text(),"运营调度")]', #简图调度母菜单
             'diagram_disapthMune':'xpath=//li[@data-title="简图调度"]', #简图调度菜单
-
             'reportMenu':'xpath=//span[contains(text(),"运营图表")]',
             'notifyMenu':'xpath=//li[@data-title="通知查询"]/a',
+            'employeeCardNo':'11111111',
             
             'myDB': {
                 'host': '10.200.9.183',

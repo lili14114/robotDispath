@@ -80,14 +80,15 @@ able_plugIn
     [Arguments]    ${arg}    # arg=启用 或 arg=禁用 实现插件的启用和禁用
     wait click    xpath=//span[contains(text(),"资源管理")]
     wait click    xpath=//li[@data-title="自定义插件配置"]/a
-    wait input    id=jarnameID    有效性    #检索条件输入功能名称
-    wait input    id=plugVersionID    20201108
+    wait input    id=jarnameID    司机打卡后车辆状态默认    #检索条件输入功能名称
+    wait input    id=plugVersionID    20201216
     wait click    id=search    #查询
     wait element    xpath=//span[@data-role="total-record"]
     wait click    xpath=//tr[@data-index="0"]/td/div    #勾选插件
     wait click    xpath=//span[contains(text(),"${arg}")]    #启用插件
     wait click    xpath=//button[@data-role="confirmBtn"]    #确认
     wait contains    ${arg}
+    [Teardown]    Login_indexPage    ${ip}
 
 goToSite
     [Arguments]    ${result}
