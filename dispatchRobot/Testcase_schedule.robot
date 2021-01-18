@@ -1,4 +1,5 @@
 *** Settings ***
+Force Tags        stress
 Library           Selenium2Library
 Library           Screenshot
 Library           Collections
@@ -32,6 +33,3 @@ add_scheduleForAdd
         wait click    xpath=//div[@class="modal-dialog ui-draggable"]/div/div[@class="modal-footer"]/button[@class="btn btn-success save"]    #保存
         wait click    xpath=//button[@class="btn btn-success save"]    #保存
     END
-
-test
-    webservice请求
