@@ -95,7 +95,7 @@ class MyTools(object):
             }
         }
         return playLoad
-    def get_gps_json(self,hostcode,logitude,latitude):
+    def get_gps_json(self,hostcode,longitude,latitude,speed,total_mileage):
         '''
         返回调度系统车辆上报GPS的json报文,报文类型为dict
         :param key:hostcode,logitude,latitude
@@ -442,7 +442,7 @@ class MyTools(object):
     def listContain_text(self,Lst,text):
         '''
         判断某个列表中的值 ，是否包含目标字符串
-                          :return:  | 15:16:24|
+                          :return:   | `listContain_text` |  ['123bx','ADC33',]|  3 |  # return True |
         '''
 
         flag=False
@@ -451,6 +451,7 @@ class MyTools(object):
                 flag=True
                 break
         return flag
+
 
 
 

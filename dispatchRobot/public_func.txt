@@ -1,11 +1,12 @@
 *** Settings ***
 Library           Selenium2Library
-Resource          公共方法.txt
+Resource          public_func.txt
 Library           RequestsLibrary
 Library           CustomLibrary
 Library           Collections
 Resource          简图调度.txt
 Variables         setting.py
+Resource          Resource.txt
 
 *** Variables ***
 &{ImplementtingRecord_menuDict}    exchangeCar=#menu_arr1_exchangeCar>a    insertCar=#menu_arr1_insertCar>a    finishRoadPlan=#menu_arr1_finishRoadPlan>a    replaceCar=#menu_arr1_replaceCar>a    replaceDriver=#menu_arr1_replaceDriver>a    changePlantime=#menu_arr1_changePlantime>a    supplementaryDriver=#menu_arr1_supplementaryDriver>a    addPlan=#menu_arr1_addPlan>a    abandonPlan=#menu_arr1_abandonPlan>a    deletePlan=#menu_arr1_deletePlan>a    addMemo=#menu_arr1_addMemo>a    trackplayback=#menu_arr1_trackplayback>a    # exchangeCar对调车位,insertCar车辆插队,finishRoadPlan完成路单,replaceCar替换车辆,replaceDriver替换司机,changePlantime更改计划时间,supplementaryDriver补录司机,addPlan增加计划,abandonPlan计划烂班,deletePlan删除计划,deletePlan删除计划,addMemo修改备注,trackplayback轨迹回放
@@ -74,3 +75,63 @@ webservice请求
     log many    @{targetLst}    #打印目标值结果
     ${flag}    should Contain multiValue    ${recordLst}    ${targetLst}    #返回bool值
     [Return]    ${flag}    # 验证结果
+
+able_plugIn
+    [Arguments]    ${arg}    # arg=启用 或 arg=禁用 实现插件的启用和禁用
+    wait click    xpath=//span[contains(text(),"资源管理")]
+    wait click    xpath=//li[@data-title="自定义插件配置"]/a
+    wait input    id=jarnameID    司机打卡后车辆状态默认    #检索条件输入功能名称
+    wait input    id=plugVersionID    20201216
+    wait click    id=search    #查询
+    wait element    xpath=//span[@data-role="total-record"]
+    wait click    xpath=//tr[@data-index="0"]/td/div    #勾选插件
+    wait click    xpath=//span[contains(text(),"${arg}")]    #启用插件
+    wait click    xpath=//button[@data-role="confirmBtn"]    #确认
+    wait contains    ${arg}
+    [Teardown]    Login_indexPage    ${ip}
+
+goToSite
+    [Arguments]    ${result}
+    ${bustidXPATH}    Catenate    SEPARATOR=    css=div[id='    ${bus_1}[bustid]    ']>div[class='bus-body']
+    #第一次进总站
+    get bsBusdiagrameMenus_first    ${bustidXPATH}    #点击车辆弹出更多菜单
+    wait click    &{dropdown_menuDict}[goToSite]    #点击快速补录按钮
+    wait click    xpath=//button[@id='save']    #对车辆手动“进站”保存
+    sleep    2
+    wait contains    待执行
+    #出总站
+    wait BsBusdiagrameViceIframe    #回到副frame，获取更多弹窗
+    wait Rightclick    ${bustidXPATH}
+    wait BsBusdiagrameIframe    #选择简图主frame
+    wait click    &{dropdown_menuDict}[outSite]    #点击快速补录按钮
+    wait click    xpath=//button[@id='save']    #对车辆手动“进站”保存
+    wait contains    运行中
+    #再次进总站
+    wait BsBusdiagrameViceIframe    #回到副frame，获取更多弹窗
+    wait Rightclick    ${bustidXPATH}
+    wait BsBusdiagrameIframe    #选择简图主frame
+    wait click    &{dropdown_menuDict}[goToSite]    #点击快速补录按钮
+    wait click    xpath=//button[@id='save']    #对车辆手动“进站”保存
+    #测试完毕后，删掉测试数据 --进入车辆路单页面
+    Login_indexPage    ${ip}
+    get bsBusdiagrameMenus_first    ${bustidXPATH}    #点击车辆弹出更多菜单
+    #wait element    &{dropdown_menuDict}[busReport]
+    ${elementxpath}    get webelements    &{dropdown_menuDict}[busReport]
+    wait click    ${elementxpath}[-1]    #点击车辆“路单”，进入路单页面
+    #-删除数据，并返回主页
+    wait contains    已完成
+    wait contains    ${result}
+    wait click    xpath=//div[@class="modal-body"]/div/div[2]/div/table/tbody/tr/td/div[2]/div/table/tbody/tr/th/div    #勾选第全部记录
+    wait click    xpath=//span[contains(text(),"删除")]    #点击删除按钮
+    wait click    xpath=//button[contains(text(),"确定")]    #点击确认删除按钮
+    wait contains    没有数据
+    #车辆位置回到停车场
+    create webservice    ${ip}
+    ${dispathJson}    Get Dispath Json    ${bus_1}[hostcode]    6
+    ${data1}    post request    api    /webservice/rest/dispatch    data=${dispathJson}
+    ${result1}    To Json    ${data1.content}
+    should contain    ${result1}[error_text]    上报成功
+    sleep    3
+    ${dispathJson}    Get Dispath Json    ${bus_1}[hostcode]    106
+    ${data2}    post request    api    /webservice/rest/dispatch    data=${dispathJson}
+    ${result2}    To Json    ${data2.content}

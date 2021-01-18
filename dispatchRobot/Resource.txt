@@ -1,7 +1,7 @@
 *** Settings ***
 Library           Selenium2Library
 Library           Collections
-Resource          公共方法.txt
+Resource          public_func.txt
 Library           RequestsLibrary
 Library           DatabaseLibrary
 Variables         setting.py
@@ -147,8 +147,8 @@ select_vicframe
 
 Bs_BusdiagramePage_entry
     [Documentation]    进入简图调度页面
-    wait click    &{menuDict}[operative_monitor]    #【运营监控】
-    wait click    &{menuDict}[diagram_disapth]    #【简图调度】
+    wait click    ${operative_monitorMune}    #【运营监控】
+    wait click    ${diagram_disapthMune}    #【简图调度】
     wait click    ${roadXpath_diagram}    #37路100
     wait BsBusdiagrameIframe    #选择简图主frame
 
