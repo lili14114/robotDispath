@@ -3,6 +3,7 @@ Resource          Resource.txt
 Library           Selenium2Library
 Library           Collections
 Variables         setting_kunming.py
+Library           HttpLibrary.HTTP
 
 *** Test Cases ***
 addschedulepsreen
@@ -56,3 +57,20 @@ DhPschedulepscreenmng
     should be equal    ${flag1}    ${true}
     should be equal    ${flag2}    ${true}
     [Teardown]    deleteSchedulePscreen
+
+test
+    #定义请求头
+    ${headers}    create dictionary
+    set to dictionary    ${headers}    Content-Type=application/x-www-form-urlencoded;charset=UTF-8
+    set to dictionary    ${headers}    User-Agent=Mozilla/5.0 (Windows NT 6.2; WOW64; Trident/7.0; rv:11.0) like Gecko
+    set to dictionary    ${headers}    Accept=image/gif, image/jpeg, image/pjpeg, application/x-ms-application, application/xaml+xml, application/x-ms-xbap, */*
+    set to dictionary    ${headers}    Accept-Language=zh-CN
+    set to dictionary    ${headers}    Cookie=JSESSIONID=GTKSr+U4WAywpIotzPVNs9Wt
+    #定义入参
+    ${login}    loginplayLoad    ${username}    ${password}
+    create session    api    ${ip}    ${headers}
+    ${data}    post request    api    /login.koala    data=${login}
+    ${result}    To Json    ${data.content}
+    ${true}    Convert To Boolean    True
+    Should Be Equal    ${result}[success]    ${true}
+    log    ${data.headers}
