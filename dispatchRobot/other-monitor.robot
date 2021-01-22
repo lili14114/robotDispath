@@ -14,7 +14,7 @@ addschedulepsreen
     wait input    xpath=//div[@class="col-lg-8"]/input[@name="screencode"]    908988999    #屏体编号
     wait input    xpath=//div[@class="col-lg-8"]/input[@id="screennameID"]    robotTest    #屏体名称
     wait click    id=save    #保存
-    wait click    xpath=//a[contains(text(),"分配线路")]     #分配线路
+    wait click    xpath=//a[contains(text(),"分配线路")]    #分配线路
     wait input    xpath=//div[@id='roadQueryGrid']/div/table/thead/tr/th/div[@class='search']/div[@class="input-group"]/input    37路1
     wait click    xpath=//div[@id='roadQueryGrid']/div/table/thead/tr/th/div[@class='search']/div[@class="input-group"]/div    #查询
     wait click    xpath=//td[@width="auto"]/div/a/span[@class="glyphicon glyphicon-arrow-down"]    #第一个下方箭头
@@ -24,9 +24,8 @@ DhPschedulepscreenmng
     [Documentation]    调度屏
     ...    1、验证计划时间是否正确显示
     ...    2、验证左边简图内容是否正确显示
-    [Setup]    Wait Until Keyword Succeeds    3x    5s    loginHEC
-    @{frame_list}    create list    Iframe0    Iframe1    Iframe2
-    @{frameTime_list}    create list    IframeTime0    IframeTime1    IframeTime2
+    @{frame_list}    create list    Iframe0
+    @{frameTime_list}    create list    IframeTime0
     @{iframe_text}    create list    #用于存储主框架计划时间
     @{iframeTime_text}    create list    #用于存储副框架的计划时间，例如：下一班发车时间
     wait click    ${operate_monitorMune}    #【运营监控】

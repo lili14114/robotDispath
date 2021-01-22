@@ -137,6 +137,7 @@ goToSite
 
 deleteSchedulePscreen
     [Documentation]    删除发车屏数据
+    Login_indexPage    ${ip}
     wait click    ${operate_monitorMune}    #【运营监控】
     wait click    ${monitor_TVmenu}    #【调度屏】
     wait click    xpath=//div[@data-role="selectAll"]    #选择全部
