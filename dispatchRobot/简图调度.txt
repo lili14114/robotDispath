@@ -4,7 +4,6 @@ Library           CustomLibrary
 Library           Collections
 Library           RequestsLibrary
 Resource          public_func.txt
-Variables         setting.py
 
 *** Keywords ***
 打开简图调度

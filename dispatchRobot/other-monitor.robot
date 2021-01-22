@@ -2,9 +2,24 @@
 Resource          Resource.txt
 Library           Selenium2Library
 Library           Collections
-Variables         setting.py
+Variables         setting_kunming.py
 
 *** Test Cases ***
+addschedulepsreen
+    [Documentation]    添加发车屏
+    [Setup]    Wait Until Keyword Succeeds    3x    5s    loginHEC
+    wait click    ${operate_monitorMune}    #【运营监控】
+    wait click    ${monitor_TVmenu}    #【调度屏】
+    wait click    xpath=//button[contains(text(),"添加")]    #添加
+    wait input    xpath=//div[@class="col-lg-8"]/input[@name="screencode"]    908988999    #屏体编号
+    wait input    xpath=//div[@class="col-lg-8"]/input[@id="screennameID"]    robotTest    #屏体名称
+    wait click    id=save    #保存
+    wait click    xpath=//a[contains(text(),"分配线路")]     #分配线路
+    wait input    xpath=//div[@id='roadQueryGrid']/div/table/thead/tr/th/div[@class='search']/div[@class="input-group"]/input    37路1
+    wait click    xpath=//div[@id='roadQueryGrid']/div/table/thead/tr/th/div[@class='search']/div[@class="input-group"]/div    #查询
+    wait click    xpath=//td[@width="auto"]/div/a/span[@class="glyphicon glyphicon-arrow-down"]    #第一个下方箭头
+    [Teardown]    Login_indexPage    ${ip}
+
 DhPschedulepscreenmng
     [Documentation]    调度屏
     ...    1、验证计划时间是否正确显示
@@ -14,8 +29,8 @@ DhPschedulepscreenmng
     @{frameTime_list}    create list    IframeTime0    IframeTime1    IframeTime2
     @{iframe_text}    create list    #用于存储主框架计划时间
     @{iframeTime_text}    create list    #用于存储副框架的计划时间，例如：下一班发车时间
-    wait click    &{menuDict}[operative_monitor]    #【运营监控】
-    wait click    xpath=//li[@data-mark="menuMark570"]    #【调度屏】
+    wait click    ${operate_monitorMune}    #【运营监控】
+    wait click    ${monitor_TVmenu}    #【调度屏】
     wait click    xpath=//a[contains(text(),"预览")]    #【预览】
     @{windows}    Get Window Handles    #获取窗口列表
     #switch window    ${windows}[-1]
@@ -41,4 +56,4 @@ DhPschedulepscreenmng
     ${true}    Convert to Boolean    True
     should be equal    ${flag1}    ${true}
     should be equal    ${flag2}    ${true}
-    [Teardown]    Login_indexPage    ${ip}
+    [Teardown]    deleteSchedulePscreen

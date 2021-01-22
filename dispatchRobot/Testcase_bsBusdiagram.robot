@@ -2,7 +2,6 @@
 Resource          Resource.txt
 Library           Selenium2Library
 Library           Collections
-Variables         setting.py
 
 *** Test Cases ***
 dropMenu_map

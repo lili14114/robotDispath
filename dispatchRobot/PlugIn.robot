@@ -2,7 +2,6 @@
 Library           sshClientLinux    10.200.9.183    root    gzbszx!QAZ!@#
 Library           Selenium2Library
 Resource          Resource.txt
-Variables         setting.py
 
 *** Test Cases ***
 plugIn_main
@@ -23,7 +22,7 @@ plugIn_main
     wait element    xpath=//div[contains(text(),"${bus_1}[internalNo]")]
     ${style}    Get Element Attribute    xpath=//div[contains(text(),"${bus_1}[internalNo]")]    style
     Wait Until Keyword Succeeds    3X    5S    Should Contain    ${style}    rgb(255, 128, 171)
-    Login_indexPage     ${ip}
+    Login_indexPage    ${ip}
     #激活插件
     able_plugIn    启用
     #司机打卡考勤
@@ -39,7 +38,7 @@ plugIn_main
     Wait Until Keyword Succeeds    3X    5S    Should Contain    ${style}    rgb(33, 150, 243)
     #结束后，车辆再次上传恢复运营指令
     ${data1}    post request    api    /webservice/rest/dispatch    data=${request_106}
-    Login_indexPage     ${ip}
+    Login_indexPage    ${ip}
     able_plugIn    禁用
     #车辆申请包车
     ${data1}    post request    api    /webservice/rest/dispatch    data=${request_6}

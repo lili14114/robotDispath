@@ -5,7 +5,6 @@ Library           RequestsLibrary
 Library           CustomLibrary
 Library           Collections
 Resource          简图调度.txt
-Variables         setting.py
 Resource          Resource.txt
 
 *** Variables ***
@@ -135,3 +134,13 @@ goToSite
     ${dispathJson}    Get Dispath Json    ${bus_1}[hostcode]    106
     ${data2}    post request    api    /webservice/rest/dispatch    data=${dispathJson}
     ${result2}    To Json    ${data2.content}
+
+deleteSchedulePscreen
+    [Documentation]    删除发车屏数据
+    wait click    ${operate_monitorMune}    #【运营监控】
+    wait click    ${monitor_TVmenu}    #【调度屏】
+    wait click    xpath=//div[@data-role="selectAll"]    #选择全部
+    wait click    xpath=//button[contains(text(),"删除")]    #删除
+    wait click    xpath=//button[contains(text(),"确定")]
+    #确定删除
+    [Teardown]    Login_indexPage    ${ip}

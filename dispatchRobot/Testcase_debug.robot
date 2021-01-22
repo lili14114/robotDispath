@@ -1,5 +1,5 @@
 *** Settings ***
-Force Tags        stress
+Force Tags        debug
 Library           Selenium2Library
 Library           Screenshot
 Library           Collections
@@ -12,9 +12,10 @@ Variables         setting.py
 *** Test Cases ***
 add_scheduleForAdd
     [Documentation]    添加排班模板
-    wait click    xpath=//span[contains(text(),"智能排班")]
+    [Setup]    Wait Until Keyword Succeeds    3x    5s    loginHEC
+    wait click    xpath=//span[contains(text(),"运营排班")]
     wait click    xpath=//a[contains(text(),"排班模板")]
-    FOR    ${i}    IN RANGE    153    200
+    FOR    ${i}    IN RANGE    0    200
         ${roadname}    Catenate    SEPARATOR=    37路    ${i}
         wait click    xpath=//button[contains(text(),"添加")]
         wait click    xpath=//fieldset[@id="parameterConfigPanel1"]/div/div/div/div/button[@data-toggle="dropdown"]    #选择线路
@@ -33,3 +34,6 @@ add_scheduleForAdd
         wait click    xpath=//div[@class="modal-dialog ui-draggable"]/div/div[@class="modal-footer"]/button[@class="btn btn-success save"]    #保存
         wait click    xpath=//button[@class="btn btn-success save"]    #保存
     END
+
+test
+    log    ${ip}

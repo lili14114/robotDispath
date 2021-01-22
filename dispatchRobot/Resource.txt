@@ -4,7 +4,7 @@ Library           Collections
 Resource          public_func.txt
 Library           RequestsLibrary
 Library           DatabaseLibrary
-Variables         setting.py
+Variables         setting_kunming.py
 
 *** Variables ***
 ${wait time}      20s

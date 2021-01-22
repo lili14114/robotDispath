@@ -3,7 +3,6 @@ Library           Selenium2Library
 Library           Collections
 Library           String
 Resource          Resource.txt
-Variables         setting.py
 
 *** Test Cases ***
 create bsRecord_bsBusdiagrame_bus

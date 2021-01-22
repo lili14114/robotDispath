@@ -1,8 +1,6 @@
 *** Settings ***
 Resource          Resource.txt
 Library           Selenium2Library
-Variables         setting.py
-Library           AutoItLibrary
 
 *** Test Cases ***
 test
