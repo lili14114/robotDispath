@@ -211,9 +211,10 @@ create webservice
     ${result}    To Json    ${data.content}
     should contain    ${result}[error_text]    上报成功
 
-create_webRequest
+create_webPageLogin
     [Arguments]    ${ip}
     [Documentation]    创建页面接口测试
+    ...    登陆后，返回最新的Header
     #定义请求头
     ${headers}    create dictionary
     set to dictionary    ${headers}    Content-Type=application/x-www-form-urlencoded;charset=UTF-8
@@ -222,6 +223,14 @@ create_webRequest
     set to dictionary    ${headers}    Accept-Language=zh-CN
     set to dictionary    ${headers}    Cookie=JSESSIONID=GTKSr+U4WAywpIotzPVNs9Wt
     #定义入参
+    ${login}    loginplayLoad    ${username}    ${password}
+    create session    api    ${ip}    ${headers}
+    ${data}    post request    api    /login.koala    data=${login}
+    ${result}    To Json    ${data.content}
+    ${true}    Convert To Boolean    True
+    Should Be Equal    ${result}[success]    ${true}
+    ${new_headers}    ${data.headers}
+    [Return]    ${new_headers}
 
 connect_mysql
     [Arguments]    ${database}    ${query}
