@@ -1,0 +1,238 @@
+*** Settings ***
+Library           Selenium2Library
+Library           Collections
+Library           RequestsLibrary
+Library           DatabaseLibrary
+Variables         setting_8081.py
+
+*** Variables ***
+${wait time}      20s
+${retry times}    3x
+&{dropdown_menuDict}    mapGPS=xpath=//a[contains(text(),"定位") and @tabindex='-1']    roadGPS=xpath=//a[contains(text(),"线路") and @tabindex='-1']    GPS_history=xpath=//a[contains(text(),"轨迹") and @tabindex='-1']    video=xpath=//a[contains(text(),"视频") and @tabindex='-1']    IPconnect=xpath=//a[contains(text(),"IP通话") and @tabindex='-1']    alarm=xpath=//a[contains(text(),"报警") and @tabindex='-1']    busReport=xpath=//a[contains(text(),"路单") and @tabindex='-1']    notify=xpath=//a[contains(text(),"通知") and @tabindex='-1']    hand_assigh=xpath=//a[contains(text(),"代发") and @tabindex='-1']    short_dispath=xpath=//a[contains(text(),"临时调度") and @tabindex='-1']    annular_dispath=xpath=//a[contains(text(),"环形调度") and @tabindex='-1']    adjust_plantime=xpath=//a[contains(text(),"计划调整") and @tabindex='-1']    cancle_plantime=xpath=//a[contains(text(),"取消计划") and @tabindex='-1']    stop_plantime=xpath=//a[contains(text(),"停用排班") and @tabindex='-1']    goToSite=xpath=//a[contains(text(),"进站") and @tabindex='-1']    outSite=xpath=//a[contains(text(),"出站") and @tabindex='-1']    driver=xpath=//a[contains(text(),"司机") and @tabindex='-1']
+...               quick_input=xpath=//a[contains(text(),"快速补录") and @tabindex='-1']
+
+*** Keywords ***
+wait element
+    [Arguments]    ${element locator}
+    #这里的文字可以在log中看到，本用户自定义关键字检察元素是否被包含，可用，可见，以下依次判断：
+    Wait Until Page Contains Element    ${element locator}    ${wait time}    #判断页面是否包含元素，唯一要注意的是，如果页面包含多个符合定位条件的元素，此关键字只要其中一个满足条件，即为成功
+    Wait Until Element Is Enabled    ${element locator}    ${wait time}    # 在这里的Enabled是指的元素的Enbale/Disable属性，当元素属性为Disabled时，元素是不可操作的
+    Wait Until Element Is Visible    ${element locator}    ${wait time}    #有时页面的元素虽然已经加载了，但是不是Visible状态，实际页面是不显示的，这样的情况下，对元素的操作也是无效的。
+    sleep    1
+
+wait contains
+    [Arguments]    ${wait text}
+    #先sleep3秒等待响应出现并截图，之后再断言我们需要断言的内容
+    sleep    3
+    Capture Page Screenshot
+    wait until page contains    ${wait text}    ${wait time}
+    sleep    1
+
+wait no_contains
+    [Arguments]    ${wait text}
+    #先sleep3秒等待响应出现并截图，之后再断言我们需要断言的内容
+    sleep    3
+    Capture Page Screenshot
+    Page Should Not Contain    ${wait text}
+    sleep    1
+
+wait click
+    [Arguments]    ${element locator}
+    [Documentation]    果看到某个按钮没有加载出来，或者点击无反应，我们会稍等下再点点看。
+    ...
+    ...    \ \ \ \ \ 默认情况下，自动化脚本如果点击失败，直接就会报错，然后本条自动化直接失败。这个是造成自动化稳定性的罪魁祸首。
+    ...
+    ...    \ \ \ 使用这个关键字，可以在失败的情况下重试。
+    ...
+    ...    \ 使用方法如下：
+    ...
+    ...    Wait Until Keyword Succeeds \ \ \ 3x \ \ \ 5s \ \ \ click element \ \ \ css=#123
+    ...
+    ...    其中，3x代表重试次数，5s代表每次重试间隔时间，后面就是关键字和其参数了，这里是点击ID为123的元素。
+    ...
+    ...    这样，就做到了如果点击ID为123的元素，如果成功，继续往下走；如果失败，隔5秒后重新点击试试。成功了继续，失败了再来，直到三次都失败为止。
+    #这里使用了上面已经建立好的wait element用户自定义关键字
+    wait element    ${element locator}
+    #使用focus可以聚焦元素
+    Set Focus To Element    ${element locator}
+    Wait Until Keyword Succeeds    ${retry times}    5s    click element    ${element locator}    #尝试点击元素，成功继续，失败5秒后重试，3次失败后本行失败
+
+wait Rightclick
+    [Arguments]    ${element locator}
+    [Documentation]    果看到某个按钮没有加载出来，或者点击无反应，我们会稍等下再点点看。
+    ...
+    ...    \ \ \ \ \ 默认情况下，自动化脚本如果点击失败，直接就会报错，然后本条自动化直接失败。这个是造成自动化稳定性的罪魁祸首。
+    ...
+    ...    \ \ \ 使用这个关键字，可以在失败的情况下重试。
+    ...
+    ...    \ 使用方法如下：
+    ...
+    ...    Wait Until Keyword Succeeds \ \ \ 3x \ \ \ 5s \ \ \ click element \ \ \ css=#123
+    ...
+    ...    其中，3x代表重试次数，5s代表每次重试间隔时间，后面就是关键字和其参数了，这里是点击ID为123的元素。
+    ...
+    ...    这样，就做到了如果点击ID为123的元素，如果成功，继续往下走；如果失败，隔5秒后重新点击试试。成功了继续，失败了再来，直到三次都失败为止。
+    #这里使用了上面已经建立好的wait element用户自定义关键字
+    wait element    ${element locator}
+    #使用focus可以聚焦元素
+    Set Focus To Element    ${element locator}
+    Wait Until Keyword Succeeds    ${retry times}    5s    Right Click Element    ${element locator}    #尝试点击元素，成功继续，失败5秒后重试，3次失败后本行失败
+
+wait Doubleclick
+    [Arguments]    ${element locator}
+    [Documentation]    果看到某个按钮没有加载出来，或者点击无反应，我们会稍等下再点点看。
+    ...
+    ...    \ \ \ \ \ 默认情况下，自动化脚本如果点击失败，直接就会报错，然后本条自动化直接失败。这个是造成自动化稳定性的罪魁祸首。
+    ...
+    ...    \ \ \ 使用这个关键字，可以在失败的情况下重试。
+    ...
+    ...    \ 使用方法如下：
+    ...
+    ...    Wait Until Keyword Succeeds \ \ \ 3x \ \ \ 5s \ \ \ click element \ \ \ css=#123
+    ...
+    ...    其中，3x代表重试次数，5s代表每次重试间隔时间，后面就是关键字和其参数了，这里是点击ID为123的元素。
+    ...
+    ...    这样，就做到了如果点击ID为123的元素，如果成功，继续往下走；如果失败，隔5秒后重新点击试试。成功了继续，失败了再来，直到三次都失败为止。
+    #这里使用了上面已经建立好的wait element用户自定义关键字
+    wait element    ${element locator}
+    #使用focus可以聚焦元素
+    Set Focus To Element    ${element locator}
+    Wait Until Keyword Succeeds    ${retry times}    5s    Double Click Element    ${element locator}    #尝试点击元素，成功继续，失败5秒后重试，3次失败后本行失败
+
+wait input
+    [Arguments]    ${element locator}    ${input text}
+    [Documentation]    重试机制
+    wait element    ${element locator}
+    Set Focus To Element    ${element locator}    #使用focus可以聚焦元素
+    Wait Until Keyword Succeeds    ${retry times}    5s    input text    ${element locator}    ${input text}    # 尝试输入文字，成功继续，失败5秒后重试，3次失败后本行失败
+
+LoginHEC
+    ${login_ip}    Catenate    SEPARATOR=    ${ip}    /login.koala
+    Open Browser    ${login_ip}    Chrome    #Chrome
+    Maximize Browser Window    #最大化浏览器
+    #${chrome_options}    Evaluate    sys.modules['selenium.webdriver'].ChromeOptions()    sys, selenium.webdriver
+    #Call Method    ${chrome_options}    add_argument    headless
+    #Call Method    ${chrome_options}    add_argument    disable-gpu
+    #${options}    Call Method    ${chrome_options}    to_capabilities
+    #Create Webdriver    Chrome    desired_capabilities=${options}
+    #Set Window Size    1920    1080
+    #Maximize Browser Window
+    #尝试登陆系统，如果其中一步失败，则重试
+    Wait Until Keyword Succeeds    ${retry times}    5s    Login_retry
+
+Login_retry
+    ${login_ip}    Catenate    SEPARATOR=    ${ip}    /login.koala
+    go to    ${login_ip}
+    input text    id=j_username    ${username}
+    input text    id=j_password    ${password}
+    input text    id=jCaptchaCode    111111
+    click element    id=loginBtn
+    sleep    1
+    Wait Contains    角色
+
+Login_indexPage
+    [Arguments]    ${ip}
+    ${login_ip}    Catenate    SEPARATOR=    ${ip}    /index.koala
+    go to    ${login_ip}
+
+select_iframe
+    Unselect Frame
+    Select Frame    ${iframe_tab}
+
+select_vicframe
+    unselect Frame
+    Select Frame    ${iframe_tab}
+    sleep    2
+
+Bs_BusdiagramePage_entry
+    [Documentation]    进入简图调度页面
+    wait click    ${operative_monitorMune}    #【运营监控】
+    wait click    ${diagram_disapthMune}    #【简图调度】
+    wait click    ${roadXpath_diagram}    #37路100
+    wait BsBusdiagrameIframe    #选择简图主frame
+
+wait BsBusdiagrameIframe
+    [Documentation]    重试简图调度的iframe
+    ...    如果主iframe失败，则进入副iframe
+    ...    如果副iframe，则全部退出到top iframe
+    ${result}    ${returnvalue}    Run Keyword And Ignore Error    Select Frame    ${iframe_tab}    #尝试定位到简图主frame
+    ${typeresult}    evaluate    type($result)
+    RUN KEYWORD IF    '${result}'=='PASS'    LOG    frame定位成功
+    ...    ELSE    select_iframe
+
+wait BsBusdiagrameViceIframe
+    [Documentation]    重试简图调度的iframe
+    ...    如果主iframe失败，则进入副iframe
+    ...    如果副iframe，则全部退出到top iframe
+    ${result}    ${returnvalue}    Run Keyword And Ignore Error    Select Frame    ${iframe_line}    #尝试定位到简图主frame
+    RUN KEYWORD IF    '${result}'=='PASS'    LOG    frame定位成功
+    ...    ELSE    select_vicframe
+
+get bsBusdiagrameMenus_first
+    [Arguments]    ${bustidXPATH}    # 车辆简图定位地址|简图车辆更多菜单
+    [Documentation]    首次打开简图-车辆-更多菜单
+    Bs_BusdiagramePage_entry
+    wait BsBusdiagrameViceIframe
+    wait Rightclick    ${bustidXPATH}
+    wait BsBusdiagrameIframe    #选择简图主frame
+
+get bsBusdiagrameMenus_nofirst
+    [Arguments]    ${bustidXPATH}    # 车辆简图定位地址|简图车辆更多菜单
+    [Documentation]    非首次打开简图-车辆-更多菜单，
+    Bs_BusdiagramePage_entry
+    wait BsBusdiagrameViceIframe
+    wait Rightclick    ${bustidXPATH}
+    wait BsBusdiagrameIframe    #选择简图主frame
+
+DepartTime
+    ${departureTime}    Get Mytool Times    hourdelta
+    [Return]    ${departureTime}
+
+wait contains_list
+    [Arguments]    @{wait textLst}
+    #先sleep3秒等待响应出现并截图，之后再断言我们需要断言的内容
+    sleep    3
+    Capture Page Screenshot
+    FOR    ${wait text}    IN    @{wait textLst}
+        wait until page contains    ${wait text}    ${wait time}
+        sleep    1
+    END
+
+create webservice
+    [Arguments]    ${ip}
+    #定义请求头
+    ${headers}    create dictionary
+    set to dictionary    ${headers}    Content-Type=application/json;charset=UTF-8
+    #定义入参
+    ${caronline}    Get Caronline Json    ${bus_1}[hostcode]
+    create session    api    ${ip}    ${headers}
+    ${data}    post request    api    /webservice/rest/caronline    data=${caronline}
+    ${result}    To Json    ${data.content}
+    should contain    ${result}[error_text]    上报成功
+
+create_webPageLogin
+    [Arguments]    ${ip}
+    [Documentation]    创建页面接口测试
+    ...    登陆后，返回最新的Header
+    #定义请求头
+    ${headers}    create dictionary
+    set to dictionary    ${headers}    Content-Type=application/x-www-form-urlencoded;charset=UTF-8
+    set to dictionary    ${headers}    User-Agent=Mozilla/5.0 (Windows NT 6.2; WOW64; Trident/7.0; rv:11.0) like Gecko
+    set to dictionary    ${headers}    Accept=image/gif, image/jpeg, image/pjpeg, application/x-ms-application, application/xaml+xml, application/x-ms-xbap, */*
+    set to dictionary    ${headers}    Accept-Language=zh-CN
+    set to dictionary    ${headers}    Cookie=JSESSIONID=GTKSr+U4WAywpIotzPVNs9Wt
+    #定义入参
+    ${login}    loginplayLoad    ${username}    ${password}
+    create session    api    ${ip}    ${headers}
+    ${data}    post request    api    /login.koala    data=${login}
+    ${result}    To Json    ${data.content}
+    ${true}    Convert To Boolean    True
+    Should Be Equal    ${result}[success]    ${true}
+    ${new_headers}    ${data.headers}
+    [Return]    ${new_headers}
+
+connect_mysql
+    [Arguments]    ${database}    ${query}
+    Connect To Database Using Custom Params    pymysql    database='${database}',user='${myDB}[user]',password='${myDB}[password]',host='${myDB}[host]',port=${myDB}[port]
+    @{a}    query    ${query}
+    [Return]    @{a}

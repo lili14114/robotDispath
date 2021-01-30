@@ -1,7 +1,0 @@
-*** Keywords ***
-打开通知报表
-    select window    ${window}
-    click element    xpath=//a[@href='#menuMark486']    #【统计报表】
-    sleep    1
-    click element    xpath=//a[contains(text(),"通知报表")]    #【通知报表】
-    sleep    1

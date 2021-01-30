@@ -1,0 +1,11 @@
+PhantomJS is launching GhostDriver...
+[INFO  - 2020-12-29T10:02:05.714Z] GhostDriver - Main - running on port 62365
+[INFO  - 2020-12-29T10:02:08.214Z] Session [e9528230-49bc-11eb-b3db-ab3a8db282d9] - _decorateNewWindow - page.settings: {"XSSAuditingEnabled":false,"javascriptCanCloseWindows":true,"javascriptCanOpenWindows":true,"javascriptEnabled":true,"loadImages":true,"localToRemoteUrlAccessEnabled":false,"userAgent":"Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/534.34 (KHTML, like Gecko) PhantomJS/1.9.2 Safari/534.34","webSecurityEnabled":true}
+[INFO  - 2020-12-29T10:02:08.214Z] Session [e9528230-49bc-11eb-b3db-ab3a8db282d9] - page.customHeaders:  - {}
+[INFO  - 2020-12-29T10:02:08.214Z] Session [e9528230-49bc-11eb-b3db-ab3a8db282d9] - CONSTRUCTOR - Desired Capabilities: {"browserName":"phantomjs","version":"","platform":"ANY","javascriptEnabled":true}
+[INFO  - 2020-12-29T10:02:08.214Z] Session [e9528230-49bc-11eb-b3db-ab3a8db282d9] - CONSTRUCTOR - Negotiated Capabilities: {"browserName":"phantomjs","version":"1.9.2","driverName":"ghostdriver","driverVersion":"1.0.4","platform":"windows-8-32bit","javascriptEnabled":true,"takesScreenshot":true,"handlesAlerts":false,"databaseEnabled":false,"locationContextEnabled":false,"applicationCacheEnabled":false,"browserConnectionEnabled":false,"cssSelectorsEnabled":true,"webStorageEnabled":false,"rotatable":false,"acceptSslCerts":false,"nativeEvents":true,"proxy":{"proxyType":"direct"}}
+[INFO  - 2020-12-29T10:02:08.214Z] SessionManagerReqHand - _postNewSessionCommand - New Session Created: e9528230-49bc-11eb-b3db-ab3a8db282d9
+[ERROR - 2020-12-29T10:02:11.701Z] Session [e9528230-49bc-11eb-b3db-ab3a8db282d9] - Page at 'http://10.200.9.183:8074/index.koala?theme=default' - Console Error (msg): SyntaxError: Parse error
+[ERROR - 2020-12-29T10:02:11.701Z] Session [e9528230-49bc-11eb-b3db-ab3a8db282d9] - Page at 'http://10.200.9.183:8074/index.koala?theme=default' - Console Error (stack): []
+[ERROR - 2020-12-29T10:02:35.498Z] Session [e9528230-49bc-11eb-b3db-ab3a8db282d9] - Page at 'http://10.200.9.183:8074/index.koala' - Console Error (msg): SyntaxError: Parse error
+[ERROR - 2020-12-29T10:02:35.498Z] Session [e9528230-49bc-11eb-b3db-ab3a8db282d9] - Page at 'http://10.200.9.183:8074/index.koala' - Console Error (stack): []
