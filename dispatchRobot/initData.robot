@@ -11,42 +11,65 @@ Resource          public_func.txt
 addOrgan
     [Documentation]    添加一级机构
     ${header}    create_webPageLogin    ${ip}    koala    888888
-    ${urlplay}    ${playLoad}    Add BsOrganization    &{resourceInfo}[organname]
     create session    api    ${ip}    ${header}
+    #添加机构
+    ${urlplay}    ${playLoad}    Add BsOrganization    &{resourceInfo}[organname]
     ${data}    post request    api    ${urlplay}    data=${playLoad}
     Run Keyword If    ${data.status_code}==200    LOG    ${data.content}
     ...    ELSE    LOG    请求失败
 
-searchOrgan
+addRole
+    [Documentation]    添加一级机构
     ${header}    create_webPageLogin    ${ip}    koala    888888
-    set to dictionary    ${header}    Content-Type=application/x-www-form-urlencoded;charset=UTF-8
-    set to dictionary    ${header}    X-Requested-With=XMLHttpRequest
     create session    api    ${ip}    ${header}
     #查询机构
-    ${urlplay}    ${playLoad}    Search BsOrganization    &{resourceInfo}[organname]
-    ${data}    post request    api    ${urlplay}    data=${playLoad}    #查询机构
-    ${result}    To Json    ${data.content}
-    ${organID}    set variable    ${result}[data][0][id]    #返回机构ID
+    ${subid}    ${belongto}    searchOrgan
+    #添加角色
+    ${role_urlplay}    ${role_playload}     Add Auth Role    &{resourceInfo}[organname]    ${subid}
+    ${role_data}    post request    api    ${role_urlplay}    data=${role_playload}
+    Run Keyword If    ${role_data.status_code}==200    LOG    ${role_data.content}
+    ...    ELSE    LOG    请求失败
     #查询角色
-    ${search_role_urlPlay}    ${search_role_playLoad}    Search Auth Role PagingQuery    &{resourceInfo}[organname]    &{resourceInfo}[organname]
-    ${roleData}    post request    api    ${search_role_urlPlay}    data=${search_role_playLoad}     #查询角色
-    ${role_result}    To Json    ${roleData.content}    #将返回值转成字典形式
-    ${roleID}    set variable    ${role_result}[data][0][id]    #返回角色ID
+    ${roleID}    searchRole
+    #角色授权菜单
+    ${authMenu_urlplay}    ${authMenu_playload}    Api Auth Menu FindAllMenusTreeByConditions    ${roleID}
+    ${authMenu_data}    post request    api    ${authMenu_urlplay}    data=${role_playload}
+    Run Keyword If    ${authMenu_data.status_code}==200    LOG    ${authMenu_data.content}
+    ...    ELSE    LOG    请求失败
+    #角色授权页面元素
+    ${authRole_urlplay}    ${authRole_playloadLst}    Api Auth Role GrantPageElementResourcesToRole    ${roleID}
+    FOR    ${authRole_playload}    IN    @{authRole_playloadLst}
+    ${authRole_data}    post request    api    ${authRole_urlplay}    ${authRole_playload}
+    Run Keyword If    ${authRole_data.status_code}==200    LOG    ${authRole_data.content}
+    ...    ELSE    LOG    请求失败
+    END
+
+addUser
+    [Documentation]    添加一级机构
+    ${header}    create_webPageLogin    ${ip}    koala    888888
+    create session    api    ${ip}    ${header}
+    #查询机构
+    ${subid}    ${belongto}    searchOrgan
+    #查询角色
+    ${roleID}    searchRole
+    #添加用户
+    ${user_urlplay}    ${user_playload}    Add Auth User    &{resourceInfo}[organname]    ${subid}
+    ${user_data}    post request    api    ${user_urlplay}    ${user_playload}
+    Run Keyword If    ${user_data.status_code}==200    LOG    ${user_data.content}
+    ...    ELSE    LOG    请求失败
     #查询用户
-    ${search_user_urlPlay}    ${search_user_playLoad}    Search Auth User PagingQuery    &{resourceInfo}[organname]
-    ${userData}    post request    api    ${search_user_urlPlay}    data=${search_user_playLoad}    #查询用户
-    ${user_result}    To Json    ${userData.content}    #将返回值转成字典形式
-    ${userID}    set variable    ${user_result}[data][0][id]    #返回角色ID
-    #查询指令
-    ${search_command_urlPlay}    ${search_command_playLoad}    Search DhCommanddeploy
-    ${commandData}    post request    api    ${search_command_urlPlay}    data=${search_command_playLoad}     #查询指令
-    ${command_result}    To Json    ${commandData.content}    #将返回值转成字典形式
-    log    ${command_result}
-    ${idLst}    get commandIdLst    ${command_result}
-    log    ${idLst}
+    ${userID}    searchUser
+    #用户分配机构
+    ${userToOrgan_urlplay}    ${userToOrgan_playload}    Api DhBlineassignOrgan BlineassignOrgan    ${userID}    ${subid}
+    ${userToOrgan_data}    post request    api    ${userToOrgan_urlplay}    ${userToOrgan_playload}
+    Run Keyword If    ${userToOrgan_data.status_code}==200    LOG    ${userToOrgan_data.content}
+    ...    ELSE    LOG    请求失败
+    #用户分配角色
+    ${userToRole_urlplay}    ${userToRole_playload}    Api Auth User GrantRolesToUser    ${userID}    ${roleID}
+    ${userToRole_data}    post request    api    ${userToRole_urlplay}    ${userToRole_playload}
+    Run Keyword If    ${userToRole_data.status_code}==200    LOG    ${userToRole_data.content}
+    ...    ELSE    LOG    请求失败
 
 enler
-    @{commandnameLst}    create list    恢复运营    停运    包车
-    FOR    ${commandname}    IN    @{commandnameLst}
-    LOG    ${commandname}
-    END
+    #查询机构    \    恢复运营    停运    包车
+    ${subid}    ${belongto}    searchOrgan
