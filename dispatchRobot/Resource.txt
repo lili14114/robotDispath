@@ -212,7 +212,7 @@ create webservice
     should contain    ${result}[error_text]    上报成功
 
 create_webPageLogin
-    [Arguments]    ${ip}
+    [Arguments]    ${ip}    ${user}    ${password}
     [Documentation]    创建页面接口测试
     ...    登陆后，返回最新的Header
     #定义请求头
@@ -222,15 +222,18 @@ create_webPageLogin
     set to dictionary    ${headers}    Accept=image/gif, image/jpeg, image/pjpeg, application/x-ms-application, application/xaml+xml, application/x-ms-xbap, */*
     set to dictionary    ${headers}    Accept-Language=zh-CN
     set to dictionary    ${headers}    Cookie=JSESSIONID=GTKSr+U4WAywpIotzPVNs9Wt
+    log    ${headers}
     #定义入参
-    ${login}    loginplayLoad    ${username}    ${password}
+    ${login}    loginplayLoad    ${user}     ${password}
     create session    api    ${ip}    ${headers}
     ${data}    post request    api    /login.koala    data=${login}
     ${result}    To Json    ${data.content}
     ${true}    Convert To Boolean    True
-    Should Be Equal    ${result}[success]    ${true}
-    ${new_headers}    ${data.headers}
-    [Return]    ${new_headers}
+    Should Be Equal    ${result}[success]    ${true}    #判断登陆是否成功
+    ${new_headers}    set variable    ${data.headers}
+    log    ${new_headers}[Set-Cookie]
+    set to dictionary    ${headers}    Cookie=${new_headers}[Set-Cookie]
+    [Return]    ${headers}
 
 connect_mysql
     [Arguments]    ${database}    ${query}
