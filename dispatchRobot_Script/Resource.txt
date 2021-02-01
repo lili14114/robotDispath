@@ -241,3 +241,27 @@ connect_mysql
     Connect To Database Using Custom Params    pymysql    database='${database}',user='${myDB}[user]',password='${myDB}[password]',host='${myDB}[host]',port=${myDB}[port]
     @{a}    query    ${query}
     [Return]    @{a}
+
+Login_koala_retry
+    ${login_ip}    Catenate    SEPARATOR=    ${ip}    /login.koala
+    go to    ${login_ip}
+    input text    id=j_username    koala
+    input text    id=j_password    888888
+    input text    id=jCaptchaCode    111111
+    click element    id=loginBtn
+    sleep    1
+    Wait Contains    角色
+
+LoginHEC_koala
+    ${login_ip}    Catenate    SEPARATOR=    ${ip}    /login.koala
+    Open Browser    ${login_ip}    Chrome    #Chrome
+    Maximize Browser Window    #最大化浏览器
+    #${chrome_options}    Evaluate    sys.modules['selenium.webdriver'].ChromeOptions()    sys, selenium.webdriver
+    #Call Method    ${chrome_options}    add_argument    headless
+    #Call Method    ${chrome_options}    add_argument    disable-gpu
+    #${options}    Call Method    ${chrome_options}    to_capabilities
+    #Create Webdriver    Chrome    desired_capabilities=${options}
+    #Set Window Size    1920    1080
+    #Maximize Browser Window
+    #尝试登陆系统，如果其中一步失败，则重试
+    Wait Until Keyword Succeeds    ${retry times}    5s    Login_koala_retry

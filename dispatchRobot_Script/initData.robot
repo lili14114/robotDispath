@@ -63,3 +63,29 @@ addUser
     ${userToRole_data}    post request    api    ${userToRole_urlplay}    ${userToRole_playload}
     Run Keyword If    ${userToRole_data.status_code}==200    LOG    ${userToRole_data.content}
     ...    ELSE    LOG    请求失败
+
+grantToRole
+    [Setup]    Wait Until Keyword Succeeds    3x    5s    LoginHEC_koala
+    wait click    xpath=//span[contains(text(),"用户角色管理")]    #用户角色管理
+    wait click    xpath=//li[@data-title="角色管理"]    #角色管理
+    wait input    xpath=//input[@name="name"]    &{resourceInfo}[organname]    #输入角色名称
+    wait click    xpath=//button[@id="roleManagerSearch"]    #查询
+    wait click    xpath=//div[@data-role="selectAll"]    #勾选角色
+    wait click    xpath=//button[contains(text(),"分配菜单资源")]    #分配菜单资源
+    wait element    xpath=//ul[@class="resourceTree tree"]/div/input
+    ${elementscount}    get element count    xpath=//ul[@class="resourceTree tree"]/div/input
+    @{elements}    get webelements    xpath=//ul[@class="resourceTree tree"]/div/input
+    log    ${elementscount}
+    FOR    ${element}    IN    @{elements}
+    wait click    ${element}
+    END
+    wait click    xpath=//button[contains(text(),"保存")]    #保存
+    wait click    xpath=//button[contains(text(),"分配页面元素资源")]    #分配页面元素资源
+    FOR     ${i}    IN RANGE    0    3
+        wait click    xpath=//div[@data-role="roleGrantPageGrid"]/div/table/thead/tr/th/div/button    #分配页面元素
+        wait element    xpath=//div[@id="selectPageGrid"]/div/table/tfoot/tr/td/div/div/span[@data-role="total-record"]
+        ${total_record}    get text    xpath=//div[@id="selectPageGrid"]/div/table/tfoot/tr/td/div/div/span[@data-role="total-record"]
+        Exit For Loop if    ${total_record}==0    #终止循环
+        wait click    xpath=//div[@id="selectPageGrid"]/div/table/tbody/tr/td/div[@class="grid-body"]/div/table/tbody/tr/th/div[@data-role="selectAll"]    #勾选当前页所有的元面元素
+        wait click    xpath=//button[contains(text(),"保存")]    #保存
+    END
