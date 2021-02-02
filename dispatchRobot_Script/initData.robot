@@ -121,7 +121,8 @@ rewriteSQLFile
     ${subid}    ${belongto}    searchOrgan
     Replace Sql Dispath    D:\\test_tools\\Bus_Server_5871_37路_基本资料    ${belongto}    ${subid}    &{resourceInfo}[organname]    #批量修改sql，执行完毕后修改后的sql，将存储在该目标下。获取修改后，可通过Navicat执行
 
-addBusinfo
+addBusinfos
+    [Documentation]    添加37路压测车辆
     ${header}    create_webPageLogin    ${ip}    &{resourceInfo}[organname]    888888
     create session    api    ${ip}    ${header}
     ${index}    set variable    0    #控制每条线路加50台车，如果超过50台，跳出当前线路循环
@@ -142,4 +143,22 @@ addBusinfo
         ...    ELSE    LOG    请求失败
         sleep    0.2
     END
+    END
+
+addBusinfo_FuncTest
+    ${header}    create_webPageLogin    ${ip}    &{resourceInfo}[organname]    888888
+    create session    api    ${ip}    ${header}
+    #查询线路，获得roadid
+    ${data}    search roadinfo    37路    #查询到线路信息
+    ${roadid}    set variable    ${data}[roadid]    #获取线路ID
+    #添加车辆
+    @{internalNoLst}    Create List    robot1    robot2    robot3    robot4    robot5
+    FOR     ${internalNo}    IN    @{internalNoLst}
+    ${urlPlay}    ${playLoad}    addBusinfo    ${internalNo}    ${internalNo}    ${internalNo}    ${roadid}    ${roadname}
+    ${bus_data}    post request    api    ${urlPlay}    ${playLoad}
+    Run Keyword If    ${bus_data.status_code}==200    LOG    ${user_data.content}
+    ...    ELSE    LOG    请求失败
+    sleep    0.3
+    #查询车辆
+    #审核车辆为有效
     END
