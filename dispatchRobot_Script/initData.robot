@@ -91,17 +91,55 @@ grantToRole
         wait click    xpath=//button[contains(text(),"保存")]    #保存
     END
 
+add_commandID
+    [Documentation]    添加指令
+    ${header}    create_webPageLogin    ${ip}    &{resourceInfo}[organname]    888888
+    create session    api    ${ip}    ${header}
+    #查询机构
+    ${subid}    ${belongto}    searchOrgan
+    #添加指令
+    ${urlplay}    ${playLoadLst}    Add DhCommanddeploy    ${subid}
+    FOR    ${playLoad}    IN    @{playLoadLst}
+    ${data}    post request    api    ${urlplay}     data=${playLoad}
+    Run Keyword If    ${user_data.status_code}==200    LOG    ${data.content}
+    ...    ELSE    LOG    请求失败
+    END
+    #查询指令
+    ${command_urlplay}    ${command_playLoad}    Search DhCommanddeploy
+    ${command_data}    post request    api    ${command_urlplay}    data=${command_playLoad}
+    ${commandidLst}    get response valueLst    ${command_data}    id
+    #对指令批量同意操作
+    FOR    ${id}    IN    ${commandidLst}
+    ${command_urlplay}    update DhCommanddeploy     ${id}
+    ${command_data}    post request    api    ${command_urlplay}
+    Run Keyword If    ${command.status_code}==200    LOG    ${data.content}
+    ...    ELSE    LOG    请求失败
+    end
+
 rewriteSQLFile
     #查询机构
     ${subid}    ${belongto}    searchOrgan
-    Replace Sql Dispath    D:\\test_tools\\Bus_Server_5871_37路_基本资料     ${belongto}    ${subid}    &{resourceInfo}[organname]    #批量修改sql，执行完毕后修改后的sql，将存储在该目标下。获取修改后，可通过Navicat执行
+    Replace Sql Dispath    D:\\test_tools\\Bus_Server_5871_37路_基本资料    ${belongto}    ${subid}    &{resourceInfo}[organname]    #批量修改sql，执行完毕后修改后的sql，将存储在该目标下。获取修改后，可通过Navicat执行
 
 addBusinfo
     ${header}    create_webPageLogin    ${ip}    &{resourceInfo}[organname]    888888
     create session    api    ${ip}    ${header}
+    ${index}    set variable    0    #控制每条线路加50台车，如果超过50台，跳出当前线路循环
+    ${start}    set variable    0    #控制加每条线路时，其CSV表的行数开始位置
     FOR    ${i}    IN RANGE    1    200
     #查询线路，获得roadid
     ${str_i}    Convert To String    ${i}
     ${roadname}    Catenate    SEPARATOR=    37路    ${str_i}    #拼接线路名
     ${data}    search roadinfo    ${roadname}    #查询到线路信息
+    ${roadid}    set variable    ${data}[roadid]
+    FOR    ${j}    IN RANGE    ${start}    10000
+        Exit For Loop if    ${index}==50    #终止当前循环
     #获取车辆数据
+        ${internalNo}    ${hostcode}    ${busplate}    ${length}    read csv file    ${j}
+        ${urlPlay}    ${playLoad}    addBusinfo    ${internalNo}    ${hostcode}    ${busplate}    ${roadid}    ${roadname}
+        ${response}    post request    api    ${urlPlay}    data=${playLoad}
+        Run Keyword If    ${data.status_code}==200    LOG    ${data.content}
+        ...    ELSE    LOG    请求失败
+        sleep    0.2
+    END
+    END
