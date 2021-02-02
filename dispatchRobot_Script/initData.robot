@@ -65,6 +65,7 @@ addUser
     ...    ELSE    LOG    请求失败
 
 grantToRole
+    [Documentation]    如果已成功授权菜单，再次授权，会导致取消授权菜单
     [Setup]    Wait Until Keyword Succeeds    3x    5s    LoginHEC_koala
     wait click    xpath=//span[contains(text(),"用户角色管理")]    #用户角色管理
     wait click    xpath=//li[@data-title="角色管理"]    #角色管理
@@ -77,11 +78,11 @@ grantToRole
     @{elements}    get webelements    xpath=//ul[@class="resourceTree tree"]/div/input
     log    ${elementscount}
     FOR    ${element}    IN    @{elements}
-    wait click    ${element}
+        wait click    ${element}
     END
     wait click    xpath=//button[contains(text(),"保存")]    #保存
     wait click    xpath=//button[contains(text(),"分配页面元素资源")]    #分配页面元素资源
-    FOR     ${i}    IN RANGE    0    3
+    FOR    ${i}    IN RANGE    0    3
         wait click    xpath=//div[@data-role="roleGrantPageGrid"]/div/table/thead/tr/th/div/button    #分配页面元素
         wait element    xpath=//div[@id="selectPageGrid"]/div/table/tfoot/tr/td/div/div/span[@data-role="total-record"]
         ${total_record}    get text    xpath=//div[@id="selectPageGrid"]/div/table/tfoot/tr/td/div/div/span[@data-role="total-record"]
@@ -89,3 +90,18 @@ grantToRole
         wait click    xpath=//div[@id="selectPageGrid"]/div/table/tbody/tr/td/div[@class="grid-body"]/div/table/tbody/tr/th/div[@data-role="selectAll"]    #勾选当前页所有的元面元素
         wait click    xpath=//button[contains(text(),"保存")]    #保存
     END
+
+rewriteSQLFile
+    #查询机构
+    ${subid}    ${belongto}    searchOrgan
+    Replace Sql Dispath    D:\\test_tools\\Bus_Server_5871_37路_基本资料     ${belongto}    ${subid}    &{resourceInfo}[organname]    #批量修改sql，执行完毕后修改后的sql，将存储在该目标下。获取修改后，可通过Navicat执行
+
+addBusinfo
+    ${header}    create_webPageLogin    ${ip}    &{resourceInfo}[organname]    888888
+    create session    api    ${ip}    ${header}
+    FOR    ${i}    IN RANGE    1    200
+    #查询线路，获得roadid
+    ${str_i}    Convert To String    ${i}
+    ${roadname}    Catenate    SEPARATOR=    37路    ${str_i}    #拼接线路名
+    ${data}    search roadinfo    ${roadname}    #查询到线路信息
+    #获取车辆数据

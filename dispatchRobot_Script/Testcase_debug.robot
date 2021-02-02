@@ -35,6 +35,4 @@ add_scheduleForAdd
     END
 
 test
-    FOR     ${i}    IN RANGE    1    3
     log    ${ip}
-    END
