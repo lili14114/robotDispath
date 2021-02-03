@@ -29,7 +29,7 @@ def getVariables(env='kunming'):
             'monitor_TVmenu':'xpath=//li[@data-title="司机发车屏"]',#司机发车屏
             'reportMenu':'xpath=//span[contains(text(),"运营图表")]',
             'notifyMenu':'xpath=//li[@data-title="通知查询"]/a',
-            'employeeCardNo':'11111111',
+            # 'employeeCardNo':'11111111',
             
             'myDB': {
                 'host': '10.200.9.183',
