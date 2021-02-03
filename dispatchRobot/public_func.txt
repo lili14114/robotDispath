@@ -11,69 +11,6 @@ Resource          Resource.txt
 &{menuDict}       operative_monitor=xpath=//a[@href='#menuMark181']    diagram_disapth=css=li[data-mark='menuMark214']    busrecordPage=css=li[data-mark='menuMark228']    # operative_monitor#运营监控，diagram_disapth #简图调度
 
 *** Keywords ***
-登陆
-    初始化基本资料
-    webservice请求
-    ${login_ip}    Catenate    SEPARATOR=    ${ip}    /login.koala
-    log    ${login_ip}
-    Open Browser    ${login_ip}    Chrome    #phantomjs
-    sleep    1
-    input text    id=j_username    ${username}
-    input text    id=j_password    ${password}
-    input text    id=jCaptchaCode    111111
-    click element    id=loginBtn
-    sleep    1
-    ${window}    get window titles
-    #如果窗口中包含了巴士在线，则直接选择该窗口，否则重新执行“登陆”
-    set global variable    ${window}
-    #Set Window Size    1920    1080
-    Maximize Browser Window
-
-关闭浏览器
-    close browser
-
-初始化基本资料
-    #创建车辆Lst
-    @{bustidLst}    create List    ${bus_1}[bustid]    ${bus_2}[bustid]    ${bus_3}[bustid]
-    @{bustidXPAHLst}    create List    #简图调度右击目标车辆XPATH地址
-    @{bustidXPAHLst_2}    create List    #简图调度左右总站获取排班信息XPATH地址
-    FOR    ${bustid}    IN    @{bustidLst}
-        ${bustidXPATH}    Catenate    SEPARATOR=    css=div[id='    ${bustid}    ']>div[class='bus-body']
-        log    ${bustidXPATH}
-        ${bustidXPATH_2}    Catenate    SEPARATOR=    xpath=//div[@id='DownStationList']/div[@id='    ${bustid}    ']/div[@class='init-plantime alpha-bg']
-        log    ${bustidXPATH_2}
-        Append to list    ${bustidXPAHLst}    ${bustidXPATH}
-        Append to list    ${bustidXPAHLst_2}    ${bustidXPATH_2}
-    END
-    Set Global Variable    ${bustidXPAHLst}
-    Set GLobal Variable    ${bustidXPAHLst_2}
-
-webservice请求
-    #定义请求头
-    ${headers}    create dictionary
-    set to dictionary    ${headers}    Content-Type=application/json;charset=UTF-8
-    #定义入参
-    ${caronline}    Get Caronline Json    ${bus_1}[hostcode]
-    create session    api    ${ip}    ${headers}
-    ${data}    post request    api    /webservice/rest/caronline    data=${caronline}
-    ${result}    To Json    ${data.content}
-    should contain    ${result}[error_text]    上报成功
-
-获取报表明细结果并验证
-    [Arguments]    ${elementsXpath}    @{targetLst}
-    @{recordLst}    create list
-    @{recordsXPath}    get webelements    ${elementsXpath}    #查询出所有的结果
-    ${XPathCount}    get element count    ${elementsXpath}
-    log    ${XPathCount}
-    FOR    ${recordXPath}    IN    @{recordsXPath}
-        ${record}    get text    ${recordXPath}
-        Append to list    ${recordLst}    ${record}    #将所有的路单结果装入列表中
-    END
-    log many    @{recordLst}    #输出所有的明细结果
-    log many    @{targetLst}    #打印目标值结果
-    ${flag}    should Contain multiValue    ${recordLst}    ${targetLst}    #返回bool值
-    [Return]    ${flag}    # 验证结果
-
 able_plugIn
     [Arguments]    ${arg}    # arg=启用 或 arg=禁用 实现插件的启用和禁用
     wait click    xpath=//span[contains(text(),"资源管理")]
@@ -227,3 +164,35 @@ searchPage
     log    ${command_result}
     ${idLst}    get commandIdLst    ${command_result}    #返回指令ID列表
     log    ${idLst}
+
+searchBusinfos
+    #${ip}    set variable    http://10.200.9.228:8081
+    ${businfoLst}    create list
+    ${header}    create_webPageLogin    ${ip}    &{resourceInfo}[organname]    888888
+    create session    api    ${ip}    ${header}
+    @{internalNoLst}    Create List    robot1    robot2    robot3    robot4    robot5
+    FOR    ${internalNo}    IN    @{internalNoLst}
+    ${bus_urlPlay}    ${bus_playLoad}    Search Businfo    ${internalNo}
+    ${bus_data}    post request    api    ${bus_urlPlay}    data=${bus_playLoad}
+    ${bus_result}    To Json    ${bus_data.content}    #将返回值转成字典形式
+    log    ${bus_result}
+    Append To List    ${businfoLst}    ${bus_result}[data][0]
+    END
+    log many    ${businfoLst}
+    #将结果装入到字典中
+    ${bus_1}    create dictionary
+    ${bus_2}    create dictionary
+    ${bus_3}    create dictionary
+    ${bus_4}    create dictionary
+    ${bus_5}    create dictionary
+    set to dictionary    ${bus_1}    internalno=${businfoLst}[0][internalno]
+    set to dictionary    ${bus_1}    bustid=${businfoLst}[0][bustid]
+    set to dictionary    ${bus_2}    internalno=${businfoLst}[1][internalno]
+    set to dictionary    ${bus_2}    bustid=${businfoLst}[1][bustid]
+    set to dictionary    ${bus_3}    internalno=${businfoLst}[2][internalno]
+    set to dictionary    ${bus_3}    bustid=${businfoLst}[2][bustid]
+    set to dictionary    ${bus_4}    internalno=${businfoLst}[3][internalno]
+    set to dictionary    ${bus_4}    bustid=${businfoLst}[3][bustid]
+    set to dictionary    ${bus_5}    internalno=${businfoLst}[4][internalno]
+    set to dictionary    ${bus_5}    bustid=${businfoLst}[4][bustid]
+    [Return]    ${bus_1}    ${bus_2}    ${bus_3}    ${bus_4}    ${bus_5}

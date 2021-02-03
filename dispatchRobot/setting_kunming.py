@@ -12,14 +12,14 @@ def getVariables(env='kunming'):
     if env=='kunming':
         DICT__variables = {
             'ip': "http://10.200.9.183:8074",
-            'username': "enler",
-            'password': '888888',
+            # 'username': "enler",
+            # 'password': '888888',
             'roadXpath_diagram': 'id=mtLocationRunDiagramTree_2_span',  # 简图树形菜单线路元素地址，例如：简图树形菜单37路0
-            'roadname': '37路0',
-            'drivername': '张五',
-            'subid': '210108110708528',
-            'roadid': '204718869',
-            'belongto': '100001059',
+            # 'roadname': '37路0',
+            # 'drivername': '张五',
+            # 'subid': '210108110708528',
+            # 'roadid': '204718869',
+            # 'belongto': '100001059',
             'iframe_tab': 'id=iframe_tab_BsBusdiagarm-Maplist-204718869',  # 简图37路0的主frame
             'iframe_line': 'css=#line_204718869',  # 简图37路0副frame
             'resourceMune':'xpath=//span[contains(text(),"资源管理")]',
@@ -38,25 +38,25 @@ def getVariables(env='kunming'):
                 'password': 'jgx7e32cv',
                 'DB': 'xgkm'
             },
-            'bus_1': {
-                'internalNo': 'robot1',
-                'hostcode': 'robot1',
-                'bustid': '210108140510812'},
-            'bus_2': {
-                'internalNo': 'robot2',
-                'hostcode': 'robot2',
-                'bustid': '210108140520701'},
-            'bus_3': {
-                'internalNo': 'robot3',
-                'hostcode': 'robot3',
-                'bustid': '210108140528670'},
-            'bus_4': {
-                'internalNo': 'robot4',
-                'hostcode': 'robot4',
-                'bustid': '210108140537947'},
-            'bus_5': {
-                'internalNo': 'robot5',
-                'bustid': '210108140551556'}
+            # 'bus_1': {
+            #     'internalNo': 'robot1',
+            #     'hostcode': 'robot1',
+            #     'bustid': '210108140510812'},
+            # 'bus_2': {
+            #     'internalNo': 'robot2',
+            #     'hostcode': 'robot2',
+            #     'bustid': '210108140520701'},
+            # 'bus_3': {
+            #     'internalNo': 'robot3',
+            #     'hostcode': 'robot3',
+            #     'bustid': '210108140528670'},
+            # 'bus_4': {
+            #     'internalNo': 'robot4',
+            #     'hostcode': 'robot4',
+            #     'bustid': '210108140537947'},
+            # 'bus_5': {
+            #     'internalNo': 'robot5',
+            #     'bustid': '210108140551556'}
         }
 
     elif env=='haikou':

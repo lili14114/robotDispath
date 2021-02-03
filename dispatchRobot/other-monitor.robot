@@ -58,7 +58,3 @@ DhPschedulepscreenmng
     should be equal    ${flag1}    ${true}
     should be equal    ${flag2}    ${true}
     [Teardown]    deleteSchedulePscreen
-
-test
-    ${data}    Read Csv Data    bs_businfo_zj37_zj_term_5871_gps.db.csv    #D:\\test_tools\\dispath\\dispath\\db\\bs_businfo_zj37_zj_term_5871_gps.db.csv'
-    log    ${data}
