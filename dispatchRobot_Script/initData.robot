@@ -93,28 +93,48 @@ grantToRole
 
 add_commandID
     [Documentation]    添加指令
-    ${header}    create_webPageLogin    ${ip}    &{resourceInfo}[organname]    888888
-    create session    api    ${ip}    ${header}
     #查询机构
     ${subid}    ${belongto}    searchOrgan
+    ${header}    create_webPageLogin    ${ip}    &{resourceInfo}[organname]    888888
+    create session    api    ${ip}    ${header}
     #添加指令
-    ${urlplay}    ${playLoadLst}    Add DhCommanddeploy    ${subid}
+    ${urlplay}    ${playLoadLst}    Add DhCommanddeploy    ${belongto}
     FOR    ${playLoad}    IN    @{playLoadLst}
         ${data}    post request    api    ${urlplay}    data=${playLoad}
-        Run Keyword If    ${user_data.status_code}==200    LOG    ${data.content}
+        Run Keyword If    ${data.status_code}==200    LOG    ${data.content}
         ...    ELSE    LOG    请求失败
     END
     #查询指令
     ${command_urlplay}    ${command_playLoad}    Search DhCommanddeploy
     ${command_data}    post request    api    ${command_urlplay}    data=${command_playLoad}
-    ${commandidLst}    get response valueLst    ${command_data}    id
+    ${command_result}    To Json    ${command_data.content}    #将返回值转成字典形式
+    @{commandidLst}    get response valueLst    ${command_result}    id
     #对指令批量同意操作
-    FOR    ${id}    IN    ${commandidLst}
+    FOR    ${id}    IN    @{commandidLst}
     ${command_urlplay}    update DhCommanddeploy    ${id}
     ${command_data}    post request    api    ${command_urlplay}
-    Run Keyword If    ${command.status_code}==200    LOG    ${data.content}
+    Run Keyword If    ${command_data.status_code}==200    LOG    ${command_data.content}
     ...    ELSE    LOG    请求失败
-    end
+    END
+
+addEmployee
+    ${header}    create_webPageLogin    ${ip}    &{resourceInfo}[organname]    888888
+    create session    api    ${ip}    ${header}
+    #查询线路，获得roadid
+    ${road_urlplay}    ${road_playLoad}    search roadinfo    37路0    #查询到线路信息
+    ${road_data}    post request    api    ${road_urlplay}    data=${road_playLoad}
+    ${road_result}    To Json    ${road_data.content}    #将返回值转成字典形式
+    ${roadid}    set variable    ${road_result}[data][0][roadid]    #获取线路ID
+    ${subid}    set variable    ${road_result}[data][0][subid]    #获取线路ID
+    #添加人员信息
+    ${urlplay}    ${playload}    add employee    张三    ${roadid}    ${subid}
+    ${data}    post request    api    ${urlplay}    data=${playload}
+    sleep    1
+    #查询人员信息
+    ${employ_urlplay}    ${employ_playload}    search employee    张三
+    ${employ_data}    post request    api    ${employ_urlplay}    data=${employ_playload}
+    ${employ_result}    To Json    ${employ_data.content}    #将返回值转成字典形式
+    ${employid}    set variable    ${employ_result}[data][0][id]
 
 rewriteSQLFile
     #查询机构
