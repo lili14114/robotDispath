@@ -217,7 +217,7 @@ class PlayLoads(object):
             "roleIds": str(roleid)
         }
         return urlplay, playLoad
-    def add_DhCommanddeploy(self,ogranid):
+    def add_DhCommanddeploy(self,belongto):
         '''
         添加指令配置
         post请求
@@ -241,21 +241,22 @@ class PlayLoads(object):
             }
         ]
         urlplay='/DhCommanddeploy/add.koala'
-        playLoad={
-                "commandname": '',
-                "commandtype": '非营运',
-                'commandid': '',
-                'belongto': ogranid,
-                'autoAgreePeriodStart':'00:00',
-                'autoAgreePeriodEnd':'23:59',
-                'instructionExtension':''
-        }
         playLoadLst=[]
         for commandDict in commandDictLst:
-            playLoad['commandname']=commandDict['commandname']
-            playLoad['commandid']=commandDict['commandid']
-            playLoadLst.append(playLoad)
+            p=self.commandPlayLoad(commandDict['commandname'],commandDict['commandid'],belongto)
+            playLoadLst.append(p)
         return urlplay,playLoadLst
+    def commandPlayLoad(self,commandname,commandid,belongto):
+        playLoad = {
+            "commandname": commandname,
+            "commandtype": '非营运',
+            'commandid': commandid,
+            'belongto': belongto,
+            'autoAgreePeriodStart': '00:00',
+            'autoAgreePeriodEnd': '23:59',
+            'instructionExtension': ''
+        }
+        return playLoad
     def update_DhCommanddeploy(self,id):
         '''
         指令勾选自动同意
@@ -415,13 +416,92 @@ class PlayLoads(object):
         }
         return urlPlay, playLoad
 
+    def add_employee(self,empname,roadid,subid,empno='11111111',cardcode='11111111'):
+        '''
+        添加人员信息
+        post请求
+        :param empname: 人员姓名
+        :param empno: 人员工号
+        :param cardcode: 卡号
+        :param roadid: 线路id
+        :param subid: 机构id
+        :return: urlPlay,playLoad
+        '''
+        rdom = random.randint(100000, 1000000)
+        urlPlay = '/BsEmpinfo/getStateValue.koala'
+        playLoad = {
+            "empid": get_times(),
+            "emplcode": str(rdom),
+            "empname": empname,
+            "identification": "",
+            "empno": empno,
+            "birthday": get_concrete_times(),
+            "age": "",
+            "homeplace": "",
+            "major": "",
+            "graduateschool": "",
+            "height": "",
+            "firstphone": "",
+            "telephone": "",
+            "shortphone": "",
+            "cardcode": cardcode,
+            "addr": "",
+            "recorddate": "",
+            "memo": "",
+            "entryday": get_concrete_times(),
+            "jointime": get_concrete_times(),
+            "confirmday": get_concrete_times(),
+            "bankcark": "",
+            "joindate": "1",
+            "bankcode": "0",
+            "socialstate": "0",
+            "reservefunstate": "0",
+            "sex": '男',
+            "maritalstatus": "已婚",
+            "politicalstatue": "群众",
+            "workstate": "实习",
+            "recordstate": "起草",
+            "staystate": "是",
+            "worktype": "管理人员",
+            "poststate": "2",
+            "roadid": roadid,
+            "degree": "",
+            "nation": "",
+            "emppost": "驾驶员",
+            "subid": subid
+        }
+        return urlPlay,playLoad
+    def search_employee(self,empname):
+        '''
+        查询人员信息
+        post请求
+        :param empname:
+        :return: urlPlay,playload
+        '''
+        urlPlay = '/BsEmpinfo/pageJson.koala?showDisabled=1'
+        playload={
+            'poststate': -1,
+            'pagesize': 50,
+            'empno': '',
+            'empname': empname,
+            'cardcode': '',
+            'subName': '',
+            'subId': '',
+            'roadName': '',
+            'roadid': '',
+            'page': 0
+
+        }
+        return urlPlay,playload
+
+
 
 if __name__ == '__main__':
     p=PlayLoads()
     internaleno='robot'
     roadid=12344
     #print(p.get_commandIdLst())
-    url,playload=p.addBusinfo(internaleno,internaleno,internaleno,roadid,internaleno)
+    url,playload=p.add_DhCommanddeploy('100004')
     print(url)
     print(playload)
 
