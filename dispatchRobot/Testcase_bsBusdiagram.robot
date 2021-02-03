@@ -6,7 +6,8 @@ Library           Collections
 *** Test Cases ***
 dropMenu_map
     [Documentation]    验证简图-车辆-更多菜单中的仅查看相关功能是否正确
-    [Setup]    Wait Until Keyword Succeeds    3x    5s    loginHEC
+    #获取测试车辆
+    ${bus_1}     ${bus_2}     ${bus_3}     ${bus_4}     ${bus_5}     searchBusinfos
     ${bustidXPATH}    Catenate    SEPARATOR=    css=div[id='    ${bus_1}[bustid]    ']>div[class='bus-body']
     #轨迹
     get bsBusdiagrameMenus_first    ${bustidXPATH}    #点击车辆弹出更多菜单
@@ -27,31 +28,37 @@ dropMenu_map
 
 dropMenu_notify
     [Documentation]    验证简图-车辆-更多菜单中"通知“
+    [Setup]    Wait Until Keyword Succeeds    3x    5s    loginHEC
+    #获取测试车辆
+    ${bus_1}     ${bus_2}     ${bus_3}     ${bus_4}     ${bus_5}     searchBusinfos
     ${bustidXPATH}    Catenate    SEPARATOR=    css=div[id='    ${bus_1}[bustid]    ']>div[class='bus-body']
     #轨迹
     get bsBusdiagrameMenus_first    ${bustidXPATH}    #点击车辆弹出更多菜单
-    wait click    &{dropdown_menuDict}[notify]    #点击”通知“按钮
+    @{elements}    Get WebElements    xpath=//a[contains(text(),"通知")]
+    log many    @{elements}
+    wait click    ${elements}[-1]    #点击”通知“按钮
     wait click    id=ztreeData_2_switch    #加载树形菜单
     wait input    id=phrase_textID    Notify_robotframework    #输入通知内容
     wait click    id=save    #点击发送按钮
     wait contains    发送成功
-    wait click    xpath=//button[contains(text(),"返回")]
+    #wait click    xpath=//button[contains(text(),"返回")]
     Login_indexPage    ${ip}    #关闭通知对话框
     #通知报表确认结果
     wait click    ${reportMenu}    #【统计报表】
     wait click    ${notifyMenu}    #【通知报表】
+    ${roadname}    set variable    37路0
     wait click    xpath=//span[contains(text(),"${roadname}")]    #【树形菜单选择37路100】
     ${time}    Get Time
     wait input    id=notice_enddateID    ${time}
     wait click    xpath=//button[@id='notice_search']    #查询
     Wait Until Keyword Succeeds    3x    5s    wait contains    Notify_robotframework
     #测试完毕后，进入数据库清除测试数据
-    @{result}    connect_mysql    td_busonlinedisp_haikou_20200610    DELETE FROM dh_mdispatchcommand \ where billdate > '2020-12-16 00:00:00' and \ dh_mdispatchcommand.BusTId='201126142457482' \
-    [Teardown]    Login_indexPage    ${ip}
+    @{result}    connect_mysql    ${myDB}[DBdisp]    DELETE FROM dh_mdispatchcommand \ where billdate > '2020-12-16 00:00:00' and \ dh_mdispatchcommand.BusTId='201126142457482' \
 
 dropMenu_hand_assigh
     [Documentation]    简图-手动代发功能
-    [Setup]    Wait Until Keyword Succeeds    3x    5s    loginHEC
+    #获取测试车辆
+    ${bus_1}     ${bus_2}     ${bus_3}     ${bus_4}     ${bus_5}     searchBusinfos
     ${bustidXPATH}    Catenate    SEPARATOR=    css=div[id='    ${bus_1}[bustid]    ']>div[class='bus-body']
     get bsBusdiagrameMenus_first    ${bustidXPATH}    #点击车辆弹出更多菜单
     wait element    &{dropdown_menuDict}[hand_assigh]    #等待”代发“"按钮
@@ -59,8 +66,8 @@ dropMenu_hand_assigh
     wait click    xpath=//a[contains(text(),"恢复营运")]    #点击恢复运营
     #判断车辆在简图的颜色值为rgb(33, 150, 243)
     wait BsBusdiagrameViceIframe
-    wait element    xpath=//div[contains(text(),"${bus_1}[internalNo]")]
-    ${style}    Get Element Attribute    xpath=//div[contains(text(),"${bus_1}[internalNo]")]    style
+    wait element    xpath=//div[contains(text(),"${bus_1}[internalno]")]
+    ${style}    Get Element Attribute    xpath=//div[contains(text(),"${bus_1}[internalno]")]    style
     Wait Until Keyword Succeeds    3X    5S    Should Contain    ${style}    rgb(33, 150, 243)
     #代发停运指令
     wait Rightclick    ${bustidXPATH}    #回到更多菜单
@@ -70,8 +77,8 @@ dropMenu_hand_assigh
     wait click    xpath=//a[contains(text(),"停运")]    #点击停运
     #判断车辆在简图的颜色值为rgb(255, 128, 171)
     wait BsBusdiagrameViceIframe
-    wait element    xpath=//div[contains(text(),"${bus_1}[internalNo]")]
-    ${style}    Get Element Attribute    xpath=//div[contains(text(),"${bus_1}[internalNo]")]    style
+    wait element    xpath=//div[contains(text(),"${bus_1}[internalno]")]
+    ${style}    Get Element Attribute    xpath=//div[contains(text(),"${bus_1}[internalno]")]     style
     Wait Until Keyword Succeeds    3X    5S    Should Contain    ${style}    rgb(255, 128, 171)
     #判断车辆图标旁边的中文字是否正确
     ${statusXPATH}    Catenate    SEPARATOR=    xpath=//div[@id='    ${bus_1}[bustid]    ']/span
@@ -86,8 +93,8 @@ dropMenu_hand_assigh
     wait click    xpath=//a[contains(text(),"包车")]
     #判断车辆在简图的颜色值为rgb(76, 175, 80)
     wait BsBusdiagrameViceIframe
-    wait element    xpath=//div[contains(text(),"${bus_1}[internalNo]")]
-    ${style}    Get Element Attribute    xpath=//div[contains(text(),"${bus_1}[internalNo]")]    style
+    wait element    xpath=//div[contains(text(),"${bus_1}[internalno]")]
+    ${style}    Get Element Attribute    xpath=//div[contains(text(),"${bus_1}[internalno]")]    style
     Wait Until Keyword Succeeds    3X    5S    Should Contain    ${style}    rgb(76, 175, 80)
     #判断车辆图标旁边的中文字是否正确
     wait element    ${statusXPATH}

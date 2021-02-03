@@ -11,7 +11,7 @@ ${wait time}      20s
 ${retry times}    3x
 &{dropdown_menuDict}    mapGPS=xpath=//a[contains(text(),"定位") and @tabindex='-1']    roadGPS=xpath=//a[contains(text(),"线路") and @tabindex='-1']    GPS_history=xpath=//a[contains(text(),"轨迹") and @tabindex='-1']    video=xpath=//a[contains(text(),"视频") and @tabindex='-1']    IPconnect=xpath=//a[contains(text(),"IP通话") and @tabindex='-1']    alarm=xpath=//a[contains(text(),"报警") and @tabindex='-1']    busReport=xpath=//a[contains(text(),"路单") and @tabindex='-1']    notify=xpath=//a[contains(text(),"通知") and @tabindex='-1']    hand_assigh=xpath=//a[contains(text(),"代发") and @tabindex='-1']    short_dispath=xpath=//a[contains(text(),"临时调度") and @tabindex='-1']    annular_dispath=xpath=//a[contains(text(),"环形调度") and @tabindex='-1']    adjust_plantime=xpath=//a[contains(text(),"计划调整") and @tabindex='-1']    cancle_plantime=xpath=//a[contains(text(),"取消计划") and @tabindex='-1']    stop_plantime=xpath=//a[contains(text(),"停用排班") and @tabindex='-1']    goToSite=xpath=//a[contains(text(),"进站") and @tabindex='-1']    outSite=xpath=//a[contains(text(),"出站") and @tabindex='-1']    driver=xpath=//a[contains(text(),"司机") and @tabindex='-1']
 ...               quick_input=xpath=//a[contains(text(),"快速补录") and @tabindex='-1']
-&{resourceInfo}    organname=testRobot
+&{resourceInfo}    organname=enler
 
 *** Keywords ***
 wait element
@@ -125,8 +125,8 @@ LoginHEC
 Login_retry
     ${login_ip}    Catenate    SEPARATOR=    ${ip}    /login.koala
     go to    ${login_ip}
-    input text    id=j_username    ${username}
-    input text    id=j_password    ${password}
+    input text    id=j_username    &{resourceInfo}[organname]
+    input text    id=j_password    888888
     input text    id=jCaptchaCode    111111
     click element    id=loginBtn
     sleep    1
@@ -202,11 +202,13 @@ wait contains_list
 
 create webservice
     [Arguments]    ${ip}
+    #获取测试车辆
+    ${bus_1}     ${bus_2}     ${bus_3}     ${bus_4}     ${bus_5}     searchBusinfos
     #定义请求头
     ${headers}    create dictionary
     set to dictionary    ${headers}    Content-Type=application/json;charset=UTF-8
     #定义入参
-    ${caronline}    Get Caronline Json    ${bus_1}[hostcode]
+    ${caronline}    Get Caronline Json    ${bus_1}[internalno]
     create session    api    ${ip}    ${headers}
     ${data}    post request    api    /webservice/rest/caronline    data=${caronline}
     ${result}    To Json    ${data.content}

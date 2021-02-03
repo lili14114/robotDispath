@@ -117,6 +117,11 @@ add_commandID
     ...    ELSE    LOG    请求失败
     END
 
+rewriteSQLFile
+    #查询机构
+    ${subid}    ${belongto}    searchOrgan
+    Replace Sql Dispath    D:\\test_tools\\Bus_Server_5871_37路_基本资料    ${belongto}    ${subid}    &{resourceInfo}[organname]    #批量修改sql，执行完毕后修改后的sql，将存储在该目标下。获取修改后，可通过Navicat执行
+
 addEmployee
     ${header}    create_webPageLogin    ${ip}    &{resourceInfo}[organname]    888888
     create session    api    ${ip}    ${header}
@@ -135,11 +140,6 @@ addEmployee
     ${employ_data}    post request    api    ${employ_urlplay}    data=${employ_playload}
     ${employ_result}    To Json    ${employ_data.content}    #将返回值转成字典形式
     ${employid}    set variable    ${employ_result}[data][0][id]
-
-rewriteSQLFile
-    #查询机构
-    ${subid}    ${belongto}    searchOrgan
-    Replace Sql Dispath    D:\\test_tools\\Bus_Server_5871_37路_基本资料    ${belongto}    ${subid}    &{resourceInfo}[organname]    #批量修改sql，执行完毕后修改后的sql，将存储在该目标下。获取修改后，可通过Navicat执行
 
 addBusinfo_FuncTest
     ${header}    create_webPageLogin    ${ip}    &{resourceInfo}[organname]    888888

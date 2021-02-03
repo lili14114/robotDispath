@@ -20,7 +20,8 @@ create bsRecord_bsBusdiagrame_bus
     ...    测试完毕
     ...    删除测试数据
     ...    重新刷新页面，退回首页
-    [Setup]    Wait Until Keyword Succeeds    3x    5s    loginHEC
+    #获取测试车辆
+    ${bus_1}     ${bus_2}     ${bus_3}     ${bus_4}     ${bus_5}     searchBusinfos
     ${departureTime}    DepartTime
     ${bustidXPATH}    Catenate    SEPARATOR=    css=div[id='    ${bus_1}[bustid]    ']>div[class='bus-body']
     get bsBusdiagrameMenus_first    ${bustidXPATH}    #点击车辆弹出更多菜单
@@ -61,7 +62,8 @@ create bsRecord_bsBusdiagrame_quickAdd
     ...    测试完毕
     ...    进入-简图-车辆-路单-删除测试数据
     ...    重新刷新页面，退回首页
-    [Setup]    Wait Until Keyword Succeeds    3x    5s    loginHEC
+    #获取测试车辆
+    ${bus_1}     ${bus_2}     ${bus_3}     ${bus_4}     ${bus_5}     searchBusinfos
     ${departureTime}    DepartTime
     ${departuretime_new}    Catenate    SEPARATOR=    ${departureTime}    :00
     ${bustidXPATH}    Catenate    SEPARATOR=    css=div[id='    ${bus_1}[bustid]    ']>div[class='bus-body']
@@ -110,6 +112,8 @@ create bsRecord_bsBusdiagrame
     ...    测试完毕
     ...    删除测试数据
     ...    重新刷新页面，退回首页
+    #获取测试车辆
+    ${bus_1}     ${bus_2}     ${bus_3}     ${bus_4}     ${bus_5}     searchBusinfos
     ${departureTime}    DepartTime
     ${bustidXPATH}    Catenate    SEPARATOR=    css=div[id='    ${bus_1}[bustid]    ']>div[class='bus-body']
     @{busRecordLst}    create list    ${departureTime}    8.67    6.8    robot Test
@@ -165,12 +169,14 @@ create bsRecord
     ...    测试完毕
     ...    删除测试数据
     ...    重新刷新页面，退回首页
+    #获取测试车辆
+    ${bus_1}     ${bus_2}     ${bus_3}     ${bus_4}     ${bus_5}     searchBusinfos
     ${departureTime}    DepartTime
     ${bustidXPATH}    Catenate    SEPARATOR=    css=div[id='    ${bus_1}[bustid]    ']>div[class='bus-body']
     @{busRecordLst}    create list    ${departureTime}    8.67    6.8    robot Test
     #进入行车记录页面
-    wait click    &{menuDict}[operative_monitor]    #【运营监控】
-    wait click    xpath=//li[@data-mark='menuMark228']    #【行车记录】
+    wait click    ${operative_monitorMune}    #【运营监控】
+    wait click    xpath=//a[contains(text(),"行车记录")]    #【行车记录】
     wait click    xpath=//span[contains(text(),"运营补录")]    #点击“运营补录”按钮
     #选择线路
     wait click    xpath=//div[@id='roadidID']/button[@data-toggle='dropdown']    #点击线路编号选择按钮
@@ -217,6 +223,8 @@ creat_bsRecord_goTosite
     ...    1、待执行路单
     ...    2、运行中路单
     ...    3、已完成路单
+    #获取测试车辆
+    ${bus_1}     ${bus_2}     ${bus_3}     ${bus_4}     ${bus_5}     searchBusinfos
     ${bustidXPATH}    Catenate    SEPARATOR=    css=div[id='    ${bus_1}[bustid]    ']>div[class='bus-body']
     #第一次进总站
     get bsBusdiagrameMenus_first    ${bustidXPATH}    #点击车辆弹出更多菜单
@@ -251,12 +259,12 @@ creat_bsRecord_goTosite
     wait contains    没有数据
     #车辆位置回到停车场
     create webservice    ${ip}
-    ${dispathJson}    Get Dispath Json    ${bus_1}[hostcode]    6
+    ${dispathJson}    Get Dispath Json    ${bus_1}[internalno]    6
     ${data1}    post request    api    /webservice/rest/dispatch    data=${dispathJson}
     ${result1}    To Json    ${data1.content}
     should contain    ${result1}[error_text]    上报成功
     sleep    3
-    ${dispathJson}    Get Dispath Json    ${bus_1}[hostcode]    106
+    ${dispathJson}    Get Dispath Json    ${bus_1}[internalno]    106
     ${data2}    post request    api    /webservice/rest/dispatch    data=${dispathJson}
     ${result2}    To Json    ${data2.content}
     [Teardown]    Login_indexPage    ${ip}
