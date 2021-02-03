@@ -9,6 +9,13 @@ creat by Enler 2020-11-18
 import time,json
 import datetime
 
+def get_times():
+    b = time.strftime('%y%m%d%H%M%S744',time.localtime(time.time()))+str(random.randint(100,999))
+    return b
+def get_concrete_times():
+    concrete_b = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
+    return concrete_b
+
 class PlayLoads(object):
     def __init__(self):
         pass
@@ -133,7 +140,7 @@ class PlayLoads(object):
                                   607,608,609,610,611,612,613,614,615,616,617,618,619,620,622,639,640,646,
                                   661,662,663,664,665,666,667,668,669,670,671,785,786,787,812,813,814,815,
                                   816,817,821,822,823,826,827,828,829,830,831,841,843,847,848,849,851,852,855]
-        urlplay = self.url+ '/auth/role/grantPageElementResourcesToRole.koala'
+        urlplay =  '/auth/role/grantPageElementResourcesToRole.koala'
         playLoadLst=[]
         playLoad = {
             'roleId': roleid,
@@ -200,7 +207,8 @@ class PlayLoads(object):
         '''
         分配角色
         post请求
-        :param userId,roleid:
+        :param userId,
+        :param roleid,:
         :return:  urlplay, playLoad
         '''
         urlplay = '/auth/user/grantRolesToUser.koala'
@@ -280,10 +288,142 @@ class PlayLoads(object):
             id = d['id']
             idLst.append(id)
         return idLst
+    def search_roadinfo(self,roadname):
+        '''
+        查询线路
+        Post请求
+        :param roadname:
+        :return:urlplay,playLoad
+        '''
+        urlplay='/BsRoadinfo/pageJson.koala?'
+        playLoad = {
+            "edt_Road": "",
+            "edt_Roadid": "",
+            "pagesize": "50",
+            "num": "",
+            "sub": "",
+            "roadRailVal": "",
+            "roadname": roadname,
+            "subName": "",
+            "page": "0"
+        }
+        return urlplay,playLoad
+    def addBusinfo(self,internalno,hostcode,busplate,roadid,roadname):
+        '''
+        添加车辆，post请求
+        :param internalno:
+        :param hostcode:
+        :param busplate:
+        :param roadid:
+        :param roadname:
+        :return: urlPlay,playLoad
+        '''
+        urlPlay =  '/BsBusinfo/getStateValue.koala'
+        playLoad = {
+            'bustid': get_times(),
+            'wlanip': '',
+            'operdate': get_concrete_times(),
+            'busorder': '',
+            'obuId': '',
+            'internalno': internalno,
+            'hostcode': hostcode,
+            'busplate': busplate,
+            'factoryno': '',
+            'busspec': '',
+            'mobphoneno': '',
+            'enginecode': '',
+            'chassiscode': '',
+            'enginespec': '',
+            'busno': '',
+            'pourstandard': '',
+            'buslength': '',
+            'busbrand': '',
+            'factory': '',
+            'buscolor': '',
+            'busvin': '',
+            'simcode': '',
+            'enginename': '',
+            'operidentify': '',
+            'seat': '',
+            'totalpassenger': '',
+            'state': '1',
+            'uploadmark': '允许',
+            'downloadmark': '允许',
+            'bustype': '',
+            'operatingtype': 0,
+            'fueltype': '',
+            'roadid': str(int(roadid)),
+            'roadName': roadname,
+            'classid': '',
+            'teamid': '',
+            'isairconditon': 0,
+            'isvirtual': 0,
+        }
+        return urlPlay,playLoad
+    def get_response_valueLst(self,response,key):
+        '''
+        从返回值中的data中进行取多个值
+        例如;查询所有的指令ID，key=id，返回值该机构所有的指令id
+        :param index:
+        :return:
+        '''
+
+        data=response['data']
+        valueLst=[]
+        for d in data:
+            valueLst.append(d[key])
+        print(valueLst)
+        return valueLst
+    def search_businfo(self,internalno):
+        '''
+        查询车辆信息
+        :param internalno:
+        :return: urlPlay,playLoad
+        '''
+
+        urlPlay =  '/BsBusinfo/pageJson.koala'
+        playLoad = {
+            "0": "0",
+            "roadid": "-1",
+            "subid": "",
+            "state": "-1",
+            "checkstate": "-1",
+            "bustype": "",
+            "fueltype": "",
+            "isairconditon": "",
+            "pagesize": "50",
+            "internalno": internalno,
+            "busplate": "",
+            "hostcode": "",
+            "page": "0"
+
+        }
+        return urlPlay,playLoad
+
+    def check_businfo(self, businfoID):
+        '''
+        审核车辆信息
+        post请求
+        :param businfoID:
+        :return:
+        '''
+        urlPlay =  '/BsBusinfo/check.koala'
+
+        playLoad = {
+            'ids': businfoID,
+            'checkstate': 1
+        }
+        return urlPlay, playLoad
+
 
 if __name__ == '__main__':
     p=PlayLoads()
+    internaleno='robot'
+    roadid=12344
     #print(p.get_commandIdLst())
+    url,playload=p.addBusinfo(internaleno,internaleno,internaleno,roadid,internaleno)
+    print(url)
+    print(playload)
 
 
 
