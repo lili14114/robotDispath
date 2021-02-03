@@ -7,7 +7,7 @@ Library           Collections
 Resource          Resource.txt
 
 *** Variables ***
-&{resourceInfo}    organname=robotTest
+&{resourceInfo}    organname=enler
 &{menuDict}       operative_monitor=xpath=//a[@href='#menuMark181']    diagram_disapth=css=li[data-mark='menuMark214']    busrecordPage=css=li[data-mark='menuMark228']    # operative_monitor#运营监控，diagram_disapth #简图调度
 
 *** Keywords ***
