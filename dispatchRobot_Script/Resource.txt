@@ -125,8 +125,8 @@ LoginHEC
 Login_retry
     ${login_ip}    Catenate    SEPARATOR=    ${ip}    /login.koala
     go to    ${login_ip}
-    input text    id=j_username    ${username}
-    input text    id=j_password    ${password}
+    input text    id=j_username    &{resourceInfo}[organname]
+    input text    id=j_password    888888
     input text    id=jCaptchaCode    111111
     click element    id=loginBtn
     sleep    1

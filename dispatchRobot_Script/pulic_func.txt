@@ -56,23 +56,3 @@ searchOrgan
     ${subid}    set variable    ${result}[data][0][organid]    #返回机构ID
     ${belongto}    set variable    ${result}[data][0][belongto]
     [Return]    ${subid}    ${belongto}
-
-searchRoadinfo
-    [Arguments]    ${roadname}
-    ${header}    create_webPageLogin    ${ip}    &{resourceInfo}[organname]    888888
-    create session    api    ${ip}    ${header}
-    #查询线路
-    ${urlplay}    ${playLoad}    search roadinfo    ${roadname}
-    ${data}    post request    api    ${urlplay}    data=${playLoad}    #查询线路
-    ${result}    To Json    ${data.content}
-    #${roadid}    set variable    ${result}[data][0][roadid]    #返回机构序号
-    #${subid}    set variable    ${result}[data][0][subid]    #返回机构ID
-    #${belongto}    set variable    ${result}[data][0][belongto]
-    ${result_data}    set variable    ${result}[data][0]    #返回线路数据
-    [Return]    ${result_data}
-
-addRoadinfo
-    [Arguments]    ${urlPlay}    ${playLoad}
-    ${response}    post request    api    ${urlPlay}    data=${playLoad}
-    Run Keyword If    ${data.status_code}==200    LOG    ${data.content}
-    ...    ELSE    LOG    请求失败

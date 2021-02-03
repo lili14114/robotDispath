@@ -100,9 +100,9 @@ add_commandID
     #添加指令
     ${urlplay}    ${playLoadLst}    Add DhCommanddeploy    ${subid}
     FOR    ${playLoad}    IN    @{playLoadLst}
-    ${data}    post request    api    ${urlplay}     data=${playLoad}
-    Run Keyword If    ${user_data.status_code}==200    LOG    ${data.content}
-    ...    ELSE    LOG    请求失败
+        ${data}    post request    api    ${urlplay}    data=${playLoad}
+        Run Keyword If    ${user_data.status_code}==200    LOG    ${data.content}
+        ...    ELSE    LOG    请求失败
     END
     #查询指令
     ${command_urlplay}    ${command_playLoad}    Search DhCommanddeploy
@@ -110,7 +110,7 @@ add_commandID
     ${commandidLst}    get response valueLst    ${command_data}    id
     #对指令批量同意操作
     FOR    ${id}    IN    ${commandidLst}
-    ${command_urlplay}    update DhCommanddeploy     ${id}
+    ${command_urlplay}    update DhCommanddeploy    ${id}
     ${command_data}    post request    api    ${command_urlplay}
     Run Keyword If    ${command.status_code}==200    LOG    ${data.content}
     ...    ELSE    LOG    请求失败
@@ -121,44 +121,31 @@ rewriteSQLFile
     ${subid}    ${belongto}    searchOrgan
     Replace Sql Dispath    D:\\test_tools\\Bus_Server_5871_37路_基本资料    ${belongto}    ${subid}    &{resourceInfo}[organname]    #批量修改sql，执行完毕后修改后的sql，将存储在该目标下。获取修改后，可通过Navicat执行
 
-addBusinfos
-    [Documentation]    添加37路压测车辆
-    ${header}    create_webPageLogin    ${ip}    &{resourceInfo}[organname]    888888
-    create session    api    ${ip}    ${header}
-    ${index}    set variable    0    #控制每条线路加50台车，如果超过50台，跳出当前线路循环
-    ${start}    set variable    0    #控制加每条线路时，其CSV表的行数开始位置
-    FOR    ${i}    IN RANGE    1    200
-    #查询线路，获得roadid
-    ${str_i}    Convert To String    ${i}
-    ${roadname}    Catenate    SEPARATOR=    37路    ${str_i}    #拼接线路名
-    ${data}    search roadinfo    ${roadname}    #查询到线路信息
-    ${roadid}    set variable    ${data}[roadid]
-    FOR    ${j}    IN RANGE    ${start}    10000
-        Exit For Loop if    ${index}==50    #终止当前循环
-    #获取车辆数据
-        ${internalNo}    ${hostcode}    ${busplate}    ${length}    read csv file    ${j}
-        ${urlPlay}    ${playLoad}    addBusinfo    ${internalNo}    ${hostcode}    ${busplate}    ${roadid}    ${roadname}
-        ${response}    post request    api    ${urlPlay}    data=${playLoad}
-        Run Keyword If    ${data.status_code}==200    LOG    ${data.content}
-        ...    ELSE    LOG    请求失败
-        sleep    0.2
-    END
-    END
-
 addBusinfo_FuncTest
     ${header}    create_webPageLogin    ${ip}    &{resourceInfo}[organname]    888888
     create session    api    ${ip}    ${header}
     #查询线路，获得roadid
-    ${data}    search roadinfo    37路    #查询到线路信息
-    ${roadid}    set variable    ${data}[roadid]    #获取线路ID
+    ${road_urlplay}    ${road_playLoad}     search roadinfo    37路0    #查询到线路信息
+    ${road_data}    post request    api    ${road_urlplay}    data=${road_playLoad}
+    ${road_result}    To Json    ${road_data.content}    #将返回值转成字典形式
+    ${roadid}    set variable    ${road_result}[data][0][roadid]     #获取线路ID
+    log    ${roadname}
     #添加车辆
     @{internalNoLst}    Create List    robot1    robot2    robot3    robot4    robot5
-    FOR     ${internalNo}    IN    @{internalNoLst}
-    ${urlPlay}    ${playLoad}    addBusinfo    ${internalNo}    ${internalNo}    ${internalNo}    ${roadid}    ${roadname}
-    ${bus_data}    post request    api    ${urlPlay}    ${playLoad}
-    Run Keyword If    ${bus_data.status_code}==200    LOG    ${user_data.content}
-    ...    ELSE    LOG    请求失败
-    sleep    0.3
+    FOR    ${internalNo}    IN    @{internalNoLst}
+        ${urlPlay}    ${playLoad}    addBusinfo    ${internalNo}    ${internalNo}    ${internalNo}    ${roadid}    ${roadname}
+        ${bus_data}    post request    api    ${urlPlay}    data=${playLoad}
+        Run Keyword If    ${bus_data.status_code}==200    LOG    ${bus_data.content}
+        ...    ELSE    LOG    添加车辆失败
+        sleep    0.3
     #查询车辆
+        ${bus_urlPlay}    ${bus_playLoad}    Search Businfo    ${internalNo}
+        ${bus2_data}    post request    api    ${bus_urlPlay}    data=${bus_playLoad}
+        ${bus2_result}    To Json    ${bus2_data.content}    #将返回值转成字典形式
+        ${id}    set variable    ${bus2_result}[data][0][id]
     #审核车辆为有效
+        ${check_urlPlay}    ${check_playLoad}    Check businfo    ${id}
+        ${check_data}    post request    api    ${check_urlPlay}    data=${check_playLoad}
+        log    ${check_data.content}
+    sleep    1
     END
