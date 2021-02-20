@@ -11,13 +11,12 @@ addSchudle
     ...
     ...    1、制作当天排班
     ...
-    ...
     [Setup]    Wait Until Keyword Succeeds    3x    5s    loginHEC
-    ${yyyy}    ${mm}    ${dd}     Get Time    year,month,day
+    ${yyyy}    ${mm}    ${dd}    Get Time    year,month,day
     wait click    xpath=//span[contains(text(),"智能排班")]    #运营排班
     wait click    xpath=//a[contains(text(),"排班计划")]    #排班计划
-    wait input    xapth=//input[@id="billdateID_start"]    ${yyyy}-${mm}-${dd}     #开始时间
-    wait input    xapth=//input[@id="newdateID_end"]    ${yyyy}-${mm}-${dd}     #结束时间
+    wait input    xapth=//input[@id="billdateID_start"]    ${yyyy}-${mm}-${dd}    #开始时间
+    wait input    xapth=//input[@id="newdateID_end"]    ${yyyy}-${mm}-${dd}    #结束时间
     wait click    xpath=//div[@id="searchtimetypeID"]/button[@data-toggle="dropdown"]    #点击查询类型下拉框
     wait click    xpath=//a[contains(text(),"时间有效")]    #时间有效
     wait click    xpath=//button[@id="search"]    #查询
@@ -37,8 +36,7 @@ addSchudle
     wait click    xpath=//button[@id="save"]    #保存
 
 checkPlanInterval
-    [Documentation]    \
-    ...    1、分别查询出简图调度排班间隔，简图调度发车间隔，流水发车台发车间隔保持一致
+    [Documentation]    1、分别查询出简图调度排班间隔，简图调度发车间隔，流水发车台发车间隔保持一致
     ...    2、对比这四个发车间隔的值，是否一致
     ...
     ...    期望结果：一致
@@ -57,13 +55,13 @@ checkPlanInterval
     ${index_result}    To Json    ${index_data.content}    #将返回值转成字典形式
     ${billid}    set variable    ${index_result}[data][0][billid]
     #查询排班计划表中的总右总站ID
-    ${roadmng_urlplay}    ${roadmng_playload}    search pageRoadmngJson     ${billid}    ${belongto}    ${roadname}
+    ${roadmng_urlplay}    ${roadmng_playload}    search pageRoadmngJson    ${billid}    ${belongto}    ${roadname}
     ${roadmng_data}    post request    api    ${roadmng_urlplay}    data=${roadmng_playload}
     ${roadmng_result}    To Json    ${roadmng_data.content}    #将返回值转成字典形式
     ${beginsiteid}    set variable    ${roadmng_result}[data][0][beginsiteid]    #左总站ID
     ${endsiteid}    set variable    ${roadmng_result}[data][0][endsiteid]    #右总站ID
     #获取简图排班计划中的左总站发车间隔和间隔id号
-    ${scheduleTime_urlplay}    ${scheduleTime_playload}    search DhPschedulebtimerange     ${billid}    ${roadid}    ${beginsiteid}
+    ${scheduleTime_urlplay}    ${scheduleTime_playload}    search DhPschedulebtimerange    ${billid}    ${roadid}    ${beginsiteid}
     ${scheduleTime_data}    post request    api    ${scheduleTime_urlplay}    data=${scheduleTime_playload}
     ${scheduleTime_result}    To Json    ${scheduleTime_data.content}    #将返回值转成字典形式
     ${scheduleID}    set variable    ${scheduleTime_result}[data][0][id]    #计划id号
@@ -76,5 +74,11 @@ checkPlanInterval
     #判断两个接口的发车间隔要一致
     should be equal    ${schedule_timeinterval}    ${currentTime_timeinterval}
 
-test
-    log    ${ip}
+check_monitor
+    [Documentation]    简图扳手功能，打开计划执行表开关后，简图下方切换为计划执行表；关闭开关，切换为路单界面
+    [Setup]    Wait Until Keyword Succeeds    3x    5s    loginHEC
+    wait click    xpath=//span[contains(text(),"运营调度")]    #运营调度
+    wait click    xpath=//a[contains(text(),"简图调度")]    #排班计划
+    wait input    xpath=//input[@id="treeLayer_key"]    robot    #树形输入线路名
+    wait click    xpath=//input[@id="treeLayer_searchBtn"]    #查询
+    wait click    xpath=//span[@id="mtLocationRunDiagramTree_90_span"]    #选中robot路

@@ -5,9 +5,8 @@ Resource          Resource.txt
 
 *** Test Cases ***
 plugIn_main
-    [Setup]    Wait Until Keyword Succeeds    3x    5s    loginHEC
     #获取测试车辆
-    ${bus_1}     ${bus_2}     ${bus_3}     ${bus_4}     ${bus_5}     searchBusinfos
+    ${bus_1}    ${bus_2}    ${bus_3}    ${bus_4}    ${bus_5}    searchBusinfos
     ${bustidXPATH}    Catenate    SEPARATOR=    css=div[id='    ${bus_1}[bustid]    ']>div[class='bus-body']
     ${requestEmploeeJson}    get dispatchEmployee Json    ${bus_1}[internalno]    ${employeeCardNo}
     ${request_6}    get dispath json    ${bus_1}[internalno]    6

@@ -21,7 +21,7 @@ create bsRecord_bsBusdiagrame_bus
     ...    删除测试数据
     ...    重新刷新页面，退回首页
     #获取测试车辆
-    ${bus_1}     ${bus_2}     ${bus_3}     ${bus_4}     ${bus_5}     searchBusinfos
+    ${bus_1}    ${bus_2}    ${bus_3}    ${bus_4}    ${bus_5}    searchBusinfos
     ${departureTime}    DepartTime
     ${bustidXPATH}    Catenate    SEPARATOR=    css=div[id='    ${bus_1}[bustid]    ']>div[class='bus-body']
     get bsBusdiagrameMenus_first    ${bustidXPATH}    #点击车辆弹出更多菜单
@@ -63,7 +63,7 @@ create bsRecord_bsBusdiagrame_quickAdd
     ...    进入-简图-车辆-路单-删除测试数据
     ...    重新刷新页面，退回首页
     #获取测试车辆
-    ${bus_1}     ${bus_2}     ${bus_3}     ${bus_4}     ${bus_5}     searchBusinfos
+    ${bus_1}    ${bus_2}    ${bus_3}    ${bus_4}    ${bus_5}    searchBusinfos
     ${departureTime}    DepartTime
     ${departuretime_new}    Catenate    SEPARATOR=    ${departureTime}    :00
     ${bustidXPATH}    Catenate    SEPARATOR=    css=div[id='    ${bus_1}[bustid]    ']>div[class='bus-body']
@@ -113,7 +113,7 @@ create bsRecord_bsBusdiagrame
     ...    删除测试数据
     ...    重新刷新页面，退回首页
     #获取测试车辆
-    ${bus_1}     ${bus_2}     ${bus_3}     ${bus_4}     ${bus_5}     searchBusinfos
+    ${bus_1}    ${bus_2}    ${bus_3}    ${bus_4}    ${bus_5}    searchBusinfos
     ${departureTime}    DepartTime
     ${bustidXPATH}    Catenate    SEPARATOR=    css=div[id='    ${bus_1}[bustid]    ']>div[class='bus-body']
     @{busRecordLst}    create list    ${departureTime}    8.67    6.8    robot Test
@@ -170,7 +170,7 @@ create bsRecord
     ...    删除测试数据
     ...    重新刷新页面，退回首页
     #获取测试车辆
-    ${bus_1}     ${bus_2}     ${bus_3}     ${bus_4}     ${bus_5}     searchBusinfos
+    ${bus_1}    ${bus_2}    ${bus_3}    ${bus_4}    ${bus_5}    searchBusinfos
     ${departureTime}    DepartTime
     ${bustidXPATH}    Catenate    SEPARATOR=    css=div[id='    ${bus_1}[bustid]    ']>div[class='bus-body']
     @{busRecordLst}    create list    ${departureTime}    8.67    6.8    robot Test
@@ -224,7 +224,7 @@ creat_bsRecord_goTosite
     ...    2、运行中路单
     ...    3、已完成路单
     #获取测试车辆
-    ${bus_1}     ${bus_2}     ${bus_3}     ${bus_4}     ${bus_5}     searchBusinfos
+    ${bus_1}    ${bus_2}    ${bus_3}    ${bus_4}    ${bus_5}    searchBusinfos
     ${bustidXPATH}    Catenate    SEPARATOR=    css=div[id='    ${bus_1}[bustid]    ']>div[class='bus-body']
     #第一次进总站
     get bsBusdiagrameMenus_first    ${bustidXPATH}    #点击车辆弹出更多菜单

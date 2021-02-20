@@ -58,3 +58,6 @@ DhPschedulepscreenmng
     should be equal    ${flag1}    ${true}
     should be equal    ${flag2}    ${true}
     [Teardown]    deleteSchedulePscreen
+
+test
+    log    ${ip}
